@@ -1,0 +1,4 @@
+= AIRanker
+
+AIRanker is the Web3-native, token-incentivized ranking platform for curated AI tools, models, and applications — like G2, Product Hunt, and Dune combined, but focused on AI and owned by its contributors
+

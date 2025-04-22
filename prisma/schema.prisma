@@ -1,0 +1,233 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "linux-musl-openssl-3.0.x", "linux-musl", "debian-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  // NOTE: When using mysql or sqlserver, uncomment the @db.Text annotations in model Account below
+  // Further reading:
+  // https://next-auth.js.org/adapters/prisma#create-the-prisma-schema
+  // https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#string
+  url      = env("DATABASE_URL")
+}
+
+//--------------------------------
+enum Platform {
+  GITHUB
+  GITLAB
+  X
+}
+
+model UserPlatform {
+  id             String   @id @default(dbgenerated("gen_random_uuid()")) @map("id")
+  platform       Platform @default(GITHUB) @map("platform")
+  platformId     String   @map("platform_id") @db.VarChar(255)
+  platformName   String   @map("platform_name") @db.VarChar(255)
+  platformAvatar String   @map("platform_avatar") @db.VarChar(255)
+  user           User     @relation(fields: [userAddress], references: [address])
+  userAddress    String   @map("user_address") @db.VarChar(255)
+
+  @@unique([userAddress, platform])
+  @@index([platform, platformId])
+  @@map("t_user_platform")
+}
+
+model User {
+  address           String             @id @map("address") @db.VarChar(255)
+  name              String?            @map("name") @db.VarChar(255)
+  email             String?            @unique @map("email") @db.VarChar(255)
+  referralCode      String             @unique @map("referral_code")
+  createdAt         DateTime           @default(now()) @map("created_at")
+  updatedAt         DateTime           @default(now()) @updatedAt @map("updated_at")
+  invitedBy         String[]           @default([]) @map("invited_by")
+  ranks             Rank[]
+  platforms         UserPlatform[]
+  articles          Article[]
+  rankLikes         RankLike[]
+  rankFavorites     RankFavorite[]
+  softwareLikes     SoftwareLike[]
+  softwareFavorites SoftwareFavorite[]
+  rankComments      RankComment[]
+
+  @@map("t_user")
+}
+
+model Tag {
+  id        String        @id @default(dbgenerated("gen_random_uuid()")) @map("id")
+  name      String        @map("name") @db.VarChar(255)
+  createdAt DateTime      @default(now()) @map("created_at")
+  updatedAt DateTime      @default(now()) @updatedAt @map("updated_at")
+  ranks     RankTag[]
+  softwares SoftwareTag[]
+}
+
+model Rank {
+  id          String           @id @default(dbgenerated("gen_random_uuid()")) @map("id")
+  userAddress String           @map("user_address") @db.VarChar(255)
+  name        String           @map("name") @db.VarChar(255)
+  description String?          @map("description") @db.VarChar(255)
+  createdAt   DateTime         @default(now()) @map("created_at")
+  updatedAt   DateTime         @default(now()) @updatedAt @map("updated_at")
+  user        User             @relation(fields: [userAddress], references: [address])
+  tags        RankTag[]
+  softwares   SoftwareOnRank[]
+  articles    Article[]
+  likes       RankLike[]
+  favorites   RankFavorite[]
+  comments    RankComment[]
+
+  @@map("t_rank")
+}
+
+model RankTag {
+  tag       Tag      @relation(fields: [tagId], references: [id])
+  tagId     String   @map("tag_id")
+  rank      Rank     @relation(fields: [rankId], references: [id])
+  rankId    String   @map("rank_id")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  @@id([tagId, rankId])
+  @@map("t_rank_tag")
+}
+
+model Software {
+  id          String              @id @default(dbgenerated("gen_random_uuid()")) @map("id")
+  image       String              @map("image") @db.VarChar(255)
+  name        String              @map("name") @db.VarChar(255)
+  description String?             @map("description") @db.Text
+  url         String              @map("url") @db.VarChar(255)
+  createdAt   DateTime            @default(now()) @map("created_at")
+  updatedAt   DateTime            @default(now()) @updatedAt @map("updated_at")
+  tags        SoftwareTag[]
+  ranks       SoftwareOnRank[]
+  likes       SoftwareLike[]
+  favorites   SoftwareFavorite[]
+  articles    SoftwareOnArticle[]
+
+  @@map("t_software")
+}
+
+model SoftwareTag {
+  tag        Tag      @relation(fields: [tagId], references: [id])
+  tagId      String   @map("tag_id")
+  software   Software @relation(fields: [softwareId], references: [id])
+  softwareId String   @map("software_id")
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @default(now()) @updatedAt @map("updated_at")
+
+  @@id([tagId, softwareId])
+  @@map("t_software_tag")
+}
+
+model SoftwareOnRank {
+  software    Software @relation(fields: [softwareId], references: [id])
+  softwareId  String   @map("software_id")
+  description String   @map("description") @db.Text
+  rank        Rank     @relation(fields: [rankId], references: [id])
+  rankId      String   @map("rank_id")
+  rankIndex   Int      @map("rank_index")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @default(now()) @updatedAt @map("updated_at")
+
+  @@id([softwareId, rankId])
+  @@map("t_softwares_on_rank")
+}
+
+model SoftwareOnArticle {
+  software   Software @relation(fields: [softwareId], references: [id])
+  softwareId String   @map("software_id")
+  article    Article  @relation(fields: [articleId], references: [id])
+  articleId  String   @map("article_id")
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @default(now()) @updatedAt @map("updated_at")
+
+  @@id([softwareId, articleId])
+  @@map("t_software_on_article")
+}
+
+model Article {
+  id          String              @id @default(dbgenerated("gen_random_uuid()")) @map("id")
+  title       String              @db.VarChar(255)
+  description String              @db.Text
+  image       String              @db.VarChar(255)
+  content     String              @db.Text
+  rank        Rank                @relation(fields: [rankId], references: [id])
+  rankId      String              @map("rank_id")
+  author      User                @relation(fields: [userAddress], references: [address])
+  createdAt   DateTime            @default(now()) @map("created_at")
+  updatedAt   DateTime            @default(now()) @updatedAt @map("updated_at")
+  userAddress String              @map("user_address") @db.VarChar(255)
+  softwares   SoftwareOnArticle[]
+
+  @@map("t_rank_article")
+}
+
+model RankLike {
+  rank        Rank     @relation(fields: [rankId], references: [id])
+  rankId      String   @map("rank_id")
+  user        User     @relation(fields: [userAddress], references: [address])
+  userAddress String   @map("user_address") @db.VarChar(255)
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  @@id([rankId, userAddress])
+  @@map("t_rank_like")
+}
+
+model RankFavorite {
+  rank        Rank     @relation(fields: [rankId], references: [id])
+  rankId      String   @map("rank_id")
+  user        User     @relation(fields: [userAddress], references: [address])
+  userAddress String   @map("user_address") @db.VarChar(255)
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  @@id([rankId, userAddress])
+  @@map("t_rank_favorite")
+}
+
+model SoftwareLike {
+  software    Software @relation(fields: [softwareId], references: [id])
+  softwareId  String   @map("software_id")
+  user        User     @relation(fields: [userAddress], references: [address])
+  userAddress String   @map("user_address") @db.VarChar(255)
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  @@id([softwareId, userAddress])
+  @@map("t_software_like")
+}
+
+model SoftwareFavorite {
+  software    Software @relation(fields: [softwareId], references: [id])
+  softwareId  String   @map("software_id")
+  user        User     @relation(fields: [userAddress], references: [address])
+  userAddress String   @map("user_address") @db.VarChar(255)
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  @@id([softwareId, userAddress])
+  @@map("t_software_favorite")
+}
+
+model RankComment {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @map("id")
+  rankId    String   @map("rank_id")
+  message   String   @db.Text
+  createdAt DateTime @default(now()) @map("created_at")
+
+  createdBy String    @map("created_by") @db.VarChar(255)
+  deletedAt DateTime? @map("deleted_at")
+
+  replyToMessage String? @map("reply_to_message") @db.VarChar(255)
+  replyToUser    String? @map("reply_to_user") @db.VarChar(255)
+  rootMessageId  String? @map("root_message_id") @db.VarChar(255)
+
+  rank Rank @relation(fields: [rankId], references: [id], onDelete: Cascade)
+  User User @relation(fields: [createdBy], references: [address])
+
+  @@index([rootMessageId])
+  @@index([createdAt])
+  @@map("t_rank_comment")
+}
