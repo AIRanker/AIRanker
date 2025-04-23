@@ -6,6 +6,14 @@ generator client {
   binaryTargets = ["native", "linux-musl-openssl-3.0.x", "linux-musl", "debian-openssl-3.0.x"]
 }
 
+generator zod {
+  provider       = "zod-prisma-types"
+  output         = "../src/lib/zod"
+  // createRelationValuesTypes = true
+  addIncludeType = true
+  addSelectType  = true
+}
+
 datasource db {
   provider = "postgresql"
   // NOTE: When using mysql or sqlserver, uncomment the @db.Text annotations in model Account below
@@ -34,6 +42,17 @@ model UserPlatform {
   @@unique([userAddress, platform])
   @@index([platform, platformId])
   @@map("t_user_platform")
+}
+
+model ApiKey {
+  key         String    @id @unique @db.VarChar(255)
+  name        String    @db.VarChar(255)
+  userAddress String?   @map("user_address") @db.VarChar(255)
+  createdAt   DateTime  @default(now()) @map("created_at")
+  expiredAt   DateTime? @map("expired_at")
+
+  @@unique([name, userAddress])
+  @@map("t_api_key")
 }
 
 model User {
