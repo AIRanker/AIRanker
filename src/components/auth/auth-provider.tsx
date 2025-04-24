@@ -1,8 +1,8 @@
 "use client"
 
-import { type Session } from "next-auth"
+import type { Session } from "next-auth"
 import { SessionProvider as NextAuthSessionProvider } from "next-auth/react"
-import React from "react"
+import type React from "react"
 import { WagmiProvider, type State as WagmiState } from "wagmi"
 import { wagmiConfig } from "./config"
 import { AuthContextProvider } from "./auth-context"

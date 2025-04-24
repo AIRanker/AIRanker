@@ -6,18 +6,18 @@ import type { OpenOptions } from "node_modules/@reown/appkit/dist/types/src/clie
 import posthog from "posthog-js"
 import { createContext, useContext } from "react"
 import type { ReactNode } from "react"
-// import posthog from "posthog-js"
+import type { Views } from "node_modules/@reown/appkit/dist/types/src/client/appkit-base-client";
 
 type AuthContextProps =
   | {
       isAuthenticated: true
       address: string
-      openDialog: (options?: OpenOptions<any>) => Promise<void>
+      openDialog: (options?: OpenOptions<Views>) => Promise<void>
     }
   | {
       isAuthenticated: false
       address: null
-      openDialog: (options?: OpenOptions<any>) => Promise<void>
+      openDialog: (options?: OpenOptions<Views>) => Promise<void>
     }
 
 export const AuthContext = createContext<AuthContextProps | null>(null)

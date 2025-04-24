@@ -67,7 +67,6 @@ export function getUserFriendlyMessage(error: CommonError) {
     case ErrorCode.BAD_PARAMS:
     case ErrorCode.NOT_FOUND:
       return "Some inputs doesn't make sense"
-    case ErrorCode.INVALID_STATE:
     case ErrorCode.INVALID_TRADING_STATE:
       return "We cannot fulfill your request at this time"
     case ErrorCode.UNKNOWN:

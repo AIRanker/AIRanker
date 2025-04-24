@@ -4,6 +4,11 @@ import type { Metadata } from "next"
 import { Geist } from "next/font/google"
 
 import { TRPCReactProvider } from "~/trpc/react"
+import { auth } from "~/server/auth";
+import { cookieToInitialState } from "wagmi";
+import { wagmiConfig } from "~/components/auth/config";
+import { headers } from "next/headers";
+import AuthProvider from "~/components/auth/auth-provider";
 
 export const metadata: Metadata = {
   title: "Create T3 App",
@@ -16,11 +21,16 @@ const geist = Geist({
   variable: "--font-geist-sans"
 })
 
-export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+  const session = await auth()
+  const wagmiState = cookieToInitialState(wagmiConfig, (await headers()).get("cookie"))
+
   return (
     <html lang="en" className={`${geist.variable}`}>
       <body>
-        <TRPCReactProvider>{children}</TRPCReactProvider>
+        <AuthProvider session={session} wagmiState={wagmiState}>
+          <TRPCReactProvider>{children}</TRPCReactProvider>
+        </AuthProvider>
       </body>
     </html>
   )

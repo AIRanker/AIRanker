@@ -1,7 +1,8 @@
 "use client"
 
-import { type OpenOptions } from "node_modules/@reown/appkit/dist/types/src/client/appkit-base-client"
-import { type ReactNode } from "react"
+import type { OpenOptions } from "node_modules/@reown/appkit/dist/types/src/client/appkit-base-client"
+import type { Views } from "node_modules/@reown/appkit/dist/types/src/client/appkit-base-client";
+import type { ReactNode } from "react"
 import { useAuth } from "./auth-context"
 
 export default function SignedOut({
@@ -10,7 +11,7 @@ export default function SignedOut({
   children:
     | ReactNode
     | ((props: {
-        openDialog: (options?: OpenOptions<any>) => Promise<void>
+        openDialog: (options?: OpenOptions<Views>) => Promise<void>
       }) => ReactNode)
 }) {
   const { isAuthenticated, openDialog } = useAuth()
