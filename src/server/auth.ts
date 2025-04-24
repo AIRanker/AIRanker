@@ -11,7 +11,6 @@ declare module "next-auth" {
   interface Session extends DefaultSession {
     address: string
     chainId: number
-    role: "ADMIN" | "USER"
     provider?: "GitHub" | "GitLab"
   }
 }
