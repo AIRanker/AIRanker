@@ -36,9 +36,9 @@ const normalizeAddress = (address: string): string => {
 }
 
 const metadata = {
-  name: "REPO",
-  description: "The Repo Protocol",
-  url: "https://repofi.io/",
+  name: "AIRanker",
+  description: "The AIRanker Protocol",
+  url: "https://airanker.io/",
   icons: ["https://storage.googleapis.com/repofi-prod/launchpad/image/logo.png"] // TODO: Add icons
 }
 const siweConfig = createSIWEConfig({

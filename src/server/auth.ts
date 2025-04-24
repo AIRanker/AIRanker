@@ -3,6 +3,7 @@ import NextAuth, { type DefaultSession } from "next-auth"
 import Credentials from "next-auth/providers/credentials"
 import { db } from "~/server/db"
 import { userService, type UserWithPlatforms } from "./services/user"
+import {env} from "~/env";
 
 declare module "next-auth" {
   /**
@@ -81,7 +82,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             message: message as string,
             signature: signature as string,
             chainId,
-            projectId: "d198cf7bba856bb5f9a7ec73cb03235e"
+            projectId: env.NEXT_PUBLIC_REOWN_PROJECT_ID
           })
 
           if (isValid) {
