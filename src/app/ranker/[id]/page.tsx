@@ -8,10 +8,10 @@ const RankerPage = async ({ params }: { params: Promise<{ id: string }> }) => {
   const { id } = await params
 
   return (
-    <div className={"w-full h-full flex flex-col"}>
+    <>
       <div className="container py-8 space-y-4">
-        <h1 className="text-4xl font-bold  mb-2 text-primary">Top AI Frameworks 2024</h1>
-        <div className="flex items-center gap-4 text-primary font-bold">
+        <h1 className="text-6xl font-bold mb-2 text-primary">Top AI Frameworks 2024</h1>
+        <div className="flex items-center mt-6 gap-4 text-primary font-bold">
           <Link href={"/profile/"} className="hover:underline">
             @AliceDev
           </Link>
@@ -21,21 +21,21 @@ const RankerPage = async ({ params }: { params: Promise<{ id: string }> }) => {
           </div>
           <div>March 28, 2025 </div>
         </div>
-        <p className="text-gray-600">
+        <p className="opacity-60">
           A curated list of the most powerful open-source <br /> frameworks for AI developers in 2024
         </p>
-        <div className="flex flex-wrap gap-2">
-          <Badge variant={"outline"} className={"px-5 font-bold"}>
+        <div className="flex flex-wrap gap-2 text-lg">
+          <Badge variant={"outline"} className={"px-5 py-1 font-bold"}>
             #AI
           </Badge>
-          <Badge variant={"outline"} className={"px-5 font-bold"}>
+          <Badge variant={"outline"} className={"px-5 py-1 font-bold"}>
             #Framework
           </Badge>
-          <Badge variant={"outline"} className={"px-5 font-bold"}>
+          <Badge variant={"outline"} className={"px-5 py-1 font-bold"}>
             #OpenSource
           </Badge>
         </div>
-        <div className="flex items-center gap-4 mb-8">
+        <div className="flex items-center gap-4 mt-4">
           <Heart size={20} />
           <Bookmark size={20} />
           <Share2 size={20} />
@@ -43,7 +43,7 @@ const RankerPage = async ({ params }: { params: Promise<{ id: string }> }) => {
       </div>
       <RankerContent />
       <Comments />
-    </div>
+    </>
   )
 }
 

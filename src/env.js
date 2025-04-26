@@ -27,7 +27,7 @@ export const env = createEnv({
         },
         z.record(z.string(), z.string().url())
       )
-      .optional(),
+      .optional()
   },
 
   /**
@@ -39,6 +39,7 @@ export const env = createEnv({
     // NEXT_PUBLIC_CLIENTVAR: z.string(),
     NEXT_PUBLIC_REOWN_PROJECT_ID: z.string(),
     NEXT_PUBLIC_CHAIN_ID: z.preprocess((val) => Number(val), z.number()),
+    NEXT_PUBLIC_GIT_SHA: z.string().optional()
   },
 
   /**
@@ -51,6 +52,7 @@ export const env = createEnv({
     NEXT_PUBLIC_CHAIN_ID: process.env.NEXT_PUBLIC_CHAIN_ID,
     CHAIN_RPC_URL: process.env.CHAIN_RPC_URL,
     NEXT_PUBLIC_REOWN_PROJECT_ID: process.env.NEXT_PUBLIC_REOWN_PROJECT_ID,
+    NEXT_PUBLIC_GIT_SHA: process.env.NEXT_PUBLIC_GIT_SHA
     // NEXT_PUBLIC_CLIENTVAR: process.env.NEXT_PUBLIC_CLIENTVAR,
   },
   /**

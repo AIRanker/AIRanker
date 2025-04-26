@@ -32,7 +32,7 @@ export const RankCard: FC<RankCardProps> = ({ icon = <BarChart2 className="size-
     <div className={cn("p-4", className)}>
       <div className="mb-4 flex items-center gap-2 text-primary">
         {icon}
-        <h3 className="text-lg font-semibold">{title}</h3>
+        <h3 className="text-md text-nowrap font-semibold">{title}</h3>
       </div>
       <div className="space-y-1 divide-y">
         {items.map((item, index) => (

@@ -9,11 +9,31 @@ import { cookieToInitialState } from "wagmi"
 import AuthProvider from "~/components/auth/auth-provider"
 import { wagmiConfig } from "~/components/auth/config"
 import WalletButton from "~/components/auth/wallet-button"
-import LogoAiRanker from "~/components/icons/logo-ai-ranker"
+import ToTop from "~/components/common/to-top"
 import LogoAiRankerFull from "~/components/icons/logo-ai-ranker-full"
 import Nav from "~/components/nav"
+import { Badge } from "~/components/ui/badge"
+import { env } from "~/env"
 import { auth } from "~/server/auth"
 import { TRPCReactProvider } from "~/trpc/react"
+
+const socialMedias = [
+  {
+    title: "Twitter / X",
+    type: "x",
+    href: "https://x.com/REPO_Protocol"
+  },
+  {
+    title: "Discord",
+    type: "discord",
+    href: "https://t.me/REPOProtocol"
+  },
+  {
+    title: "Telegram",
+    type: "telegram",
+    href: "https://discord.gg/59hEPnGwT7"
+  }
+]
 
 export const metadata: Metadata = {
   title: "Create T3 App",
@@ -29,10 +49,12 @@ const geist = Geist({
 export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   const session = await auth()
   const wagmiState = cookieToInitialState(wagmiConfig, (await headers()).get("cookie"))
+  const version = "BETA"
+  const hash = env.NEXT_PUBLIC_GIT_SHA?.slice(0, 7) ?? "DEV"
 
   return (
     <html lang="en" className={`${geist.variable}`}>
-      <body className={"bg relative flex h-screen w-full flex-col"}>
+      <body className={"flex h-screen w-full gap-12 flex-col"}>
         <AuthProvider session={session} wagmiState={wagmiState}>
           <TRPCReactProvider>
             <header className="bg-background fixed top-0 z-30 mx-auto flex h-20 w-full items-center justify-between shadow-lg px-4 xl:px-0">
@@ -48,7 +70,32 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
                 </div>
               </div>
             </header>
-            <div className={"mt-20 h-full mx-auto w-full max-w-7xl px-4 xl:px-0"}>{children}</div>
+            <div className={"mt-20 flex-1 mx-auto w-full max-w-7xl px-4 xl:px-0"}>{children}</div>
+            <footer className="bg-background mt-auto w-full border-t py-6">
+              <div className="mx-auto flex w-full max-w-7xl flex-col items-center justify-between gap-4 px-4 md:flex-row xl:px-0">
+                <div className="flex flex-col items-center gap-2 md:items-start">
+                  <div className={"flex flex-row gap-4"}>
+                    <Link href="/" className="flex items-center gap-2">
+                      <LogoAiRankerFull className="size-8 text-primary" />
+                    </Link>
+                    <div className="flex items-center gap-2">
+                      <Badge variant="outline">{version}</Badge>
+                      <Badge className={"hidden"} variant="outline">
+                        {hash}
+                      </Badge>
+                    </div>
+                  </div>
+                  <p className="text-sm text-muted-foreground">© {new Date().getFullYear()} AI Ranker. All rights reserved.</p>
+                </div>
+                <div className="flex gap-6">
+                  {socialMedias.map((social) => (
+                    <a key={social.type} href={social.href} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary">
+                      {social.title}
+                    </a>
+                  ))}
+                </div>
+              </div>
+            </footer>
           </TRPCReactProvider>
         </AuthProvider>
       </body>

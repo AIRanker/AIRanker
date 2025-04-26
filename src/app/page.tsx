@@ -1,6 +1,6 @@
 import { RankCard } from "~/app/_components/rank-card"
 import { RankList } from "~/app/_components/rank-list"
-import { HydrateClient } from "~/trpc/server"
+import { HydrateClient, api } from "~/trpc/server"
 
 export default async function Home() {
   const topEarningItems = [
@@ -55,6 +55,7 @@ export default async function Home() {
       imageUrl: "https://avatars.githubusercontent.com/u/8784712?v=4"
     }
   ]
+  const rankList = await api.rank.topRanks()
   return (
     <HydrateClient>
       <div className={"h-full w-full grid grid-cols-1 md:grid-cols-4 mt-12 gap-6"}>
