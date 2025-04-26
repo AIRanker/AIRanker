@@ -7,6 +7,10 @@ export const env = createEnv({
    * isn't built with invalid env vars.
    */
   server: {
+    REDIS_HOST: z.string(),
+    REDIS_PORT: z.string().regex(/^\d+$/),
+    REDIS_DB: z.string().regex(/^\d+$/),
+    REDIS_PASSWORD: z.string(),
     DATABASE_URL: z.string().url(),
     NODE_ENV: z.enum(["development", "test", "production"]).default("development"),
     CHAIN_RPC_URL: z
@@ -47,6 +51,10 @@ export const env = createEnv({
    * middlewares) or client-side so we need to destruct manually.
    */
   runtimeEnv: {
+    REDIS_HOST: process.env.REDIS_HOST,
+    REDIS_PORT: process.env.REDIS_PORT,
+    REDIS_DB: process.env.REDIS_DB,
+    REDIS_PASSWORD: process.env.REDIS_PASSWORD,
     DATABASE_URL: process.env.DATABASE_URL,
     NODE_ENV: process.env.NODE_ENV,
     NEXT_PUBLIC_CHAIN_ID: process.env.NEXT_PUBLIC_CHAIN_ID,

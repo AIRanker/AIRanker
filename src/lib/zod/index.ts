@@ -42,7 +42,7 @@ export const SoftwareLikeScalarFieldEnumSchema = z.enum(['softwareId','userAddre
 
 export const SoftwareFavoriteScalarFieldEnumSchema = z.enum(['softwareId','userAddress','createdAt']);
 
-export const RankCommentScalarFieldEnumSchema = z.enum(['id','rankId','message','createdAt','createdBy','deletedAt','replyToMessage','replyToUser','rootMessageId']);
+export const RankCommentScalarFieldEnumSchema = z.enum(['id','rankId','content','createdAt','userAddress','deletedAt','replyToComment','replyToUser','rootCommentId']);
 
 export const SortOrderSchema = z.enum(['asc','desc']);
 
@@ -274,13 +274,13 @@ export type SoftwareFavorite = z.infer<typeof SoftwareFavoriteSchema>
 export const RankCommentSchema = z.object({
   id: z.string(),
   rankId: z.string(),
-  message: z.string(),
+  content: z.string(),
   createdAt: z.coerce.date(),
-  createdBy: z.string(),
+  userAddress: z.string(),
   deletedAt: z.coerce.date().nullable(),
-  replyToMessage: z.string().nullable(),
+  replyToComment: z.string().nullable(),
   replyToUser: z.string().nullable(),
-  rootMessageId: z.string().nullable(),
+  rootCommentId: z.string().nullable(),
 })
 
 export type RankComment = z.infer<typeof RankCommentSchema>
@@ -721,7 +721,7 @@ export const SoftwareFavoriteSelectSchema: z.ZodType<Prisma.SoftwareFavoriteSele
 
 export const RankCommentIncludeSchema: z.ZodType<Prisma.RankCommentInclude> = z.object({
   rank: z.union([z.boolean(),z.lazy(() => RankArgsSchema)]).optional(),
-  User: z.union([z.boolean(),z.lazy(() => UserArgsSchema)]).optional(),
+  user: z.union([z.boolean(),z.lazy(() => UserArgsSchema)]).optional(),
 }).strict()
 
 export const RankCommentArgsSchema: z.ZodType<Prisma.RankCommentDefaultArgs> = z.object({
@@ -732,15 +732,15 @@ export const RankCommentArgsSchema: z.ZodType<Prisma.RankCommentDefaultArgs> = z
 export const RankCommentSelectSchema: z.ZodType<Prisma.RankCommentSelect> = z.object({
   id: z.boolean().optional(),
   rankId: z.boolean().optional(),
-  message: z.boolean().optional(),
+  content: z.boolean().optional(),
   createdAt: z.boolean().optional(),
-  createdBy: z.boolean().optional(),
+  userAddress: z.boolean().optional(),
   deletedAt: z.boolean().optional(),
-  replyToMessage: z.boolean().optional(),
+  replyToComment: z.boolean().optional(),
   replyToUser: z.boolean().optional(),
-  rootMessageId: z.boolean().optional(),
+  rootCommentId: z.boolean().optional(),
   rank: z.union([z.boolean(),z.lazy(() => RankArgsSchema)]).optional(),
-  User: z.union([z.boolean(),z.lazy(() => UserArgsSchema)]).optional(),
+  user: z.union([z.boolean(),z.lazy(() => UserArgsSchema)]).optional(),
 }).strict()
 
 
@@ -1755,29 +1755,29 @@ export const RankCommentWhereInputSchema: z.ZodType<Prisma.RankCommentWhereInput
   NOT: z.union([ z.lazy(() => RankCommentWhereInputSchema),z.lazy(() => RankCommentWhereInputSchema).array() ]).optional(),
   id: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   rankId: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
-  message: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
+  content: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   createdAt: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
-  createdBy: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
+  userAddress: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   deletedAt: z.union([ z.lazy(() => DateTimeNullableFilterSchema),z.coerce.date() ]).optional().nullable(),
-  replyToMessage: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
+  replyToComment: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
   replyToUser: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
-  rootMessageId: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
+  rootCommentId: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
   rank: z.union([ z.lazy(() => RankScalarRelationFilterSchema),z.lazy(() => RankWhereInputSchema) ]).optional(),
-  User: z.union([ z.lazy(() => UserScalarRelationFilterSchema),z.lazy(() => UserWhereInputSchema) ]).optional(),
+  user: z.union([ z.lazy(() => UserScalarRelationFilterSchema),z.lazy(() => UserWhereInputSchema) ]).optional(),
 }).strict();
 
 export const RankCommentOrderByWithRelationInputSchema: z.ZodType<Prisma.RankCommentOrderByWithRelationInput> = z.object({
   id: z.lazy(() => SortOrderSchema).optional(),
   rankId: z.lazy(() => SortOrderSchema).optional(),
-  message: z.lazy(() => SortOrderSchema).optional(),
+  content: z.lazy(() => SortOrderSchema).optional(),
   createdAt: z.lazy(() => SortOrderSchema).optional(),
-  createdBy: z.lazy(() => SortOrderSchema).optional(),
+  userAddress: z.lazy(() => SortOrderSchema).optional(),
   deletedAt: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
-  replyToMessage: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
+  replyToComment: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
   replyToUser: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
-  rootMessageId: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
+  rootCommentId: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
   rank: z.lazy(() => RankOrderByWithRelationInputSchema).optional(),
-  User: z.lazy(() => UserOrderByWithRelationInputSchema).optional()
+  user: z.lazy(() => UserOrderByWithRelationInputSchema).optional()
 }).strict();
 
 export const RankCommentWhereUniqueInputSchema: z.ZodType<Prisma.RankCommentWhereUniqueInput> = z.object({
@@ -1789,27 +1789,27 @@ export const RankCommentWhereUniqueInputSchema: z.ZodType<Prisma.RankCommentWher
   OR: z.lazy(() => RankCommentWhereInputSchema).array().optional(),
   NOT: z.union([ z.lazy(() => RankCommentWhereInputSchema),z.lazy(() => RankCommentWhereInputSchema).array() ]).optional(),
   rankId: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
-  message: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
+  content: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   createdAt: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
-  createdBy: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
+  userAddress: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   deletedAt: z.union([ z.lazy(() => DateTimeNullableFilterSchema),z.coerce.date() ]).optional().nullable(),
-  replyToMessage: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
+  replyToComment: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
   replyToUser: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
-  rootMessageId: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
+  rootCommentId: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
   rank: z.union([ z.lazy(() => RankScalarRelationFilterSchema),z.lazy(() => RankWhereInputSchema) ]).optional(),
-  User: z.union([ z.lazy(() => UserScalarRelationFilterSchema),z.lazy(() => UserWhereInputSchema) ]).optional(),
+  user: z.union([ z.lazy(() => UserScalarRelationFilterSchema),z.lazy(() => UserWhereInputSchema) ]).optional(),
 }).strict());
 
 export const RankCommentOrderByWithAggregationInputSchema: z.ZodType<Prisma.RankCommentOrderByWithAggregationInput> = z.object({
   id: z.lazy(() => SortOrderSchema).optional(),
   rankId: z.lazy(() => SortOrderSchema).optional(),
-  message: z.lazy(() => SortOrderSchema).optional(),
+  content: z.lazy(() => SortOrderSchema).optional(),
   createdAt: z.lazy(() => SortOrderSchema).optional(),
-  createdBy: z.lazy(() => SortOrderSchema).optional(),
+  userAddress: z.lazy(() => SortOrderSchema).optional(),
   deletedAt: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
-  replyToMessage: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
+  replyToComment: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
   replyToUser: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
-  rootMessageId: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
+  rootCommentId: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
   _count: z.lazy(() => RankCommentCountOrderByAggregateInputSchema).optional(),
   _max: z.lazy(() => RankCommentMaxOrderByAggregateInputSchema).optional(),
   _min: z.lazy(() => RankCommentMinOrderByAggregateInputSchema).optional()
@@ -1821,13 +1821,13 @@ export const RankCommentScalarWhereWithAggregatesInputSchema: z.ZodType<Prisma.R
   NOT: z.union([ z.lazy(() => RankCommentScalarWhereWithAggregatesInputSchema),z.lazy(() => RankCommentScalarWhereWithAggregatesInputSchema).array() ]).optional(),
   id: z.union([ z.lazy(() => StringWithAggregatesFilterSchema),z.string() ]).optional(),
   rankId: z.union([ z.lazy(() => StringWithAggregatesFilterSchema),z.string() ]).optional(),
-  message: z.union([ z.lazy(() => StringWithAggregatesFilterSchema),z.string() ]).optional(),
+  content: z.union([ z.lazy(() => StringWithAggregatesFilterSchema),z.string() ]).optional(),
   createdAt: z.union([ z.lazy(() => DateTimeWithAggregatesFilterSchema),z.coerce.date() ]).optional(),
-  createdBy: z.union([ z.lazy(() => StringWithAggregatesFilterSchema),z.string() ]).optional(),
+  userAddress: z.union([ z.lazy(() => StringWithAggregatesFilterSchema),z.string() ]).optional(),
   deletedAt: z.union([ z.lazy(() => DateTimeNullableWithAggregatesFilterSchema),z.coerce.date() ]).optional().nullable(),
-  replyToMessage: z.union([ z.lazy(() => StringNullableWithAggregatesFilterSchema),z.string() ]).optional().nullable(),
+  replyToComment: z.union([ z.lazy(() => StringNullableWithAggregatesFilterSchema),z.string() ]).optional().nullable(),
   replyToUser: z.union([ z.lazy(() => StringNullableWithAggregatesFilterSchema),z.string() ]).optional().nullable(),
-  rootMessageId: z.union([ z.lazy(() => StringNullableWithAggregatesFilterSchema),z.string() ]).optional().nullable(),
+  rootCommentId: z.union([ z.lazy(() => StringNullableWithAggregatesFilterSchema),z.string() ]).optional().nullable(),
 }).strict();
 
 export const UserPlatformCreateInputSchema: z.ZodType<Prisma.UserPlatformCreateInput> = z.object({
@@ -2733,84 +2733,84 @@ export const SoftwareFavoriteUncheckedUpdateManyInputSchema: z.ZodType<Prisma.So
 
 export const RankCommentCreateInputSchema: z.ZodType<Prisma.RankCommentCreateInput> = z.object({
   id: z.string().optional(),
-  message: z.string(),
+  content: z.string(),
   createdAt: z.coerce.date().optional(),
   deletedAt: z.coerce.date().optional().nullable(),
-  replyToMessage: z.string().optional().nullable(),
+  replyToComment: z.string().optional().nullable(),
   replyToUser: z.string().optional().nullable(),
-  rootMessageId: z.string().optional().nullable(),
+  rootCommentId: z.string().optional().nullable(),
   rank: z.lazy(() => RankCreateNestedOneWithoutCommentsInputSchema),
-  User: z.lazy(() => UserCreateNestedOneWithoutRankCommentsInputSchema)
+  user: z.lazy(() => UserCreateNestedOneWithoutRankCommentsInputSchema)
 }).strict();
 
 export const RankCommentUncheckedCreateInputSchema: z.ZodType<Prisma.RankCommentUncheckedCreateInput> = z.object({
   id: z.string().optional(),
   rankId: z.string(),
-  message: z.string(),
+  content: z.string(),
   createdAt: z.coerce.date().optional(),
-  createdBy: z.string(),
+  userAddress: z.string(),
   deletedAt: z.coerce.date().optional().nullable(),
-  replyToMessage: z.string().optional().nullable(),
+  replyToComment: z.string().optional().nullable(),
   replyToUser: z.string().optional().nullable(),
-  rootMessageId: z.string().optional().nullable()
+  rootCommentId: z.string().optional().nullable()
 }).strict();
 
 export const RankCommentUpdateInputSchema: z.ZodType<Prisma.RankCommentUpdateInput> = z.object({
   id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  message: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  content: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   deletedAt: z.union([ z.coerce.date(),z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  replyToMessage: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  replyToComment: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   replyToUser: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  rootMessageId: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  rootCommentId: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   rank: z.lazy(() => RankUpdateOneRequiredWithoutCommentsNestedInputSchema).optional(),
-  User: z.lazy(() => UserUpdateOneRequiredWithoutRankCommentsNestedInputSchema).optional()
+  user: z.lazy(() => UserUpdateOneRequiredWithoutRankCommentsNestedInputSchema).optional()
 }).strict();
 
 export const RankCommentUncheckedUpdateInputSchema: z.ZodType<Prisma.RankCommentUncheckedUpdateInput> = z.object({
   id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   rankId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  message: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  content: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
-  createdBy: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  userAddress: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   deletedAt: z.union([ z.coerce.date(),z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  replyToMessage: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  replyToComment: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   replyToUser: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  rootMessageId: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  rootCommentId: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
 }).strict();
 
 export const RankCommentCreateManyInputSchema: z.ZodType<Prisma.RankCommentCreateManyInput> = z.object({
   id: z.string().optional(),
   rankId: z.string(),
-  message: z.string(),
+  content: z.string(),
   createdAt: z.coerce.date().optional(),
-  createdBy: z.string(),
+  userAddress: z.string(),
   deletedAt: z.coerce.date().optional().nullable(),
-  replyToMessage: z.string().optional().nullable(),
+  replyToComment: z.string().optional().nullable(),
   replyToUser: z.string().optional().nullable(),
-  rootMessageId: z.string().optional().nullable()
+  rootCommentId: z.string().optional().nullable()
 }).strict();
 
 export const RankCommentUpdateManyMutationInputSchema: z.ZodType<Prisma.RankCommentUpdateManyMutationInput> = z.object({
   id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  message: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  content: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   deletedAt: z.union([ z.coerce.date(),z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  replyToMessage: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  replyToComment: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   replyToUser: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  rootMessageId: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  rootCommentId: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
 }).strict();
 
 export const RankCommentUncheckedUpdateManyInputSchema: z.ZodType<Prisma.RankCommentUncheckedUpdateManyInput> = z.object({
   id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   rankId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  message: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  content: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
-  createdBy: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  userAddress: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   deletedAt: z.union([ z.coerce.date(),z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  replyToMessage: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  replyToComment: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   replyToUser: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  rootMessageId: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  rootCommentId: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
 }).strict();
 
 export const StringFilterSchema: z.ZodType<Prisma.StringFilter> = z.object({
@@ -3547,37 +3547,37 @@ export const SoftwareFavoriteMinOrderByAggregateInputSchema: z.ZodType<Prisma.So
 export const RankCommentCountOrderByAggregateInputSchema: z.ZodType<Prisma.RankCommentCountOrderByAggregateInput> = z.object({
   id: z.lazy(() => SortOrderSchema).optional(),
   rankId: z.lazy(() => SortOrderSchema).optional(),
-  message: z.lazy(() => SortOrderSchema).optional(),
+  content: z.lazy(() => SortOrderSchema).optional(),
   createdAt: z.lazy(() => SortOrderSchema).optional(),
-  createdBy: z.lazy(() => SortOrderSchema).optional(),
+  userAddress: z.lazy(() => SortOrderSchema).optional(),
   deletedAt: z.lazy(() => SortOrderSchema).optional(),
-  replyToMessage: z.lazy(() => SortOrderSchema).optional(),
+  replyToComment: z.lazy(() => SortOrderSchema).optional(),
   replyToUser: z.lazy(() => SortOrderSchema).optional(),
-  rootMessageId: z.lazy(() => SortOrderSchema).optional()
+  rootCommentId: z.lazy(() => SortOrderSchema).optional()
 }).strict();
 
 export const RankCommentMaxOrderByAggregateInputSchema: z.ZodType<Prisma.RankCommentMaxOrderByAggregateInput> = z.object({
   id: z.lazy(() => SortOrderSchema).optional(),
   rankId: z.lazy(() => SortOrderSchema).optional(),
-  message: z.lazy(() => SortOrderSchema).optional(),
+  content: z.lazy(() => SortOrderSchema).optional(),
   createdAt: z.lazy(() => SortOrderSchema).optional(),
-  createdBy: z.lazy(() => SortOrderSchema).optional(),
+  userAddress: z.lazy(() => SortOrderSchema).optional(),
   deletedAt: z.lazy(() => SortOrderSchema).optional(),
-  replyToMessage: z.lazy(() => SortOrderSchema).optional(),
+  replyToComment: z.lazy(() => SortOrderSchema).optional(),
   replyToUser: z.lazy(() => SortOrderSchema).optional(),
-  rootMessageId: z.lazy(() => SortOrderSchema).optional()
+  rootCommentId: z.lazy(() => SortOrderSchema).optional()
 }).strict();
 
 export const RankCommentMinOrderByAggregateInputSchema: z.ZodType<Prisma.RankCommentMinOrderByAggregateInput> = z.object({
   id: z.lazy(() => SortOrderSchema).optional(),
   rankId: z.lazy(() => SortOrderSchema).optional(),
-  message: z.lazy(() => SortOrderSchema).optional(),
+  content: z.lazy(() => SortOrderSchema).optional(),
   createdAt: z.lazy(() => SortOrderSchema).optional(),
-  createdBy: z.lazy(() => SortOrderSchema).optional(),
+  userAddress: z.lazy(() => SortOrderSchema).optional(),
   deletedAt: z.lazy(() => SortOrderSchema).optional(),
-  replyToMessage: z.lazy(() => SortOrderSchema).optional(),
+  replyToComment: z.lazy(() => SortOrderSchema).optional(),
   replyToUser: z.lazy(() => SortOrderSchema).optional(),
-  rootMessageId: z.lazy(() => SortOrderSchema).optional()
+  rootCommentId: z.lazy(() => SortOrderSchema).optional()
 }).strict();
 
 export const UserCreateNestedOneWithoutPlatformsInputSchema: z.ZodType<Prisma.UserCreateNestedOneWithoutPlatformsInput> = z.object({
@@ -5291,24 +5291,24 @@ export const SoftwareFavoriteCreateManyUserInputEnvelopeSchema: z.ZodType<Prisma
 
 export const RankCommentCreateWithoutUserInputSchema: z.ZodType<Prisma.RankCommentCreateWithoutUserInput> = z.object({
   id: z.string().optional(),
-  message: z.string(),
+  content: z.string(),
   createdAt: z.coerce.date().optional(),
   deletedAt: z.coerce.date().optional().nullable(),
-  replyToMessage: z.string().optional().nullable(),
+  replyToComment: z.string().optional().nullable(),
   replyToUser: z.string().optional().nullable(),
-  rootMessageId: z.string().optional().nullable(),
+  rootCommentId: z.string().optional().nullable(),
   rank: z.lazy(() => RankCreateNestedOneWithoutCommentsInputSchema)
 }).strict();
 
 export const RankCommentUncheckedCreateWithoutUserInputSchema: z.ZodType<Prisma.RankCommentUncheckedCreateWithoutUserInput> = z.object({
   id: z.string().optional(),
   rankId: z.string(),
-  message: z.string(),
+  content: z.string(),
   createdAt: z.coerce.date().optional(),
   deletedAt: z.coerce.date().optional().nullable(),
-  replyToMessage: z.string().optional().nullable(),
+  replyToComment: z.string().optional().nullable(),
   replyToUser: z.string().optional().nullable(),
-  rootMessageId: z.string().optional().nullable()
+  rootCommentId: z.string().optional().nullable()
 }).strict();
 
 export const RankCommentCreateOrConnectWithoutUserInputSchema: z.ZodType<Prisma.RankCommentCreateOrConnectWithoutUserInput> = z.object({
@@ -5530,13 +5530,13 @@ export const RankCommentScalarWhereInputSchema: z.ZodType<Prisma.RankCommentScal
   NOT: z.union([ z.lazy(() => RankCommentScalarWhereInputSchema),z.lazy(() => RankCommentScalarWhereInputSchema).array() ]).optional(),
   id: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   rankId: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
-  message: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
+  content: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   createdAt: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
-  createdBy: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
+  userAddress: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   deletedAt: z.union([ z.lazy(() => DateTimeNullableFilterSchema),z.coerce.date() ]).optional().nullable(),
-  replyToMessage: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
+  replyToComment: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
   replyToUser: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
-  rootMessageId: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
+  rootCommentId: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
 }).strict();
 
 export const RankTagCreateWithoutTagInputSchema: z.ZodType<Prisma.RankTagCreateWithoutTagInput> = z.object({
@@ -5798,24 +5798,24 @@ export const RankFavoriteCreateManyRankInputEnvelopeSchema: z.ZodType<Prisma.Ran
 
 export const RankCommentCreateWithoutRankInputSchema: z.ZodType<Prisma.RankCommentCreateWithoutRankInput> = z.object({
   id: z.string().optional(),
-  message: z.string(),
+  content: z.string(),
   createdAt: z.coerce.date().optional(),
   deletedAt: z.coerce.date().optional().nullable(),
-  replyToMessage: z.string().optional().nullable(),
+  replyToComment: z.string().optional().nullable(),
   replyToUser: z.string().optional().nullable(),
-  rootMessageId: z.string().optional().nullable(),
-  User: z.lazy(() => UserCreateNestedOneWithoutRankCommentsInputSchema)
+  rootCommentId: z.string().optional().nullable(),
+  user: z.lazy(() => UserCreateNestedOneWithoutRankCommentsInputSchema)
 }).strict();
 
 export const RankCommentUncheckedCreateWithoutRankInputSchema: z.ZodType<Prisma.RankCommentUncheckedCreateWithoutRankInput> = z.object({
   id: z.string().optional(),
-  message: z.string(),
+  content: z.string(),
   createdAt: z.coerce.date().optional(),
-  createdBy: z.string(),
+  userAddress: z.string(),
   deletedAt: z.coerce.date().optional().nullable(),
-  replyToMessage: z.string().optional().nullable(),
+  replyToComment: z.string().optional().nullable(),
   replyToUser: z.string().optional().nullable(),
-  rootMessageId: z.string().optional().nullable()
+  rootCommentId: z.string().optional().nullable()
 }).strict();
 
 export const RankCommentCreateOrConnectWithoutRankInputSchema: z.ZodType<Prisma.RankCommentCreateOrConnectWithoutRankInput> = z.object({
@@ -7725,12 +7725,12 @@ export const SoftwareFavoriteCreateManyUserInputSchema: z.ZodType<Prisma.Softwar
 export const RankCommentCreateManyUserInputSchema: z.ZodType<Prisma.RankCommentCreateManyUserInput> = z.object({
   id: z.string().optional(),
   rankId: z.string(),
-  message: z.string(),
+  content: z.string(),
   createdAt: z.coerce.date().optional(),
   deletedAt: z.coerce.date().optional().nullable(),
-  replyToMessage: z.string().optional().nullable(),
+  replyToComment: z.string().optional().nullable(),
   replyToUser: z.string().optional().nullable(),
-  rootMessageId: z.string().optional().nullable()
+  rootCommentId: z.string().optional().nullable()
 }).strict();
 
 export const RankUpdateWithoutUserInputSchema: z.ZodType<Prisma.RankUpdateWithoutUserInput> = z.object({
@@ -7890,35 +7890,35 @@ export const SoftwareFavoriteUncheckedUpdateManyWithoutUserInputSchema: z.ZodTyp
 
 export const RankCommentUpdateWithoutUserInputSchema: z.ZodType<Prisma.RankCommentUpdateWithoutUserInput> = z.object({
   id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  message: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  content: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   deletedAt: z.union([ z.coerce.date(),z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  replyToMessage: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  replyToComment: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   replyToUser: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  rootMessageId: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  rootCommentId: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   rank: z.lazy(() => RankUpdateOneRequiredWithoutCommentsNestedInputSchema).optional()
 }).strict();
 
 export const RankCommentUncheckedUpdateWithoutUserInputSchema: z.ZodType<Prisma.RankCommentUncheckedUpdateWithoutUserInput> = z.object({
   id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   rankId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  message: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  content: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   deletedAt: z.union([ z.coerce.date(),z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  replyToMessage: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  replyToComment: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   replyToUser: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  rootMessageId: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  rootCommentId: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
 }).strict();
 
 export const RankCommentUncheckedUpdateManyWithoutUserInputSchema: z.ZodType<Prisma.RankCommentUncheckedUpdateManyWithoutUserInput> = z.object({
   id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   rankId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  message: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  content: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   deletedAt: z.union([ z.coerce.date(),z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  replyToMessage: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  replyToComment: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   replyToUser: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  rootMessageId: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  rootCommentId: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
 }).strict();
 
 export const RankTagCreateManyTagInputSchema: z.ZodType<Prisma.RankTagCreateManyTagInput> = z.object({
@@ -8006,13 +8006,13 @@ export const RankFavoriteCreateManyRankInputSchema: z.ZodType<Prisma.RankFavorit
 
 export const RankCommentCreateManyRankInputSchema: z.ZodType<Prisma.RankCommentCreateManyRankInput> = z.object({
   id: z.string().optional(),
-  message: z.string(),
+  content: z.string(),
   createdAt: z.coerce.date().optional(),
-  createdBy: z.string(),
+  userAddress: z.string(),
   deletedAt: z.coerce.date().optional().nullable(),
-  replyToMessage: z.string().optional().nullable(),
+  replyToComment: z.string().optional().nullable(),
   replyToUser: z.string().optional().nullable(),
-  rootMessageId: z.string().optional().nullable()
+  rootCommentId: z.string().optional().nullable()
 }).strict();
 
 export const RankTagUpdateWithoutRankInputSchema: z.ZodType<Prisma.RankTagUpdateWithoutRankInput> = z.object({
@@ -8124,35 +8124,35 @@ export const RankFavoriteUncheckedUpdateManyWithoutRankInputSchema: z.ZodType<Pr
 
 export const RankCommentUpdateWithoutRankInputSchema: z.ZodType<Prisma.RankCommentUpdateWithoutRankInput> = z.object({
   id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  message: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  content: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   deletedAt: z.union([ z.coerce.date(),z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  replyToMessage: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  replyToComment: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   replyToUser: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  rootMessageId: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  User: z.lazy(() => UserUpdateOneRequiredWithoutRankCommentsNestedInputSchema).optional()
+  rootCommentId: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  user: z.lazy(() => UserUpdateOneRequiredWithoutRankCommentsNestedInputSchema).optional()
 }).strict();
 
 export const RankCommentUncheckedUpdateWithoutRankInputSchema: z.ZodType<Prisma.RankCommentUncheckedUpdateWithoutRankInput> = z.object({
   id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  message: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  content: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
-  createdBy: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  userAddress: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   deletedAt: z.union([ z.coerce.date(),z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  replyToMessage: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  replyToComment: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   replyToUser: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  rootMessageId: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  rootCommentId: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
 }).strict();
 
 export const RankCommentUncheckedUpdateManyWithoutRankInputSchema: z.ZodType<Prisma.RankCommentUncheckedUpdateManyWithoutRankInput> = z.object({
   id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  message: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  content: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
-  createdBy: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  userAddress: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   deletedAt: z.union([ z.coerce.date(),z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  replyToMessage: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  replyToComment: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   replyToUser: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  rootMessageId: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  rootCommentId: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
 }).strict();
 
 export const SoftwareTagCreateManySoftwareInputSchema: z.ZodType<Prisma.SoftwareTagCreateManySoftwareInput> = z.object({

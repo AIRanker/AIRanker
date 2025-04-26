@@ -233,20 +233,20 @@ model SoftwareFavorite {
 model RankComment {
   id        String   @id @default(dbgenerated("gen_random_uuid()")) @map("id")
   rankId    String   @map("rank_id")
-  message   String   @db.Text
+  content   String   @db.Text
   createdAt DateTime @default(now()) @map("created_at")
 
-  createdBy String    @map("created_by") @db.VarChar(255)
-  deletedAt DateTime? @map("deleted_at")
+  userAddress String    @map("user_address") @db.VarChar(255)
+  deletedAt   DateTime? @map("deleted_at")
 
-  replyToMessage String? @map("reply_to_message") @db.VarChar(255)
+  replyToComment String? @map("reply_to_comment") @db.VarChar(255)
   replyToUser    String? @map("reply_to_user") @db.VarChar(255)
-  rootMessageId  String? @map("root_message_id") @db.VarChar(255)
+  rootCommentId  String? @map("root_comment_id") @db.VarChar(255)
 
   rank Rank @relation(fields: [rankId], references: [id], onDelete: Cascade)
-  User User @relation(fields: [createdBy], references: [address])
+  user User @relation(fields: [userAddress], references: [address])
 
-  @@index([rootMessageId])
+  @@index([rootCommentId])
   @@index([createdAt])
   @@map("t_rank_comment")
 }
