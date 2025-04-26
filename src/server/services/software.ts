@@ -75,6 +75,60 @@ class SoftwareService {
             };
         });
     }
+    async like(softwareId: string, userAddress: string) {
+        const softwareLike = await db.softwareLike.findFirst({
+            where: {
+                softwareId: softwareId,
+                userAddress
+            }
+        })
+        if (softwareLike) {
+            await db.softwareLike.delete({
+                where: {
+                    softwareId_userAddress: {
+                        softwareId: softwareId,
+                        userAddress
+                    }
+                }
+            })
+            return false
+        }
+        await db.softwareLike.create({
+            data: {
+                softwareId: softwareId,
+                userAddress
+            }
+        })
+        return true
+    }
+
+    async favorite(softwareId: string, userAddress: string) {
+        const softwareFavorite = await db.softwareFavorite.findFirst({
+            where: {
+                softwareId: softwareId,
+                userAddress
+            }
+        })
+        if (softwareFavorite) {
+            await db.softwareFavorite.delete({
+                where: {
+                    softwareId_userAddress: {
+                        softwareId: softwareId,
+                        userAddress
+                    }
+                }
+            })
+            return false
+        }
+        await db.softwareFavorite.create({
+            data: {
+                softwareId: softwareId,
+                userAddress
+            }
+        })
+        return true
+    }
+
 }
 
 export default new SoftwareService();

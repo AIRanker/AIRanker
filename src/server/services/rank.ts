@@ -30,25 +30,25 @@ function generateRankSelect(userAddress?: string) {
     },
     ...(userAddress
       ? {
-          likes: {
-            where: {
-              userAddress
-            },
-            select: {
-              rankId: true
-            },
-            take: 1
+        likes: {
+          where: {
+            userAddress
           },
-          favorites: {
-            where: {
-              userAddress
-            },
-            select: {
-              rankId: true
-            },
-            take: 1
-          }
+          select: {
+            rankId: true
+          },
+          take: 1
+        },
+        favorites: {
+          where: {
+            userAddress
+          },
+          select: {
+            rankId: true
+          },
+          take: 1
         }
+      }
       : {})
   }
 }
@@ -112,6 +112,59 @@ class RankService {
       pages,
       total
     } as PageableData<(typeof list)[number]>
+  }
+
+  async like(rankId: string, userAddress: string) {
+    const rankLike = await db.rankLike.findFirst({
+      where: {
+        rankId: rankId,
+        userAddress
+      }
+    })
+    if (rankLike) {
+      await db.rankLike.delete({
+        where: {
+          rankId_userAddress: {
+            rankId: rankId,
+            userAddress
+          }
+        }
+      })
+      return false
+    }
+    await db.rankLike.create({
+      data: {
+        rankId: rankId,
+        userAddress
+      }
+    })
+    return true
+  }
+  async favorite(rankId: string, userAddress: string) {
+    const rankFavorite = await db.rankFavorite.findFirst({
+      where: {
+        rankId: rankId,
+        userAddress
+      }
+    })
+    if (rankFavorite) {
+      await db.rankFavorite.delete({
+        where: {
+          rankId_userAddress: {
+            rankId: rankId,
+            userAddress
+          }
+        }
+      })
+      return false
+    }
+    await db.rankFavorite.create({
+      data: {
+        rankId: rankId,
+        userAddress
+      }
+    })
+    return true
   }
 }
 
