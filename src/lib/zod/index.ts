@@ -22,6 +22,8 @@ export const TagScalarFieldEnumSchema = z.enum(['id','name','createdAt','updated
 
 export const RankScalarFieldEnumSchema = z.enum(['id','userAddress','name','description','createdAt','updatedAt']);
 
+export const RankMetadataScalarFieldEnumSchema = z.enum(['id','rankId','createdAt','updatedAt']);
+
 export const RankTagScalarFieldEnumSchema = z.enum(['tagId','rankId','createdAt','updatedAt']);
 
 export const SoftwareScalarFieldEnumSchema = z.enum(['id','image','name','description','url','createdAt','updatedAt']);
@@ -130,6 +132,19 @@ export const RankSchema = z.object({
 })
 
 export type Rank = z.infer<typeof RankSchema>
+
+/////////////////////////////////////////
+// RANK METADATA SCHEMA
+/////////////////////////////////////////
+
+export const RankMetadataSchema = z.object({
+  id: z.string(),
+  rankId: z.string(),
+  createdAt: z.coerce.date(),
+  updatedAt: z.coerce.date(),
+})
+
+export type RankMetadata = z.infer<typeof RankMetadataSchema>
 
 /////////////////////////////////////////
 // RANK TAG SCHEMA
@@ -420,6 +435,7 @@ export const RankIncludeSchema: z.ZodType<Prisma.RankInclude> = z.object({
   likes: z.union([z.boolean(),z.lazy(() => RankLikeFindManyArgsSchema)]).optional(),
   favorites: z.union([z.boolean(),z.lazy(() => RankFavoriteFindManyArgsSchema)]).optional(),
   comments: z.union([z.boolean(),z.lazy(() => RankCommentFindManyArgsSchema)]).optional(),
+  metadata: z.union([z.boolean(),z.lazy(() => RankMetadataArgsSchema)]).optional(),
   _count: z.union([z.boolean(),z.lazy(() => RankCountOutputTypeArgsSchema)]).optional(),
 }).strict()
 
@@ -455,7 +471,28 @@ export const RankSelectSchema: z.ZodType<Prisma.RankSelect> = z.object({
   likes: z.union([z.boolean(),z.lazy(() => RankLikeFindManyArgsSchema)]).optional(),
   favorites: z.union([z.boolean(),z.lazy(() => RankFavoriteFindManyArgsSchema)]).optional(),
   comments: z.union([z.boolean(),z.lazy(() => RankCommentFindManyArgsSchema)]).optional(),
+  metadata: z.union([z.boolean(),z.lazy(() => RankMetadataArgsSchema)]).optional(),
   _count: z.union([z.boolean(),z.lazy(() => RankCountOutputTypeArgsSchema)]).optional(),
+}).strict()
+
+// RANK METADATA
+//------------------------------------------------------
+
+export const RankMetadataIncludeSchema: z.ZodType<Prisma.RankMetadataInclude> = z.object({
+  rank: z.union([z.boolean(),z.lazy(() => RankArgsSchema)]).optional(),
+}).strict()
+
+export const RankMetadataArgsSchema: z.ZodType<Prisma.RankMetadataDefaultArgs> = z.object({
+  select: z.lazy(() => RankMetadataSelectSchema).optional(),
+  include: z.lazy(() => RankMetadataIncludeSchema).optional(),
+}).strict();
+
+export const RankMetadataSelectSchema: z.ZodType<Prisma.RankMetadataSelect> = z.object({
+  id: z.boolean().optional(),
+  rankId: z.boolean().optional(),
+  createdAt: z.boolean().optional(),
+  updatedAt: z.boolean().optional(),
+  rank: z.union([z.boolean(),z.lazy(() => RankArgsSchema)]).optional(),
 }).strict()
 
 // RANK TAG
@@ -1072,7 +1109,8 @@ export const RankWhereInputSchema: z.ZodType<Prisma.RankWhereInput> = z.object({
   articles: z.lazy(() => ArticleListRelationFilterSchema).optional(),
   likes: z.lazy(() => RankLikeListRelationFilterSchema).optional(),
   favorites: z.lazy(() => RankFavoriteListRelationFilterSchema).optional(),
-  comments: z.lazy(() => RankCommentListRelationFilterSchema).optional()
+  comments: z.lazy(() => RankCommentListRelationFilterSchema).optional(),
+  metadata: z.union([ z.lazy(() => RankMetadataNullableScalarRelationFilterSchema),z.lazy(() => RankMetadataWhereInputSchema) ]).optional().nullable(),
 }).strict();
 
 export const RankOrderByWithRelationInputSchema: z.ZodType<Prisma.RankOrderByWithRelationInput> = z.object({
@@ -1088,7 +1126,8 @@ export const RankOrderByWithRelationInputSchema: z.ZodType<Prisma.RankOrderByWit
   articles: z.lazy(() => ArticleOrderByRelationAggregateInputSchema).optional(),
   likes: z.lazy(() => RankLikeOrderByRelationAggregateInputSchema).optional(),
   favorites: z.lazy(() => RankFavoriteOrderByRelationAggregateInputSchema).optional(),
-  comments: z.lazy(() => RankCommentOrderByRelationAggregateInputSchema).optional()
+  comments: z.lazy(() => RankCommentOrderByRelationAggregateInputSchema).optional(),
+  metadata: z.lazy(() => RankMetadataOrderByWithRelationInputSchema).optional()
 }).strict();
 
 export const RankWhereUniqueInputSchema: z.ZodType<Prisma.RankWhereUniqueInput> = z.object({
@@ -1110,7 +1149,8 @@ export const RankWhereUniqueInputSchema: z.ZodType<Prisma.RankWhereUniqueInput> 
   articles: z.lazy(() => ArticleListRelationFilterSchema).optional(),
   likes: z.lazy(() => RankLikeListRelationFilterSchema).optional(),
   favorites: z.lazy(() => RankFavoriteListRelationFilterSchema).optional(),
-  comments: z.lazy(() => RankCommentListRelationFilterSchema).optional()
+  comments: z.lazy(() => RankCommentListRelationFilterSchema).optional(),
+  metadata: z.union([ z.lazy(() => RankMetadataNullableScalarRelationFilterSchema),z.lazy(() => RankMetadataWhereInputSchema) ]).optional().nullable(),
 }).strict());
 
 export const RankOrderByWithAggregationInputSchema: z.ZodType<Prisma.RankOrderByWithAggregationInput> = z.object({
@@ -1133,6 +1173,68 @@ export const RankScalarWhereWithAggregatesInputSchema: z.ZodType<Prisma.RankScal
   userAddress: z.union([ z.lazy(() => StringWithAggregatesFilterSchema),z.string() ]).optional(),
   name: z.union([ z.lazy(() => StringWithAggregatesFilterSchema),z.string() ]).optional(),
   description: z.union([ z.lazy(() => StringNullableWithAggregatesFilterSchema),z.string() ]).optional().nullable(),
+  createdAt: z.union([ z.lazy(() => DateTimeWithAggregatesFilterSchema),z.coerce.date() ]).optional(),
+  updatedAt: z.union([ z.lazy(() => DateTimeWithAggregatesFilterSchema),z.coerce.date() ]).optional(),
+}).strict();
+
+export const RankMetadataWhereInputSchema: z.ZodType<Prisma.RankMetadataWhereInput> = z.object({
+  AND: z.union([ z.lazy(() => RankMetadataWhereInputSchema),z.lazy(() => RankMetadataWhereInputSchema).array() ]).optional(),
+  OR: z.lazy(() => RankMetadataWhereInputSchema).array().optional(),
+  NOT: z.union([ z.lazy(() => RankMetadataWhereInputSchema),z.lazy(() => RankMetadataWhereInputSchema).array() ]).optional(),
+  id: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
+  rankId: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
+  createdAt: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
+  updatedAt: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
+  rank: z.union([ z.lazy(() => RankScalarRelationFilterSchema),z.lazy(() => RankWhereInputSchema) ]).optional(),
+}).strict();
+
+export const RankMetadataOrderByWithRelationInputSchema: z.ZodType<Prisma.RankMetadataOrderByWithRelationInput> = z.object({
+  id: z.lazy(() => SortOrderSchema).optional(),
+  rankId: z.lazy(() => SortOrderSchema).optional(),
+  createdAt: z.lazy(() => SortOrderSchema).optional(),
+  updatedAt: z.lazy(() => SortOrderSchema).optional(),
+  rank: z.lazy(() => RankOrderByWithRelationInputSchema).optional()
+}).strict();
+
+export const RankMetadataWhereUniqueInputSchema: z.ZodType<Prisma.RankMetadataWhereUniqueInput> = z.union([
+  z.object({
+    id: z.string(),
+    rankId: z.string()
+  }),
+  z.object({
+    id: z.string(),
+  }),
+  z.object({
+    rankId: z.string(),
+  }),
+])
+.and(z.object({
+  id: z.string().optional(),
+  rankId: z.string().optional(),
+  AND: z.union([ z.lazy(() => RankMetadataWhereInputSchema),z.lazy(() => RankMetadataWhereInputSchema).array() ]).optional(),
+  OR: z.lazy(() => RankMetadataWhereInputSchema).array().optional(),
+  NOT: z.union([ z.lazy(() => RankMetadataWhereInputSchema),z.lazy(() => RankMetadataWhereInputSchema).array() ]).optional(),
+  createdAt: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
+  updatedAt: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
+  rank: z.union([ z.lazy(() => RankScalarRelationFilterSchema),z.lazy(() => RankWhereInputSchema) ]).optional(),
+}).strict());
+
+export const RankMetadataOrderByWithAggregationInputSchema: z.ZodType<Prisma.RankMetadataOrderByWithAggregationInput> = z.object({
+  id: z.lazy(() => SortOrderSchema).optional(),
+  rankId: z.lazy(() => SortOrderSchema).optional(),
+  createdAt: z.lazy(() => SortOrderSchema).optional(),
+  updatedAt: z.lazy(() => SortOrderSchema).optional(),
+  _count: z.lazy(() => RankMetadataCountOrderByAggregateInputSchema).optional(),
+  _max: z.lazy(() => RankMetadataMaxOrderByAggregateInputSchema).optional(),
+  _min: z.lazy(() => RankMetadataMinOrderByAggregateInputSchema).optional()
+}).strict();
+
+export const RankMetadataScalarWhereWithAggregatesInputSchema: z.ZodType<Prisma.RankMetadataScalarWhereWithAggregatesInput> = z.object({
+  AND: z.union([ z.lazy(() => RankMetadataScalarWhereWithAggregatesInputSchema),z.lazy(() => RankMetadataScalarWhereWithAggregatesInputSchema).array() ]).optional(),
+  OR: z.lazy(() => RankMetadataScalarWhereWithAggregatesInputSchema).array().optional(),
+  NOT: z.union([ z.lazy(() => RankMetadataScalarWhereWithAggregatesInputSchema),z.lazy(() => RankMetadataScalarWhereWithAggregatesInputSchema).array() ]).optional(),
+  id: z.union([ z.lazy(() => StringWithAggregatesFilterSchema),z.string() ]).optional(),
+  rankId: z.union([ z.lazy(() => StringWithAggregatesFilterSchema),z.string() ]).optional(),
   createdAt: z.union([ z.lazy(() => DateTimeWithAggregatesFilterSchema),z.coerce.date() ]).optional(),
   updatedAt: z.union([ z.lazy(() => DateTimeWithAggregatesFilterSchema),z.coerce.date() ]).optional(),
 }).strict();
@@ -2119,7 +2221,8 @@ export const RankCreateInputSchema: z.ZodType<Prisma.RankCreateInput> = z.object
   articles: z.lazy(() => ArticleCreateNestedManyWithoutRankInputSchema).optional(),
   likes: z.lazy(() => RankLikeCreateNestedManyWithoutRankInputSchema).optional(),
   favorites: z.lazy(() => RankFavoriteCreateNestedManyWithoutRankInputSchema).optional(),
-  comments: z.lazy(() => RankCommentCreateNestedManyWithoutRankInputSchema).optional()
+  comments: z.lazy(() => RankCommentCreateNestedManyWithoutRankInputSchema).optional(),
+  metadata: z.lazy(() => RankMetadataCreateNestedOneWithoutRankInputSchema).optional()
 }).strict();
 
 export const RankUncheckedCreateInputSchema: z.ZodType<Prisma.RankUncheckedCreateInput> = z.object({
@@ -2134,7 +2237,8 @@ export const RankUncheckedCreateInputSchema: z.ZodType<Prisma.RankUncheckedCreat
   articles: z.lazy(() => ArticleUncheckedCreateNestedManyWithoutRankInputSchema).optional(),
   likes: z.lazy(() => RankLikeUncheckedCreateNestedManyWithoutRankInputSchema).optional(),
   favorites: z.lazy(() => RankFavoriteUncheckedCreateNestedManyWithoutRankInputSchema).optional(),
-  comments: z.lazy(() => RankCommentUncheckedCreateNestedManyWithoutRankInputSchema).optional()
+  comments: z.lazy(() => RankCommentUncheckedCreateNestedManyWithoutRankInputSchema).optional(),
+  metadata: z.lazy(() => RankMetadataUncheckedCreateNestedOneWithoutRankInputSchema).optional()
 }).strict();
 
 export const RankUpdateInputSchema: z.ZodType<Prisma.RankUpdateInput> = z.object({
@@ -2149,7 +2253,8 @@ export const RankUpdateInputSchema: z.ZodType<Prisma.RankUpdateInput> = z.object
   articles: z.lazy(() => ArticleUpdateManyWithoutRankNestedInputSchema).optional(),
   likes: z.lazy(() => RankLikeUpdateManyWithoutRankNestedInputSchema).optional(),
   favorites: z.lazy(() => RankFavoriteUpdateManyWithoutRankNestedInputSchema).optional(),
-  comments: z.lazy(() => RankCommentUpdateManyWithoutRankNestedInputSchema).optional()
+  comments: z.lazy(() => RankCommentUpdateManyWithoutRankNestedInputSchema).optional(),
+  metadata: z.lazy(() => RankMetadataUpdateOneWithoutRankNestedInputSchema).optional()
 }).strict();
 
 export const RankUncheckedUpdateInputSchema: z.ZodType<Prisma.RankUncheckedUpdateInput> = z.object({
@@ -2164,7 +2269,8 @@ export const RankUncheckedUpdateInputSchema: z.ZodType<Prisma.RankUncheckedUpdat
   articles: z.lazy(() => ArticleUncheckedUpdateManyWithoutRankNestedInputSchema).optional(),
   likes: z.lazy(() => RankLikeUncheckedUpdateManyWithoutRankNestedInputSchema).optional(),
   favorites: z.lazy(() => RankFavoriteUncheckedUpdateManyWithoutRankNestedInputSchema).optional(),
-  comments: z.lazy(() => RankCommentUncheckedUpdateManyWithoutRankNestedInputSchema).optional()
+  comments: z.lazy(() => RankCommentUncheckedUpdateManyWithoutRankNestedInputSchema).optional(),
+  metadata: z.lazy(() => RankMetadataUncheckedUpdateOneWithoutRankNestedInputSchema).optional()
 }).strict();
 
 export const RankCreateManyInputSchema: z.ZodType<Prisma.RankCreateManyInput> = z.object({
@@ -2189,6 +2295,54 @@ export const RankUncheckedUpdateManyInputSchema: z.ZodType<Prisma.RankUncheckedU
   userAddress: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   description: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+}).strict();
+
+export const RankMetadataCreateInputSchema: z.ZodType<Prisma.RankMetadataCreateInput> = z.object({
+  id: z.string(),
+  createdAt: z.coerce.date().optional(),
+  updatedAt: z.coerce.date().optional(),
+  rank: z.lazy(() => RankCreateNestedOneWithoutMetadataInputSchema)
+}).strict();
+
+export const RankMetadataUncheckedCreateInputSchema: z.ZodType<Prisma.RankMetadataUncheckedCreateInput> = z.object({
+  id: z.string(),
+  rankId: z.string(),
+  createdAt: z.coerce.date().optional(),
+  updatedAt: z.coerce.date().optional()
+}).strict();
+
+export const RankMetadataUpdateInputSchema: z.ZodType<Prisma.RankMetadataUpdateInput> = z.object({
+  id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  rank: z.lazy(() => RankUpdateOneRequiredWithoutMetadataNestedInputSchema).optional()
+}).strict();
+
+export const RankMetadataUncheckedUpdateInputSchema: z.ZodType<Prisma.RankMetadataUncheckedUpdateInput> = z.object({
+  id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  rankId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+}).strict();
+
+export const RankMetadataCreateManyInputSchema: z.ZodType<Prisma.RankMetadataCreateManyInput> = z.object({
+  id: z.string(),
+  rankId: z.string(),
+  createdAt: z.coerce.date().optional(),
+  updatedAt: z.coerce.date().optional()
+}).strict();
+
+export const RankMetadataUpdateManyMutationInputSchema: z.ZodType<Prisma.RankMetadataUpdateManyMutationInput> = z.object({
+  id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+}).strict();
+
+export const RankMetadataUncheckedUpdateManyInputSchema: z.ZodType<Prisma.RankMetadataUncheckedUpdateManyInput> = z.object({
+  id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  rankId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
@@ -3180,6 +3334,11 @@ export const SoftwareOnRankListRelationFilterSchema: z.ZodType<Prisma.SoftwareOn
   none: z.lazy(() => SoftwareOnRankWhereInputSchema).optional()
 }).strict();
 
+export const RankMetadataNullableScalarRelationFilterSchema: z.ZodType<Prisma.RankMetadataNullableScalarRelationFilter> = z.object({
+  is: z.lazy(() => RankMetadataWhereInputSchema).optional().nullable(),
+  isNot: z.lazy(() => RankMetadataWhereInputSchema).optional().nullable()
+}).strict();
+
 export const SoftwareOnRankOrderByRelationAggregateInputSchema: z.ZodType<Prisma.SoftwareOnRankOrderByRelationAggregateInput> = z.object({
   _count: z.lazy(() => SortOrderSchema).optional()
 }).strict();
@@ -3211,14 +3370,35 @@ export const RankMinOrderByAggregateInputSchema: z.ZodType<Prisma.RankMinOrderBy
   updatedAt: z.lazy(() => SortOrderSchema).optional()
 }).strict();
 
-export const TagScalarRelationFilterSchema: z.ZodType<Prisma.TagScalarRelationFilter> = z.object({
-  is: z.lazy(() => TagWhereInputSchema).optional(),
-  isNot: z.lazy(() => TagWhereInputSchema).optional()
-}).strict();
-
 export const RankScalarRelationFilterSchema: z.ZodType<Prisma.RankScalarRelationFilter> = z.object({
   is: z.lazy(() => RankWhereInputSchema).optional(),
   isNot: z.lazy(() => RankWhereInputSchema).optional()
+}).strict();
+
+export const RankMetadataCountOrderByAggregateInputSchema: z.ZodType<Prisma.RankMetadataCountOrderByAggregateInput> = z.object({
+  id: z.lazy(() => SortOrderSchema).optional(),
+  rankId: z.lazy(() => SortOrderSchema).optional(),
+  createdAt: z.lazy(() => SortOrderSchema).optional(),
+  updatedAt: z.lazy(() => SortOrderSchema).optional()
+}).strict();
+
+export const RankMetadataMaxOrderByAggregateInputSchema: z.ZodType<Prisma.RankMetadataMaxOrderByAggregateInput> = z.object({
+  id: z.lazy(() => SortOrderSchema).optional(),
+  rankId: z.lazy(() => SortOrderSchema).optional(),
+  createdAt: z.lazy(() => SortOrderSchema).optional(),
+  updatedAt: z.lazy(() => SortOrderSchema).optional()
+}).strict();
+
+export const RankMetadataMinOrderByAggregateInputSchema: z.ZodType<Prisma.RankMetadataMinOrderByAggregateInput> = z.object({
+  id: z.lazy(() => SortOrderSchema).optional(),
+  rankId: z.lazy(() => SortOrderSchema).optional(),
+  createdAt: z.lazy(() => SortOrderSchema).optional(),
+  updatedAt: z.lazy(() => SortOrderSchema).optional()
+}).strict();
+
+export const TagScalarRelationFilterSchema: z.ZodType<Prisma.TagScalarRelationFilter> = z.object({
+  is: z.lazy(() => TagWhereInputSchema).optional(),
+  isNot: z.lazy(() => TagWhereInputSchema).optional()
 }).strict();
 
 export const RankTagTagIdRankIdCompoundUniqueInputSchema: z.ZodType<Prisma.RankTagTagIdRankIdCompoundUniqueInput> = z.object({
@@ -4091,6 +4271,12 @@ export const RankCommentCreateNestedManyWithoutRankInputSchema: z.ZodType<Prisma
   connect: z.union([ z.lazy(() => RankCommentWhereUniqueInputSchema),z.lazy(() => RankCommentWhereUniqueInputSchema).array() ]).optional(),
 }).strict();
 
+export const RankMetadataCreateNestedOneWithoutRankInputSchema: z.ZodType<Prisma.RankMetadataCreateNestedOneWithoutRankInput> = z.object({
+  create: z.union([ z.lazy(() => RankMetadataCreateWithoutRankInputSchema),z.lazy(() => RankMetadataUncheckedCreateWithoutRankInputSchema) ]).optional(),
+  connectOrCreate: z.lazy(() => RankMetadataCreateOrConnectWithoutRankInputSchema).optional(),
+  connect: z.lazy(() => RankMetadataWhereUniqueInputSchema).optional()
+}).strict();
+
 export const RankTagUncheckedCreateNestedManyWithoutRankInputSchema: z.ZodType<Prisma.RankTagUncheckedCreateNestedManyWithoutRankInput> = z.object({
   create: z.union([ z.lazy(() => RankTagCreateWithoutRankInputSchema),z.lazy(() => RankTagCreateWithoutRankInputSchema).array(),z.lazy(() => RankTagUncheckedCreateWithoutRankInputSchema),z.lazy(() => RankTagUncheckedCreateWithoutRankInputSchema).array() ]).optional(),
   connectOrCreate: z.union([ z.lazy(() => RankTagCreateOrConnectWithoutRankInputSchema),z.lazy(() => RankTagCreateOrConnectWithoutRankInputSchema).array() ]).optional(),
@@ -4131,6 +4317,12 @@ export const RankCommentUncheckedCreateNestedManyWithoutRankInputSchema: z.ZodTy
   connectOrCreate: z.union([ z.lazy(() => RankCommentCreateOrConnectWithoutRankInputSchema),z.lazy(() => RankCommentCreateOrConnectWithoutRankInputSchema).array() ]).optional(),
   createMany: z.lazy(() => RankCommentCreateManyRankInputEnvelopeSchema).optional(),
   connect: z.union([ z.lazy(() => RankCommentWhereUniqueInputSchema),z.lazy(() => RankCommentWhereUniqueInputSchema).array() ]).optional(),
+}).strict();
+
+export const RankMetadataUncheckedCreateNestedOneWithoutRankInputSchema: z.ZodType<Prisma.RankMetadataUncheckedCreateNestedOneWithoutRankInput> = z.object({
+  create: z.union([ z.lazy(() => RankMetadataCreateWithoutRankInputSchema),z.lazy(() => RankMetadataUncheckedCreateWithoutRankInputSchema) ]).optional(),
+  connectOrCreate: z.lazy(() => RankMetadataCreateOrConnectWithoutRankInputSchema).optional(),
+  connect: z.lazy(() => RankMetadataWhereUniqueInputSchema).optional()
 }).strict();
 
 export const UserUpdateOneRequiredWithoutRanksNestedInputSchema: z.ZodType<Prisma.UserUpdateOneRequiredWithoutRanksNestedInput> = z.object({
@@ -4225,6 +4417,16 @@ export const RankCommentUpdateManyWithoutRankNestedInputSchema: z.ZodType<Prisma
   deleteMany: z.union([ z.lazy(() => RankCommentScalarWhereInputSchema),z.lazy(() => RankCommentScalarWhereInputSchema).array() ]).optional(),
 }).strict();
 
+export const RankMetadataUpdateOneWithoutRankNestedInputSchema: z.ZodType<Prisma.RankMetadataUpdateOneWithoutRankNestedInput> = z.object({
+  create: z.union([ z.lazy(() => RankMetadataCreateWithoutRankInputSchema),z.lazy(() => RankMetadataUncheckedCreateWithoutRankInputSchema) ]).optional(),
+  connectOrCreate: z.lazy(() => RankMetadataCreateOrConnectWithoutRankInputSchema).optional(),
+  upsert: z.lazy(() => RankMetadataUpsertWithoutRankInputSchema).optional(),
+  disconnect: z.union([ z.boolean(),z.lazy(() => RankMetadataWhereInputSchema) ]).optional(),
+  delete: z.union([ z.boolean(),z.lazy(() => RankMetadataWhereInputSchema) ]).optional(),
+  connect: z.lazy(() => RankMetadataWhereUniqueInputSchema).optional(),
+  update: z.union([ z.lazy(() => RankMetadataUpdateToOneWithWhereWithoutRankInputSchema),z.lazy(() => RankMetadataUpdateWithoutRankInputSchema),z.lazy(() => RankMetadataUncheckedUpdateWithoutRankInputSchema) ]).optional(),
+}).strict();
+
 export const RankTagUncheckedUpdateManyWithoutRankNestedInputSchema: z.ZodType<Prisma.RankTagUncheckedUpdateManyWithoutRankNestedInput> = z.object({
   create: z.union([ z.lazy(() => RankTagCreateWithoutRankInputSchema),z.lazy(() => RankTagCreateWithoutRankInputSchema).array(),z.lazy(() => RankTagUncheckedCreateWithoutRankInputSchema),z.lazy(() => RankTagUncheckedCreateWithoutRankInputSchema).array() ]).optional(),
   connectOrCreate: z.union([ z.lazy(() => RankTagCreateOrConnectWithoutRankInputSchema),z.lazy(() => RankTagCreateOrConnectWithoutRankInputSchema).array() ]).optional(),
@@ -4307,6 +4509,30 @@ export const RankCommentUncheckedUpdateManyWithoutRankNestedInputSchema: z.ZodTy
   update: z.union([ z.lazy(() => RankCommentUpdateWithWhereUniqueWithoutRankInputSchema),z.lazy(() => RankCommentUpdateWithWhereUniqueWithoutRankInputSchema).array() ]).optional(),
   updateMany: z.union([ z.lazy(() => RankCommentUpdateManyWithWhereWithoutRankInputSchema),z.lazy(() => RankCommentUpdateManyWithWhereWithoutRankInputSchema).array() ]).optional(),
   deleteMany: z.union([ z.lazy(() => RankCommentScalarWhereInputSchema),z.lazy(() => RankCommentScalarWhereInputSchema).array() ]).optional(),
+}).strict();
+
+export const RankMetadataUncheckedUpdateOneWithoutRankNestedInputSchema: z.ZodType<Prisma.RankMetadataUncheckedUpdateOneWithoutRankNestedInput> = z.object({
+  create: z.union([ z.lazy(() => RankMetadataCreateWithoutRankInputSchema),z.lazy(() => RankMetadataUncheckedCreateWithoutRankInputSchema) ]).optional(),
+  connectOrCreate: z.lazy(() => RankMetadataCreateOrConnectWithoutRankInputSchema).optional(),
+  upsert: z.lazy(() => RankMetadataUpsertWithoutRankInputSchema).optional(),
+  disconnect: z.union([ z.boolean(),z.lazy(() => RankMetadataWhereInputSchema) ]).optional(),
+  delete: z.union([ z.boolean(),z.lazy(() => RankMetadataWhereInputSchema) ]).optional(),
+  connect: z.lazy(() => RankMetadataWhereUniqueInputSchema).optional(),
+  update: z.union([ z.lazy(() => RankMetadataUpdateToOneWithWhereWithoutRankInputSchema),z.lazy(() => RankMetadataUpdateWithoutRankInputSchema),z.lazy(() => RankMetadataUncheckedUpdateWithoutRankInputSchema) ]).optional(),
+}).strict();
+
+export const RankCreateNestedOneWithoutMetadataInputSchema: z.ZodType<Prisma.RankCreateNestedOneWithoutMetadataInput> = z.object({
+  create: z.union([ z.lazy(() => RankCreateWithoutMetadataInputSchema),z.lazy(() => RankUncheckedCreateWithoutMetadataInputSchema) ]).optional(),
+  connectOrCreate: z.lazy(() => RankCreateOrConnectWithoutMetadataInputSchema).optional(),
+  connect: z.lazy(() => RankWhereUniqueInputSchema).optional()
+}).strict();
+
+export const RankUpdateOneRequiredWithoutMetadataNestedInputSchema: z.ZodType<Prisma.RankUpdateOneRequiredWithoutMetadataNestedInput> = z.object({
+  create: z.union([ z.lazy(() => RankCreateWithoutMetadataInputSchema),z.lazy(() => RankUncheckedCreateWithoutMetadataInputSchema) ]).optional(),
+  connectOrCreate: z.lazy(() => RankCreateOrConnectWithoutMetadataInputSchema).optional(),
+  upsert: z.lazy(() => RankUpsertWithoutMetadataInputSchema).optional(),
+  connect: z.lazy(() => RankWhereUniqueInputSchema).optional(),
+  update: z.union([ z.lazy(() => RankUpdateToOneWithWhereWithoutMetadataInputSchema),z.lazy(() => RankUpdateWithoutMetadataInputSchema),z.lazy(() => RankUncheckedUpdateWithoutMetadataInputSchema) ]).optional(),
 }).strict();
 
 export const TagCreateNestedOneWithoutRanksInputSchema: z.ZodType<Prisma.TagCreateNestedOneWithoutRanksInput> = z.object({
@@ -5122,7 +5348,8 @@ export const RankCreateWithoutUserInputSchema: z.ZodType<Prisma.RankCreateWithou
   articles: z.lazy(() => ArticleCreateNestedManyWithoutRankInputSchema).optional(),
   likes: z.lazy(() => RankLikeCreateNestedManyWithoutRankInputSchema).optional(),
   favorites: z.lazy(() => RankFavoriteCreateNestedManyWithoutRankInputSchema).optional(),
-  comments: z.lazy(() => RankCommentCreateNestedManyWithoutRankInputSchema).optional()
+  comments: z.lazy(() => RankCommentCreateNestedManyWithoutRankInputSchema).optional(),
+  metadata: z.lazy(() => RankMetadataCreateNestedOneWithoutRankInputSchema).optional()
 }).strict();
 
 export const RankUncheckedCreateWithoutUserInputSchema: z.ZodType<Prisma.RankUncheckedCreateWithoutUserInput> = z.object({
@@ -5136,7 +5363,8 @@ export const RankUncheckedCreateWithoutUserInputSchema: z.ZodType<Prisma.RankUnc
   articles: z.lazy(() => ArticleUncheckedCreateNestedManyWithoutRankInputSchema).optional(),
   likes: z.lazy(() => RankLikeUncheckedCreateNestedManyWithoutRankInputSchema).optional(),
   favorites: z.lazy(() => RankFavoriteUncheckedCreateNestedManyWithoutRankInputSchema).optional(),
-  comments: z.lazy(() => RankCommentUncheckedCreateNestedManyWithoutRankInputSchema).optional()
+  comments: z.lazy(() => RankCommentUncheckedCreateNestedManyWithoutRankInputSchema).optional(),
+  metadata: z.lazy(() => RankMetadataUncheckedCreateNestedOneWithoutRankInputSchema).optional()
 }).strict();
 
 export const RankCreateOrConnectWithoutUserInputSchema: z.ZodType<Prisma.RankCreateOrConnectWithoutUserInput> = z.object({
@@ -5828,6 +6056,23 @@ export const RankCommentCreateManyRankInputEnvelopeSchema: z.ZodType<Prisma.Rank
   skipDuplicates: z.boolean().optional()
 }).strict();
 
+export const RankMetadataCreateWithoutRankInputSchema: z.ZodType<Prisma.RankMetadataCreateWithoutRankInput> = z.object({
+  id: z.string(),
+  createdAt: z.coerce.date().optional(),
+  updatedAt: z.coerce.date().optional()
+}).strict();
+
+export const RankMetadataUncheckedCreateWithoutRankInputSchema: z.ZodType<Prisma.RankMetadataUncheckedCreateWithoutRankInput> = z.object({
+  id: z.string(),
+  createdAt: z.coerce.date().optional(),
+  updatedAt: z.coerce.date().optional()
+}).strict();
+
+export const RankMetadataCreateOrConnectWithoutRankInputSchema: z.ZodType<Prisma.RankMetadataCreateOrConnectWithoutRankInput> = z.object({
+  where: z.lazy(() => RankMetadataWhereUniqueInputSchema),
+  create: z.union([ z.lazy(() => RankMetadataCreateWithoutRankInputSchema),z.lazy(() => RankMetadataUncheckedCreateWithoutRankInputSchema) ]),
+}).strict();
+
 export const UserUpsertWithoutRanksInputSchema: z.ZodType<Prisma.UserUpsertWithoutRanksInput> = z.object({
   update: z.union([ z.lazy(() => UserUpdateWithoutRanksInputSchema),z.lazy(() => UserUncheckedUpdateWithoutRanksInputSchema) ]),
   create: z.union([ z.lazy(() => UserCreateWithoutRanksInputSchema),z.lazy(() => UserUncheckedCreateWithoutRanksInputSchema) ]),
@@ -5981,6 +6226,105 @@ export const RankCommentUpdateManyWithWhereWithoutRankInputSchema: z.ZodType<Pri
   data: z.union([ z.lazy(() => RankCommentUpdateManyMutationInputSchema),z.lazy(() => RankCommentUncheckedUpdateManyWithoutRankInputSchema) ]),
 }).strict();
 
+export const RankMetadataUpsertWithoutRankInputSchema: z.ZodType<Prisma.RankMetadataUpsertWithoutRankInput> = z.object({
+  update: z.union([ z.lazy(() => RankMetadataUpdateWithoutRankInputSchema),z.lazy(() => RankMetadataUncheckedUpdateWithoutRankInputSchema) ]),
+  create: z.union([ z.lazy(() => RankMetadataCreateWithoutRankInputSchema),z.lazy(() => RankMetadataUncheckedCreateWithoutRankInputSchema) ]),
+  where: z.lazy(() => RankMetadataWhereInputSchema).optional()
+}).strict();
+
+export const RankMetadataUpdateToOneWithWhereWithoutRankInputSchema: z.ZodType<Prisma.RankMetadataUpdateToOneWithWhereWithoutRankInput> = z.object({
+  where: z.lazy(() => RankMetadataWhereInputSchema).optional(),
+  data: z.union([ z.lazy(() => RankMetadataUpdateWithoutRankInputSchema),z.lazy(() => RankMetadataUncheckedUpdateWithoutRankInputSchema) ]),
+}).strict();
+
+export const RankMetadataUpdateWithoutRankInputSchema: z.ZodType<Prisma.RankMetadataUpdateWithoutRankInput> = z.object({
+  id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+}).strict();
+
+export const RankMetadataUncheckedUpdateWithoutRankInputSchema: z.ZodType<Prisma.RankMetadataUncheckedUpdateWithoutRankInput> = z.object({
+  id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+}).strict();
+
+export const RankCreateWithoutMetadataInputSchema: z.ZodType<Prisma.RankCreateWithoutMetadataInput> = z.object({
+  id: z.string().optional(),
+  name: z.string(),
+  description: z.string().optional().nullable(),
+  createdAt: z.coerce.date().optional(),
+  updatedAt: z.coerce.date().optional(),
+  user: z.lazy(() => UserCreateNestedOneWithoutRanksInputSchema),
+  tags: z.lazy(() => RankTagCreateNestedManyWithoutRankInputSchema).optional(),
+  softwares: z.lazy(() => SoftwareOnRankCreateNestedManyWithoutRankInputSchema).optional(),
+  articles: z.lazy(() => ArticleCreateNestedManyWithoutRankInputSchema).optional(),
+  likes: z.lazy(() => RankLikeCreateNestedManyWithoutRankInputSchema).optional(),
+  favorites: z.lazy(() => RankFavoriteCreateNestedManyWithoutRankInputSchema).optional(),
+  comments: z.lazy(() => RankCommentCreateNestedManyWithoutRankInputSchema).optional()
+}).strict();
+
+export const RankUncheckedCreateWithoutMetadataInputSchema: z.ZodType<Prisma.RankUncheckedCreateWithoutMetadataInput> = z.object({
+  id: z.string().optional(),
+  userAddress: z.string(),
+  name: z.string(),
+  description: z.string().optional().nullable(),
+  createdAt: z.coerce.date().optional(),
+  updatedAt: z.coerce.date().optional(),
+  tags: z.lazy(() => RankTagUncheckedCreateNestedManyWithoutRankInputSchema).optional(),
+  softwares: z.lazy(() => SoftwareOnRankUncheckedCreateNestedManyWithoutRankInputSchema).optional(),
+  articles: z.lazy(() => ArticleUncheckedCreateNestedManyWithoutRankInputSchema).optional(),
+  likes: z.lazy(() => RankLikeUncheckedCreateNestedManyWithoutRankInputSchema).optional(),
+  favorites: z.lazy(() => RankFavoriteUncheckedCreateNestedManyWithoutRankInputSchema).optional(),
+  comments: z.lazy(() => RankCommentUncheckedCreateNestedManyWithoutRankInputSchema).optional()
+}).strict();
+
+export const RankCreateOrConnectWithoutMetadataInputSchema: z.ZodType<Prisma.RankCreateOrConnectWithoutMetadataInput> = z.object({
+  where: z.lazy(() => RankWhereUniqueInputSchema),
+  create: z.union([ z.lazy(() => RankCreateWithoutMetadataInputSchema),z.lazy(() => RankUncheckedCreateWithoutMetadataInputSchema) ]),
+}).strict();
+
+export const RankUpsertWithoutMetadataInputSchema: z.ZodType<Prisma.RankUpsertWithoutMetadataInput> = z.object({
+  update: z.union([ z.lazy(() => RankUpdateWithoutMetadataInputSchema),z.lazy(() => RankUncheckedUpdateWithoutMetadataInputSchema) ]),
+  create: z.union([ z.lazy(() => RankCreateWithoutMetadataInputSchema),z.lazy(() => RankUncheckedCreateWithoutMetadataInputSchema) ]),
+  where: z.lazy(() => RankWhereInputSchema).optional()
+}).strict();
+
+export const RankUpdateToOneWithWhereWithoutMetadataInputSchema: z.ZodType<Prisma.RankUpdateToOneWithWhereWithoutMetadataInput> = z.object({
+  where: z.lazy(() => RankWhereInputSchema).optional(),
+  data: z.union([ z.lazy(() => RankUpdateWithoutMetadataInputSchema),z.lazy(() => RankUncheckedUpdateWithoutMetadataInputSchema) ]),
+}).strict();
+
+export const RankUpdateWithoutMetadataInputSchema: z.ZodType<Prisma.RankUpdateWithoutMetadataInput> = z.object({
+  id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  description: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  user: z.lazy(() => UserUpdateOneRequiredWithoutRanksNestedInputSchema).optional(),
+  tags: z.lazy(() => RankTagUpdateManyWithoutRankNestedInputSchema).optional(),
+  softwares: z.lazy(() => SoftwareOnRankUpdateManyWithoutRankNestedInputSchema).optional(),
+  articles: z.lazy(() => ArticleUpdateManyWithoutRankNestedInputSchema).optional(),
+  likes: z.lazy(() => RankLikeUpdateManyWithoutRankNestedInputSchema).optional(),
+  favorites: z.lazy(() => RankFavoriteUpdateManyWithoutRankNestedInputSchema).optional(),
+  comments: z.lazy(() => RankCommentUpdateManyWithoutRankNestedInputSchema).optional()
+}).strict();
+
+export const RankUncheckedUpdateWithoutMetadataInputSchema: z.ZodType<Prisma.RankUncheckedUpdateWithoutMetadataInput> = z.object({
+  id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  userAddress: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  description: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  tags: z.lazy(() => RankTagUncheckedUpdateManyWithoutRankNestedInputSchema).optional(),
+  softwares: z.lazy(() => SoftwareOnRankUncheckedUpdateManyWithoutRankNestedInputSchema).optional(),
+  articles: z.lazy(() => ArticleUncheckedUpdateManyWithoutRankNestedInputSchema).optional(),
+  likes: z.lazy(() => RankLikeUncheckedUpdateManyWithoutRankNestedInputSchema).optional(),
+  favorites: z.lazy(() => RankFavoriteUncheckedUpdateManyWithoutRankNestedInputSchema).optional(),
+  comments: z.lazy(() => RankCommentUncheckedUpdateManyWithoutRankNestedInputSchema).optional()
+}).strict();
+
 export const TagCreateWithoutRanksInputSchema: z.ZodType<Prisma.TagCreateWithoutRanksInput> = z.object({
   id: z.string().optional(),
   name: z.string(),
@@ -6013,7 +6357,8 @@ export const RankCreateWithoutTagsInputSchema: z.ZodType<Prisma.RankCreateWithou
   articles: z.lazy(() => ArticleCreateNestedManyWithoutRankInputSchema).optional(),
   likes: z.lazy(() => RankLikeCreateNestedManyWithoutRankInputSchema).optional(),
   favorites: z.lazy(() => RankFavoriteCreateNestedManyWithoutRankInputSchema).optional(),
-  comments: z.lazy(() => RankCommentCreateNestedManyWithoutRankInputSchema).optional()
+  comments: z.lazy(() => RankCommentCreateNestedManyWithoutRankInputSchema).optional(),
+  metadata: z.lazy(() => RankMetadataCreateNestedOneWithoutRankInputSchema).optional()
 }).strict();
 
 export const RankUncheckedCreateWithoutTagsInputSchema: z.ZodType<Prisma.RankUncheckedCreateWithoutTagsInput> = z.object({
@@ -6027,7 +6372,8 @@ export const RankUncheckedCreateWithoutTagsInputSchema: z.ZodType<Prisma.RankUnc
   articles: z.lazy(() => ArticleUncheckedCreateNestedManyWithoutRankInputSchema).optional(),
   likes: z.lazy(() => RankLikeUncheckedCreateNestedManyWithoutRankInputSchema).optional(),
   favorites: z.lazy(() => RankFavoriteUncheckedCreateNestedManyWithoutRankInputSchema).optional(),
-  comments: z.lazy(() => RankCommentUncheckedCreateNestedManyWithoutRankInputSchema).optional()
+  comments: z.lazy(() => RankCommentUncheckedCreateNestedManyWithoutRankInputSchema).optional(),
+  metadata: z.lazy(() => RankMetadataUncheckedCreateNestedOneWithoutRankInputSchema).optional()
 }).strict();
 
 export const RankCreateOrConnectWithoutTagsInputSchema: z.ZodType<Prisma.RankCreateOrConnectWithoutTagsInput> = z.object({
@@ -6084,7 +6430,8 @@ export const RankUpdateWithoutTagsInputSchema: z.ZodType<Prisma.RankUpdateWithou
   articles: z.lazy(() => ArticleUpdateManyWithoutRankNestedInputSchema).optional(),
   likes: z.lazy(() => RankLikeUpdateManyWithoutRankNestedInputSchema).optional(),
   favorites: z.lazy(() => RankFavoriteUpdateManyWithoutRankNestedInputSchema).optional(),
-  comments: z.lazy(() => RankCommentUpdateManyWithoutRankNestedInputSchema).optional()
+  comments: z.lazy(() => RankCommentUpdateManyWithoutRankNestedInputSchema).optional(),
+  metadata: z.lazy(() => RankMetadataUpdateOneWithoutRankNestedInputSchema).optional()
 }).strict();
 
 export const RankUncheckedUpdateWithoutTagsInputSchema: z.ZodType<Prisma.RankUncheckedUpdateWithoutTagsInput> = z.object({
@@ -6098,7 +6445,8 @@ export const RankUncheckedUpdateWithoutTagsInputSchema: z.ZodType<Prisma.RankUnc
   articles: z.lazy(() => ArticleUncheckedUpdateManyWithoutRankNestedInputSchema).optional(),
   likes: z.lazy(() => RankLikeUncheckedUpdateManyWithoutRankNestedInputSchema).optional(),
   favorites: z.lazy(() => RankFavoriteUncheckedUpdateManyWithoutRankNestedInputSchema).optional(),
-  comments: z.lazy(() => RankCommentUncheckedUpdateManyWithoutRankNestedInputSchema).optional()
+  comments: z.lazy(() => RankCommentUncheckedUpdateManyWithoutRankNestedInputSchema).optional(),
+  metadata: z.lazy(() => RankMetadataUncheckedUpdateOneWithoutRankNestedInputSchema).optional()
 }).strict();
 
 export const SoftwareTagCreateWithoutSoftwareInputSchema: z.ZodType<Prisma.SoftwareTagCreateWithoutSoftwareInput> = z.object({
@@ -6465,7 +6813,8 @@ export const RankCreateWithoutSoftwaresInputSchema: z.ZodType<Prisma.RankCreateW
   articles: z.lazy(() => ArticleCreateNestedManyWithoutRankInputSchema).optional(),
   likes: z.lazy(() => RankLikeCreateNestedManyWithoutRankInputSchema).optional(),
   favorites: z.lazy(() => RankFavoriteCreateNestedManyWithoutRankInputSchema).optional(),
-  comments: z.lazy(() => RankCommentCreateNestedManyWithoutRankInputSchema).optional()
+  comments: z.lazy(() => RankCommentCreateNestedManyWithoutRankInputSchema).optional(),
+  metadata: z.lazy(() => RankMetadataCreateNestedOneWithoutRankInputSchema).optional()
 }).strict();
 
 export const RankUncheckedCreateWithoutSoftwaresInputSchema: z.ZodType<Prisma.RankUncheckedCreateWithoutSoftwaresInput> = z.object({
@@ -6479,7 +6828,8 @@ export const RankUncheckedCreateWithoutSoftwaresInputSchema: z.ZodType<Prisma.Ra
   articles: z.lazy(() => ArticleUncheckedCreateNestedManyWithoutRankInputSchema).optional(),
   likes: z.lazy(() => RankLikeUncheckedCreateNestedManyWithoutRankInputSchema).optional(),
   favorites: z.lazy(() => RankFavoriteUncheckedCreateNestedManyWithoutRankInputSchema).optional(),
-  comments: z.lazy(() => RankCommentUncheckedCreateNestedManyWithoutRankInputSchema).optional()
+  comments: z.lazy(() => RankCommentUncheckedCreateNestedManyWithoutRankInputSchema).optional(),
+  metadata: z.lazy(() => RankMetadataUncheckedCreateNestedOneWithoutRankInputSchema).optional()
 }).strict();
 
 export const RankCreateOrConnectWithoutSoftwaresInputSchema: z.ZodType<Prisma.RankCreateOrConnectWithoutSoftwaresInput> = z.object({
@@ -6548,7 +6898,8 @@ export const RankUpdateWithoutSoftwaresInputSchema: z.ZodType<Prisma.RankUpdateW
   articles: z.lazy(() => ArticleUpdateManyWithoutRankNestedInputSchema).optional(),
   likes: z.lazy(() => RankLikeUpdateManyWithoutRankNestedInputSchema).optional(),
   favorites: z.lazy(() => RankFavoriteUpdateManyWithoutRankNestedInputSchema).optional(),
-  comments: z.lazy(() => RankCommentUpdateManyWithoutRankNestedInputSchema).optional()
+  comments: z.lazy(() => RankCommentUpdateManyWithoutRankNestedInputSchema).optional(),
+  metadata: z.lazy(() => RankMetadataUpdateOneWithoutRankNestedInputSchema).optional()
 }).strict();
 
 export const RankUncheckedUpdateWithoutSoftwaresInputSchema: z.ZodType<Prisma.RankUncheckedUpdateWithoutSoftwaresInput> = z.object({
@@ -6562,7 +6913,8 @@ export const RankUncheckedUpdateWithoutSoftwaresInputSchema: z.ZodType<Prisma.Ra
   articles: z.lazy(() => ArticleUncheckedUpdateManyWithoutRankNestedInputSchema).optional(),
   likes: z.lazy(() => RankLikeUncheckedUpdateManyWithoutRankNestedInputSchema).optional(),
   favorites: z.lazy(() => RankFavoriteUncheckedUpdateManyWithoutRankNestedInputSchema).optional(),
-  comments: z.lazy(() => RankCommentUncheckedUpdateManyWithoutRankNestedInputSchema).optional()
+  comments: z.lazy(() => RankCommentUncheckedUpdateManyWithoutRankNestedInputSchema).optional(),
+  metadata: z.lazy(() => RankMetadataUncheckedUpdateOneWithoutRankNestedInputSchema).optional()
 }).strict();
 
 export const SoftwareCreateWithoutArticlesInputSchema: z.ZodType<Prisma.SoftwareCreateWithoutArticlesInput> = z.object({
@@ -6712,7 +7064,8 @@ export const RankCreateWithoutArticlesInputSchema: z.ZodType<Prisma.RankCreateWi
   softwares: z.lazy(() => SoftwareOnRankCreateNestedManyWithoutRankInputSchema).optional(),
   likes: z.lazy(() => RankLikeCreateNestedManyWithoutRankInputSchema).optional(),
   favorites: z.lazy(() => RankFavoriteCreateNestedManyWithoutRankInputSchema).optional(),
-  comments: z.lazy(() => RankCommentCreateNestedManyWithoutRankInputSchema).optional()
+  comments: z.lazy(() => RankCommentCreateNestedManyWithoutRankInputSchema).optional(),
+  metadata: z.lazy(() => RankMetadataCreateNestedOneWithoutRankInputSchema).optional()
 }).strict();
 
 export const RankUncheckedCreateWithoutArticlesInputSchema: z.ZodType<Prisma.RankUncheckedCreateWithoutArticlesInput> = z.object({
@@ -6726,7 +7079,8 @@ export const RankUncheckedCreateWithoutArticlesInputSchema: z.ZodType<Prisma.Ran
   softwares: z.lazy(() => SoftwareOnRankUncheckedCreateNestedManyWithoutRankInputSchema).optional(),
   likes: z.lazy(() => RankLikeUncheckedCreateNestedManyWithoutRankInputSchema).optional(),
   favorites: z.lazy(() => RankFavoriteUncheckedCreateNestedManyWithoutRankInputSchema).optional(),
-  comments: z.lazy(() => RankCommentUncheckedCreateNestedManyWithoutRankInputSchema).optional()
+  comments: z.lazy(() => RankCommentUncheckedCreateNestedManyWithoutRankInputSchema).optional(),
+  metadata: z.lazy(() => RankMetadataUncheckedCreateNestedOneWithoutRankInputSchema).optional()
 }).strict();
 
 export const RankCreateOrConnectWithoutArticlesInputSchema: z.ZodType<Prisma.RankCreateOrConnectWithoutArticlesInput> = z.object({
@@ -6817,7 +7171,8 @@ export const RankUpdateWithoutArticlesInputSchema: z.ZodType<Prisma.RankUpdateWi
   softwares: z.lazy(() => SoftwareOnRankUpdateManyWithoutRankNestedInputSchema).optional(),
   likes: z.lazy(() => RankLikeUpdateManyWithoutRankNestedInputSchema).optional(),
   favorites: z.lazy(() => RankFavoriteUpdateManyWithoutRankNestedInputSchema).optional(),
-  comments: z.lazy(() => RankCommentUpdateManyWithoutRankNestedInputSchema).optional()
+  comments: z.lazy(() => RankCommentUpdateManyWithoutRankNestedInputSchema).optional(),
+  metadata: z.lazy(() => RankMetadataUpdateOneWithoutRankNestedInputSchema).optional()
 }).strict();
 
 export const RankUncheckedUpdateWithoutArticlesInputSchema: z.ZodType<Prisma.RankUncheckedUpdateWithoutArticlesInput> = z.object({
@@ -6831,7 +7186,8 @@ export const RankUncheckedUpdateWithoutArticlesInputSchema: z.ZodType<Prisma.Ran
   softwares: z.lazy(() => SoftwareOnRankUncheckedUpdateManyWithoutRankNestedInputSchema).optional(),
   likes: z.lazy(() => RankLikeUncheckedUpdateManyWithoutRankNestedInputSchema).optional(),
   favorites: z.lazy(() => RankFavoriteUncheckedUpdateManyWithoutRankNestedInputSchema).optional(),
-  comments: z.lazy(() => RankCommentUncheckedUpdateManyWithoutRankNestedInputSchema).optional()
+  comments: z.lazy(() => RankCommentUncheckedUpdateManyWithoutRankNestedInputSchema).optional(),
+  metadata: z.lazy(() => RankMetadataUncheckedUpdateOneWithoutRankNestedInputSchema).optional()
 }).strict();
 
 export const UserUpsertWithoutArticlesInputSchema: z.ZodType<Prisma.UserUpsertWithoutArticlesInput> = z.object({
@@ -6906,7 +7262,8 @@ export const RankCreateWithoutLikesInputSchema: z.ZodType<Prisma.RankCreateWitho
   softwares: z.lazy(() => SoftwareOnRankCreateNestedManyWithoutRankInputSchema).optional(),
   articles: z.lazy(() => ArticleCreateNestedManyWithoutRankInputSchema).optional(),
   favorites: z.lazy(() => RankFavoriteCreateNestedManyWithoutRankInputSchema).optional(),
-  comments: z.lazy(() => RankCommentCreateNestedManyWithoutRankInputSchema).optional()
+  comments: z.lazy(() => RankCommentCreateNestedManyWithoutRankInputSchema).optional(),
+  metadata: z.lazy(() => RankMetadataCreateNestedOneWithoutRankInputSchema).optional()
 }).strict();
 
 export const RankUncheckedCreateWithoutLikesInputSchema: z.ZodType<Prisma.RankUncheckedCreateWithoutLikesInput> = z.object({
@@ -6920,7 +7277,8 @@ export const RankUncheckedCreateWithoutLikesInputSchema: z.ZodType<Prisma.RankUn
   softwares: z.lazy(() => SoftwareOnRankUncheckedCreateNestedManyWithoutRankInputSchema).optional(),
   articles: z.lazy(() => ArticleUncheckedCreateNestedManyWithoutRankInputSchema).optional(),
   favorites: z.lazy(() => RankFavoriteUncheckedCreateNestedManyWithoutRankInputSchema).optional(),
-  comments: z.lazy(() => RankCommentUncheckedCreateNestedManyWithoutRankInputSchema).optional()
+  comments: z.lazy(() => RankCommentUncheckedCreateNestedManyWithoutRankInputSchema).optional(),
+  metadata: z.lazy(() => RankMetadataUncheckedCreateNestedOneWithoutRankInputSchema).optional()
 }).strict();
 
 export const RankCreateOrConnectWithoutLikesInputSchema: z.ZodType<Prisma.RankCreateOrConnectWithoutLikesInput> = z.object({
@@ -6989,7 +7347,8 @@ export const RankUpdateWithoutLikesInputSchema: z.ZodType<Prisma.RankUpdateWitho
   softwares: z.lazy(() => SoftwareOnRankUpdateManyWithoutRankNestedInputSchema).optional(),
   articles: z.lazy(() => ArticleUpdateManyWithoutRankNestedInputSchema).optional(),
   favorites: z.lazy(() => RankFavoriteUpdateManyWithoutRankNestedInputSchema).optional(),
-  comments: z.lazy(() => RankCommentUpdateManyWithoutRankNestedInputSchema).optional()
+  comments: z.lazy(() => RankCommentUpdateManyWithoutRankNestedInputSchema).optional(),
+  metadata: z.lazy(() => RankMetadataUpdateOneWithoutRankNestedInputSchema).optional()
 }).strict();
 
 export const RankUncheckedUpdateWithoutLikesInputSchema: z.ZodType<Prisma.RankUncheckedUpdateWithoutLikesInput> = z.object({
@@ -7003,7 +7362,8 @@ export const RankUncheckedUpdateWithoutLikesInputSchema: z.ZodType<Prisma.RankUn
   softwares: z.lazy(() => SoftwareOnRankUncheckedUpdateManyWithoutRankNestedInputSchema).optional(),
   articles: z.lazy(() => ArticleUncheckedUpdateManyWithoutRankNestedInputSchema).optional(),
   favorites: z.lazy(() => RankFavoriteUncheckedUpdateManyWithoutRankNestedInputSchema).optional(),
-  comments: z.lazy(() => RankCommentUncheckedUpdateManyWithoutRankNestedInputSchema).optional()
+  comments: z.lazy(() => RankCommentUncheckedUpdateManyWithoutRankNestedInputSchema).optional(),
+  metadata: z.lazy(() => RankMetadataUncheckedUpdateOneWithoutRankNestedInputSchema).optional()
 }).strict();
 
 export const UserUpsertWithoutRankLikesInputSchema: z.ZodType<Prisma.UserUpsertWithoutRankLikesInput> = z.object({
@@ -7062,7 +7422,8 @@ export const RankCreateWithoutFavoritesInputSchema: z.ZodType<Prisma.RankCreateW
   softwares: z.lazy(() => SoftwareOnRankCreateNestedManyWithoutRankInputSchema).optional(),
   articles: z.lazy(() => ArticleCreateNestedManyWithoutRankInputSchema).optional(),
   likes: z.lazy(() => RankLikeCreateNestedManyWithoutRankInputSchema).optional(),
-  comments: z.lazy(() => RankCommentCreateNestedManyWithoutRankInputSchema).optional()
+  comments: z.lazy(() => RankCommentCreateNestedManyWithoutRankInputSchema).optional(),
+  metadata: z.lazy(() => RankMetadataCreateNestedOneWithoutRankInputSchema).optional()
 }).strict();
 
 export const RankUncheckedCreateWithoutFavoritesInputSchema: z.ZodType<Prisma.RankUncheckedCreateWithoutFavoritesInput> = z.object({
@@ -7076,7 +7437,8 @@ export const RankUncheckedCreateWithoutFavoritesInputSchema: z.ZodType<Prisma.Ra
   softwares: z.lazy(() => SoftwareOnRankUncheckedCreateNestedManyWithoutRankInputSchema).optional(),
   articles: z.lazy(() => ArticleUncheckedCreateNestedManyWithoutRankInputSchema).optional(),
   likes: z.lazy(() => RankLikeUncheckedCreateNestedManyWithoutRankInputSchema).optional(),
-  comments: z.lazy(() => RankCommentUncheckedCreateNestedManyWithoutRankInputSchema).optional()
+  comments: z.lazy(() => RankCommentUncheckedCreateNestedManyWithoutRankInputSchema).optional(),
+  metadata: z.lazy(() => RankMetadataUncheckedCreateNestedOneWithoutRankInputSchema).optional()
 }).strict();
 
 export const RankCreateOrConnectWithoutFavoritesInputSchema: z.ZodType<Prisma.RankCreateOrConnectWithoutFavoritesInput> = z.object({
@@ -7145,7 +7507,8 @@ export const RankUpdateWithoutFavoritesInputSchema: z.ZodType<Prisma.RankUpdateW
   softwares: z.lazy(() => SoftwareOnRankUpdateManyWithoutRankNestedInputSchema).optional(),
   articles: z.lazy(() => ArticleUpdateManyWithoutRankNestedInputSchema).optional(),
   likes: z.lazy(() => RankLikeUpdateManyWithoutRankNestedInputSchema).optional(),
-  comments: z.lazy(() => RankCommentUpdateManyWithoutRankNestedInputSchema).optional()
+  comments: z.lazy(() => RankCommentUpdateManyWithoutRankNestedInputSchema).optional(),
+  metadata: z.lazy(() => RankMetadataUpdateOneWithoutRankNestedInputSchema).optional()
 }).strict();
 
 export const RankUncheckedUpdateWithoutFavoritesInputSchema: z.ZodType<Prisma.RankUncheckedUpdateWithoutFavoritesInput> = z.object({
@@ -7159,7 +7522,8 @@ export const RankUncheckedUpdateWithoutFavoritesInputSchema: z.ZodType<Prisma.Ra
   softwares: z.lazy(() => SoftwareOnRankUncheckedUpdateManyWithoutRankNestedInputSchema).optional(),
   articles: z.lazy(() => ArticleUncheckedUpdateManyWithoutRankNestedInputSchema).optional(),
   likes: z.lazy(() => RankLikeUncheckedUpdateManyWithoutRankNestedInputSchema).optional(),
-  comments: z.lazy(() => RankCommentUncheckedUpdateManyWithoutRankNestedInputSchema).optional()
+  comments: z.lazy(() => RankCommentUncheckedUpdateManyWithoutRankNestedInputSchema).optional(),
+  metadata: z.lazy(() => RankMetadataUncheckedUpdateOneWithoutRankNestedInputSchema).optional()
 }).strict();
 
 export const UserUpsertWithoutRankFavoritesInputSchema: z.ZodType<Prisma.UserUpsertWithoutRankFavoritesInput> = z.object({
@@ -7530,7 +7894,8 @@ export const RankCreateWithoutCommentsInputSchema: z.ZodType<Prisma.RankCreateWi
   softwares: z.lazy(() => SoftwareOnRankCreateNestedManyWithoutRankInputSchema).optional(),
   articles: z.lazy(() => ArticleCreateNestedManyWithoutRankInputSchema).optional(),
   likes: z.lazy(() => RankLikeCreateNestedManyWithoutRankInputSchema).optional(),
-  favorites: z.lazy(() => RankFavoriteCreateNestedManyWithoutRankInputSchema).optional()
+  favorites: z.lazy(() => RankFavoriteCreateNestedManyWithoutRankInputSchema).optional(),
+  metadata: z.lazy(() => RankMetadataCreateNestedOneWithoutRankInputSchema).optional()
 }).strict();
 
 export const RankUncheckedCreateWithoutCommentsInputSchema: z.ZodType<Prisma.RankUncheckedCreateWithoutCommentsInput> = z.object({
@@ -7544,7 +7909,8 @@ export const RankUncheckedCreateWithoutCommentsInputSchema: z.ZodType<Prisma.Ran
   softwares: z.lazy(() => SoftwareOnRankUncheckedCreateNestedManyWithoutRankInputSchema).optional(),
   articles: z.lazy(() => ArticleUncheckedCreateNestedManyWithoutRankInputSchema).optional(),
   likes: z.lazy(() => RankLikeUncheckedCreateNestedManyWithoutRankInputSchema).optional(),
-  favorites: z.lazy(() => RankFavoriteUncheckedCreateNestedManyWithoutRankInputSchema).optional()
+  favorites: z.lazy(() => RankFavoriteUncheckedCreateNestedManyWithoutRankInputSchema).optional(),
+  metadata: z.lazy(() => RankMetadataUncheckedCreateNestedOneWithoutRankInputSchema).optional()
 }).strict();
 
 export const RankCreateOrConnectWithoutCommentsInputSchema: z.ZodType<Prisma.RankCreateOrConnectWithoutCommentsInput> = z.object({
@@ -7613,7 +7979,8 @@ export const RankUpdateWithoutCommentsInputSchema: z.ZodType<Prisma.RankUpdateWi
   softwares: z.lazy(() => SoftwareOnRankUpdateManyWithoutRankNestedInputSchema).optional(),
   articles: z.lazy(() => ArticleUpdateManyWithoutRankNestedInputSchema).optional(),
   likes: z.lazy(() => RankLikeUpdateManyWithoutRankNestedInputSchema).optional(),
-  favorites: z.lazy(() => RankFavoriteUpdateManyWithoutRankNestedInputSchema).optional()
+  favorites: z.lazy(() => RankFavoriteUpdateManyWithoutRankNestedInputSchema).optional(),
+  metadata: z.lazy(() => RankMetadataUpdateOneWithoutRankNestedInputSchema).optional()
 }).strict();
 
 export const RankUncheckedUpdateWithoutCommentsInputSchema: z.ZodType<Prisma.RankUncheckedUpdateWithoutCommentsInput> = z.object({
@@ -7627,7 +7994,8 @@ export const RankUncheckedUpdateWithoutCommentsInputSchema: z.ZodType<Prisma.Ran
   softwares: z.lazy(() => SoftwareOnRankUncheckedUpdateManyWithoutRankNestedInputSchema).optional(),
   articles: z.lazy(() => ArticleUncheckedUpdateManyWithoutRankNestedInputSchema).optional(),
   likes: z.lazy(() => RankLikeUncheckedUpdateManyWithoutRankNestedInputSchema).optional(),
-  favorites: z.lazy(() => RankFavoriteUncheckedUpdateManyWithoutRankNestedInputSchema).optional()
+  favorites: z.lazy(() => RankFavoriteUncheckedUpdateManyWithoutRankNestedInputSchema).optional(),
+  metadata: z.lazy(() => RankMetadataUncheckedUpdateOneWithoutRankNestedInputSchema).optional()
 }).strict();
 
 export const UserUpsertWithoutRankCommentsInputSchema: z.ZodType<Prisma.UserUpsertWithoutRankCommentsInput> = z.object({
@@ -7744,7 +8112,8 @@ export const RankUpdateWithoutUserInputSchema: z.ZodType<Prisma.RankUpdateWithou
   articles: z.lazy(() => ArticleUpdateManyWithoutRankNestedInputSchema).optional(),
   likes: z.lazy(() => RankLikeUpdateManyWithoutRankNestedInputSchema).optional(),
   favorites: z.lazy(() => RankFavoriteUpdateManyWithoutRankNestedInputSchema).optional(),
-  comments: z.lazy(() => RankCommentUpdateManyWithoutRankNestedInputSchema).optional()
+  comments: z.lazy(() => RankCommentUpdateManyWithoutRankNestedInputSchema).optional(),
+  metadata: z.lazy(() => RankMetadataUpdateOneWithoutRankNestedInputSchema).optional()
 }).strict();
 
 export const RankUncheckedUpdateWithoutUserInputSchema: z.ZodType<Prisma.RankUncheckedUpdateWithoutUserInput> = z.object({
@@ -7758,7 +8127,8 @@ export const RankUncheckedUpdateWithoutUserInputSchema: z.ZodType<Prisma.RankUnc
   articles: z.lazy(() => ArticleUncheckedUpdateManyWithoutRankNestedInputSchema).optional(),
   likes: z.lazy(() => RankLikeUncheckedUpdateManyWithoutRankNestedInputSchema).optional(),
   favorites: z.lazy(() => RankFavoriteUncheckedUpdateManyWithoutRankNestedInputSchema).optional(),
-  comments: z.lazy(() => RankCommentUncheckedUpdateManyWithoutRankNestedInputSchema).optional()
+  comments: z.lazy(() => RankCommentUncheckedUpdateManyWithoutRankNestedInputSchema).optional(),
+  metadata: z.lazy(() => RankMetadataUncheckedUpdateOneWithoutRankNestedInputSchema).optional()
 }).strict();
 
 export const RankUncheckedUpdateManyWithoutUserInputSchema: z.ZodType<Prisma.RankUncheckedUpdateManyWithoutUserInput> = z.object({
@@ -8606,6 +8976,68 @@ export const RankFindUniqueOrThrowArgsSchema: z.ZodType<Prisma.RankFindUniqueOrT
   select: RankSelectSchema.optional(),
   include: RankIncludeSchema.optional(),
   where: RankWhereUniqueInputSchema,
+}).strict() ;
+
+export const RankMetadataFindFirstArgsSchema: z.ZodType<Prisma.RankMetadataFindFirstArgs> = z.object({
+  select: RankMetadataSelectSchema.optional(),
+  include: RankMetadataIncludeSchema.optional(),
+  where: RankMetadataWhereInputSchema.optional(),
+  orderBy: z.union([ RankMetadataOrderByWithRelationInputSchema.array(),RankMetadataOrderByWithRelationInputSchema ]).optional(),
+  cursor: RankMetadataWhereUniqueInputSchema.optional(),
+  take: z.number().optional(),
+  skip: z.number().optional(),
+  distinct: z.union([ RankMetadataScalarFieldEnumSchema,RankMetadataScalarFieldEnumSchema.array() ]).optional(),
+}).strict() ;
+
+export const RankMetadataFindFirstOrThrowArgsSchema: z.ZodType<Prisma.RankMetadataFindFirstOrThrowArgs> = z.object({
+  select: RankMetadataSelectSchema.optional(),
+  include: RankMetadataIncludeSchema.optional(),
+  where: RankMetadataWhereInputSchema.optional(),
+  orderBy: z.union([ RankMetadataOrderByWithRelationInputSchema.array(),RankMetadataOrderByWithRelationInputSchema ]).optional(),
+  cursor: RankMetadataWhereUniqueInputSchema.optional(),
+  take: z.number().optional(),
+  skip: z.number().optional(),
+  distinct: z.union([ RankMetadataScalarFieldEnumSchema,RankMetadataScalarFieldEnumSchema.array() ]).optional(),
+}).strict() ;
+
+export const RankMetadataFindManyArgsSchema: z.ZodType<Prisma.RankMetadataFindManyArgs> = z.object({
+  select: RankMetadataSelectSchema.optional(),
+  include: RankMetadataIncludeSchema.optional(),
+  where: RankMetadataWhereInputSchema.optional(),
+  orderBy: z.union([ RankMetadataOrderByWithRelationInputSchema.array(),RankMetadataOrderByWithRelationInputSchema ]).optional(),
+  cursor: RankMetadataWhereUniqueInputSchema.optional(),
+  take: z.number().optional(),
+  skip: z.number().optional(),
+  distinct: z.union([ RankMetadataScalarFieldEnumSchema,RankMetadataScalarFieldEnumSchema.array() ]).optional(),
+}).strict() ;
+
+export const RankMetadataAggregateArgsSchema: z.ZodType<Prisma.RankMetadataAggregateArgs> = z.object({
+  where: RankMetadataWhereInputSchema.optional(),
+  orderBy: z.union([ RankMetadataOrderByWithRelationInputSchema.array(),RankMetadataOrderByWithRelationInputSchema ]).optional(),
+  cursor: RankMetadataWhereUniqueInputSchema.optional(),
+  take: z.number().optional(),
+  skip: z.number().optional(),
+}).strict() ;
+
+export const RankMetadataGroupByArgsSchema: z.ZodType<Prisma.RankMetadataGroupByArgs> = z.object({
+  where: RankMetadataWhereInputSchema.optional(),
+  orderBy: z.union([ RankMetadataOrderByWithAggregationInputSchema.array(),RankMetadataOrderByWithAggregationInputSchema ]).optional(),
+  by: RankMetadataScalarFieldEnumSchema.array(),
+  having: RankMetadataScalarWhereWithAggregatesInputSchema.optional(),
+  take: z.number().optional(),
+  skip: z.number().optional(),
+}).strict() ;
+
+export const RankMetadataFindUniqueArgsSchema: z.ZodType<Prisma.RankMetadataFindUniqueArgs> = z.object({
+  select: RankMetadataSelectSchema.optional(),
+  include: RankMetadataIncludeSchema.optional(),
+  where: RankMetadataWhereUniqueInputSchema,
+}).strict() ;
+
+export const RankMetadataFindUniqueOrThrowArgsSchema: z.ZodType<Prisma.RankMetadataFindUniqueOrThrowArgs> = z.object({
+  select: RankMetadataSelectSchema.optional(),
+  include: RankMetadataIncludeSchema.optional(),
+  where: RankMetadataWhereUniqueInputSchema,
 }).strict() ;
 
 export const RankTagFindFirstArgsSchema: z.ZodType<Prisma.RankTagFindFirstArgs> = z.object({
@@ -9553,6 +9985,60 @@ export const RankUpdateManyAndReturnArgsSchema: z.ZodType<Prisma.RankUpdateManyA
 
 export const RankDeleteManyArgsSchema: z.ZodType<Prisma.RankDeleteManyArgs> = z.object({
   where: RankWhereInputSchema.optional(),
+  limit: z.number().optional(),
+}).strict() ;
+
+export const RankMetadataCreateArgsSchema: z.ZodType<Prisma.RankMetadataCreateArgs> = z.object({
+  select: RankMetadataSelectSchema.optional(),
+  include: RankMetadataIncludeSchema.optional(),
+  data: z.union([ RankMetadataCreateInputSchema,RankMetadataUncheckedCreateInputSchema ]),
+}).strict() ;
+
+export const RankMetadataUpsertArgsSchema: z.ZodType<Prisma.RankMetadataUpsertArgs> = z.object({
+  select: RankMetadataSelectSchema.optional(),
+  include: RankMetadataIncludeSchema.optional(),
+  where: RankMetadataWhereUniqueInputSchema,
+  create: z.union([ RankMetadataCreateInputSchema,RankMetadataUncheckedCreateInputSchema ]),
+  update: z.union([ RankMetadataUpdateInputSchema,RankMetadataUncheckedUpdateInputSchema ]),
+}).strict() ;
+
+export const RankMetadataCreateManyArgsSchema: z.ZodType<Prisma.RankMetadataCreateManyArgs> = z.object({
+  data: z.union([ RankMetadataCreateManyInputSchema,RankMetadataCreateManyInputSchema.array() ]),
+  skipDuplicates: z.boolean().optional(),
+}).strict() ;
+
+export const RankMetadataCreateManyAndReturnArgsSchema: z.ZodType<Prisma.RankMetadataCreateManyAndReturnArgs> = z.object({
+  data: z.union([ RankMetadataCreateManyInputSchema,RankMetadataCreateManyInputSchema.array() ]),
+  skipDuplicates: z.boolean().optional(),
+}).strict() ;
+
+export const RankMetadataDeleteArgsSchema: z.ZodType<Prisma.RankMetadataDeleteArgs> = z.object({
+  select: RankMetadataSelectSchema.optional(),
+  include: RankMetadataIncludeSchema.optional(),
+  where: RankMetadataWhereUniqueInputSchema,
+}).strict() ;
+
+export const RankMetadataUpdateArgsSchema: z.ZodType<Prisma.RankMetadataUpdateArgs> = z.object({
+  select: RankMetadataSelectSchema.optional(),
+  include: RankMetadataIncludeSchema.optional(),
+  data: z.union([ RankMetadataUpdateInputSchema,RankMetadataUncheckedUpdateInputSchema ]),
+  where: RankMetadataWhereUniqueInputSchema,
+}).strict() ;
+
+export const RankMetadataUpdateManyArgsSchema: z.ZodType<Prisma.RankMetadataUpdateManyArgs> = z.object({
+  data: z.union([ RankMetadataUpdateManyMutationInputSchema,RankMetadataUncheckedUpdateManyInputSchema ]),
+  where: RankMetadataWhereInputSchema.optional(),
+  limit: z.number().optional(),
+}).strict() ;
+
+export const RankMetadataUpdateManyAndReturnArgsSchema: z.ZodType<Prisma.RankMetadataUpdateManyAndReturnArgs> = z.object({
+  data: z.union([ RankMetadataUpdateManyMutationInputSchema,RankMetadataUncheckedUpdateManyInputSchema ]),
+  where: RankMetadataWhereInputSchema.optional(),
+  limit: z.number().optional(),
+}).strict() ;
+
+export const RankMetadataDeleteManyArgsSchema: z.ZodType<Prisma.RankMetadataDeleteManyArgs> = z.object({
+  where: RankMetadataWhereInputSchema.optional(),
   limit: z.number().optional(),
 }).strict() ;
 

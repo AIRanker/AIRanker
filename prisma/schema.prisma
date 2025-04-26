@@ -98,8 +98,19 @@ model Rank {
   likes       RankLike[]
   favorites   RankFavorite[]
   comments    RankComment[]
+  metadata    RankMetadata?
 
   @@map("t_rank")
+}
+
+model RankMetadata {
+  id        String   @id @map("id") @db.VarChar(78)
+  rankId    String   @unique @map("rank_id")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+  rank      Rank     @relation(fields: [rankId], references: [id], onDelete: Cascade)
+
+  @@map("t_rank_metadata")
 }
 
 model RankTag {

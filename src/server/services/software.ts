@@ -1,4 +1,5 @@
 import { db } from "../db";
+import { generateSoftwareSelect } from "../select";
 
 class SoftwareService {
     async getSoftwaresByRankId(rankId: string, userAddress?: string) {
@@ -10,50 +11,7 @@ class SoftwareService {
                 description: true,
                 rankIndex: true,
                 software: {
-                    select: {
-                        id: true,
-                        name: true,
-                        description: true,
-                        image: true,
-                        url: true,
-                        createdAt: true,
-                        updatedAt: true,
-                        tags: {
-                            select: {
-                                tag: {
-                                    select: {
-                                        name: true
-                                    }
-                                }
-                            }
-                        },
-                        _count: {
-                            select: {
-                                likes: true,
-                                favorites: true
-                            }
-                        },
-                        ...(userAddress ? {
-                            likes: {
-                                where: {
-                                    userAddress
-                                },
-                                select: {
-                                    softwareId: true
-                                },
-                                take: 1
-                            },
-                            favorites: {
-                                where: {
-                                    userAddress
-                                },
-                                select: {
-                                    softwareId: true
-                                },
-                                take: 1
-                            }
-                        } : {})
-                    }
+                    select: generateSoftwareSelect(userAddress)
                 }
             },
             orderBy: {

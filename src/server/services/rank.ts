@@ -1,57 +1,7 @@
 import type { Prisma } from "@prisma/client"
 import { db } from "../db"
-import type { PageableData, RankSearchParams } from "../schema"
-
-function generateRankSelect(userAddress?: string) {
-  return {
-    id: true,
-    userAddress: true,
-    name: true,
-    description: true,
-    createdAt: true,
-    updatedAt: true,
-    user: true,
-    tags: {
-      select: {
-        tag: {
-          select: {
-            name: true
-          }
-        }
-      }
-    },
-    _count: {
-      select: {
-        softwares: true,
-        articles: true,
-        likes: true,
-        favorites: true
-      }
-    },
-    ...(userAddress
-      ? {
-        likes: {
-          where: {
-            userAddress
-          },
-          select: {
-            rankId: true
-          },
-          take: 1
-        },
-        favorites: {
-          where: {
-            userAddress
-          },
-          select: {
-            rankId: true
-          },
-          take: 1
-        }
-      }
-      : {})
-  }
-}
+import type { CreateRankParams, PageableData, RankSearchParams } from "../schema"
+import { generateRankSelect } from "../select"
 
 class RankService {
   async topRanks(userAddress?: string) {
@@ -165,6 +115,134 @@ class RankService {
       }
     })
     return true
+  }
+  async create(params: CreateRankParams, userAddress: string) {
+    return await db.$transaction(async (tx) => {
+      // 1. 创建 Rank
+      const rank = await tx.rank.create({
+        data: {
+          name: params.name,
+          description: params.description,
+          userAddress: userAddress,
+        },
+        select: {
+          id: true
+        }
+      });
+
+      // 2. 创建 RankMetadata
+      const rankMetadata = await tx.rankMetadata.create({
+        data: {
+          rankId: rank.id,
+          id: params.metadataId
+        }
+      });
+
+      // 3. 处理标签 - 检查已存在的并创建新的
+      if (params.tags && params.tags.length > 0) {
+        // 查找已存在的标签
+        const existingTags = await tx.tag.findMany({
+          where: {
+            name: {
+              in: params.tags
+            }
+          },
+          select: {
+            id: true,
+            name: true
+          }
+        });
+
+        const existingTagNames = existingTags.map(tag => tag.name);
+        const newTagNames = params.tags.filter(tag => !existingTagNames.includes(tag));
+
+        // 创建新标签
+        const newTags = await Promise.all(
+          newTagNames.map(name =>
+            tx.tag.create({
+              data: { name },
+              select: { id: true, name: true }
+            })
+          )
+        );
+
+        // 合并所有标签
+        const allTags = [...existingTags, ...newTags];
+
+        // 将标签关联到 Rank
+        await Promise.all(
+          allTags.map(tag =>
+            tx.rankTag.create({
+              data: {
+                rankId: rank.id,
+                tagId: tag.id
+              }
+            })
+          )
+        );
+      }
+
+      // 4. 处理软件
+      if (params.softwares && params.softwares.length > 0) {
+        await Promise.all(
+          params.softwares.map(async (softwareItem, index) => {
+            let softwareId = softwareItem.softwareId;
+
+            // 如果没有提供 softwareId，则创建新软件
+            if (!softwareId && softwareItem.name) {
+              const newSoftware = await tx.software.create({
+                data: {
+                  name: softwareItem.name,
+                  description: softwareItem.description || '',
+                  image: softwareItem.image || '',
+                  url: softwareItem.url || '', // 如果 CreateRankParams 中没有 url 字段，可能需要提供默认值或从其他地方获取
+                },
+                select: {
+                  id: true
+                }
+              });
+
+              softwareId = newSoftware.id;
+            }
+
+            // 确保 softwareId 存在
+            if (!softwareId) {
+              throw new Error('Software ID is required when creating a rank.');
+            }
+
+            // 检查软件是否存在
+            const softwareExists = await tx.software.findUnique({
+              where: {
+                id: softwareId
+              },
+              select: {
+                id: true
+              }
+            });
+
+            if (!softwareExists) {
+              throw new Error(`Software with ID ${softwareId} not found.`);
+            }
+
+            // 将软件添加到排名中
+            await tx.softwareOnRank.create({
+              data: {
+                rankId: rank.id,
+                softwareId: softwareId,
+                description: softwareItem.rankDescription,
+                rankIndex: softwareItem.rankIndex // 如果没有提供 rankIndex，则使用数组索引
+              }
+            });
+          })
+        );
+      }
+      return await tx.rank.findUnique({
+        where: {
+          id: rank.id
+        },
+        select: generateRankSelect(userAddress)
+      });
+    });
   }
 }
 

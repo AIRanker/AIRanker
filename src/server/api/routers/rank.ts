@@ -1,6 +1,6 @@
 import { z } from "zod"
 import { createTRPCRouter, protectedProcedure, publicProcedure } from "~/server/api/trpc"
-import { rankSeachParamsSchema } from "~/server/schema"
+import { createRankParamsSchema, rankSeachParamsSchema } from "~/server/schema"
 import rankService from "~/server/services/rank"
 
 export const rankRouter = createTRPCRouter({
@@ -20,6 +20,10 @@ export const rankRouter = createTRPCRouter({
   favorite: protectedProcedure.input(z.object({ rankId: z.string() })).mutation(async ({ input, ctx }) => {
     const userAddress = ctx.session!.address
     return await rankService.favorite(input.rankId, userAddress)
+  }),
+  create: protectedProcedure.input(createRankParamsSchema).mutation(async ({ input, ctx }) => {
+    const userAddress = ctx.session!.address
+    return await rankService.create(input, userAddress)
   }),
 })
 
