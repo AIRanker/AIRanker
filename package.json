@@ -23,6 +23,7 @@
   "dependencies": {
     "@metamask/jazzicon": "^2.0.0",
     "@prisma/client": "^6.5.0",
+    "@radix-ui/react-dialog": "^1.1.11",
     "@radix-ui/react-slot": "^1.2.0",
     "@radix-ui/themes": "^3.2.1",
     "@reown/appkit": "^1.7.3",

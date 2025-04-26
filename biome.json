@@ -7,42 +7,22 @@
   },
   "files": {
     "ignoreUnknown": false,
-    "ignore": ["src/lib/zod/index.ts", "public"]
+    "ignore": [
+      "src/lib/zod/index.ts",
+      "public"
+    ]
   },
   "formatter": {
     "enabled": true,
     "indentStyle": "space",
-    "lineWidth": 180,
-    "bracketSpacing": true
+    "lineWidth": 180
   },
   "organizeImports": {
     "enabled": true
   },
-  "javascript": {
-    "formatter": {
-      "quoteStyle": "double",
-      "semicolons": "asNeeded",
-      "trailingCommas": "none",
-      "bracketSpacing": true
-    }
-  },
-  "json": {
-    "formatter": {
-      "trailingCommas": "none"
-    }
-  },
   "linter": {
     "enabled": true,
     "rules": {
-      "nursery": {
-        "useSortedClasses": {
-          "level": "warn",
-          "fix": "safe",
-          "options": {
-            "functions": ["clsx", "cva", "cn"]
-          }
-        }
-      },
       "recommended": true,
       "a11y": {
         "useButtonType": "warn",
@@ -67,6 +47,19 @@
         "noUselessElse": "warn",
         "noNonNullAssertion": "off"
       }
+    }
+  },
+  "javascript": {
+    "formatter": {
+      "quoteStyle": "double",
+      "semicolons": "asNeeded",
+      "trailingCommas": "none",
+      "bracketSpacing": true
+    }
+  },
+  "json": {
+    "formatter": {
+      "trailingCommas": "none"
     }
   }
 }

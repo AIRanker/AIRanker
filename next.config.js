@@ -9,7 +9,7 @@ const config = {
   reactStrictMode: true,
   output: "standalone",
   images: {
-    domains: ["storage.googleapis.com"]
+    domains: ["storage.googleapis.com", "avatars.githubusercontent.com"]
   }
 }
 
