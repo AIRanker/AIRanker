@@ -1,6 +1,6 @@
 import type { Prisma } from "@prisma/client"
 import { db } from "../db"
-import type { CreateRankParams, PageableData, RankSearchParams } from "../schema"
+import type { CreateRankParams, PageableData, RankSearchParams, UpdateRankParams } from "../schema"
 import { generateRankSelect } from "../select"
 
 class RankService {
@@ -242,6 +242,163 @@ class RankService {
         },
         select: generateRankSelect(userAddress)
       });
+    });
+  }
+  /**
+ * 更新一个 Rank 及其相关数据
+ * @param id Rank ID
+ * @param params 要更新的参数
+ * @param userAddress 当前用户地址
+ * @returns 更新后的 Rank 对象
+ */
+  async update(id: string, params: UpdateRankParams, userAddress: string) {
+    return await db.$transaction(async (tx) => {
+      // 1. 查找 Rank 并验证所有者
+      const rank = await tx.rank.findUnique({
+        where: { id },
+        select: {
+          id: true,
+          userAddress: true
+        }
+      });
+
+      if (!rank) {
+        throw new Error(`Rank with ID ${id} not found`);
+      }
+
+      if (rank.userAddress !== userAddress) {
+        throw new Error("You don't have permission to update this rank");
+      }
+
+      // 2. 更新 Rank 基本信息
+      if (params.name || params.description !== undefined) {
+        await tx.rank.update({
+          where: { id },
+          data: {
+            name: params.name,
+            description: params.description
+          }
+        });
+      }
+
+      // 3. 处理标签更新（如果有提供）
+      if (params.tags) {
+        // 删除当前的标签关联
+        await tx.rankTag.deleteMany({
+          where: { rankId: id }
+        });
+
+        // 查找已存在的标签
+        const existingTags = await tx.tag.findMany({
+          where: {
+            name: {
+              in: params.tags
+            }
+          },
+          select: {
+            id: true,
+            name: true
+          }
+        });
+
+        const existingTagNames = existingTags.map(tag => tag.name);
+        const newTagNames = params.tags.filter(tag => !existingTagNames.includes(tag));
+
+        // 创建新标签
+        const newTags = await Promise.all(
+          newTagNames.map(name =>
+            tx.tag.create({
+              data: { name },
+              select: { id: true, name: true }
+            })
+          )
+        );
+
+        // 合并所有标签
+        const allTags = [...existingTags, ...newTags];
+
+        // 将标签重新关联到 Rank
+        await Promise.all(
+          allTags.map(tag =>
+            tx.rankTag.create({
+              data: {
+                rankId: id,
+                tagId: tag.id
+              }
+            })
+          )
+        );
+      }
+
+      // 5. 处理软件更新（如果有提供）
+      if (params.softwares) {
+        // 删除当前的软件关联
+        await tx.softwareOnRank.deleteMany({
+          where: { rankId: id }
+        });
+
+        // 添加新的软件关联
+        await Promise.all(
+          params.softwares.map(async (softwareItem, index) => {
+            let softwareId = softwareItem.softwareId;
+
+            // 如果没有提供 softwareId，则创建新软件
+            if (!softwareId && softwareItem.name) {
+              const newSoftware = await tx.software.create({
+                data: {
+                  name: softwareItem.name,
+                  description: softwareItem.description || '',
+                  image: softwareItem.image || '',
+                  url: softwareItem.url || '',
+                },
+                select: {
+                  id: true
+                }
+              });
+
+              softwareId = newSoftware.id;
+            }
+
+            // 确保 softwareId 存在
+            if (!softwareId) {
+              throw new Error('Software ID is required when updating a rank.');
+            }
+
+            // 检查软件是否存在
+            const softwareExists = await tx.software.findUnique({
+              where: {
+                id: softwareId
+              },
+              select: {
+                id: true
+              }
+            });
+
+            if (!softwareExists) {
+              throw new Error(`Software with ID ${softwareId} not found.`);
+            }
+
+            // 将软件添加到排名中
+            await tx.softwareOnRank.create({
+              data: {
+                rankId: id,
+                softwareId: softwareId,
+                description: softwareItem.rankDescription || '',
+                rankIndex: softwareItem.rankIndex
+              }
+            });
+          })
+        );
+      }
+
+      // 6. 返回更新后的 Rank
+      return await tx.rank.findUnique({
+        where: { id },
+        select: generateRankSelect(userAddress)
+      });
+    }).catch(error => {
+      console.error("Error updating rank:", error);
+      throw new Error(`Failed to update rank: ${error.message}`);
     });
   }
 }

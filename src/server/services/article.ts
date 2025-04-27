@@ -148,6 +148,98 @@ class ArticleService {
             return await this.detail(article.id, userAddress);
         });
     }
+
+    async update(id: string, params: CreateArticleParams, userAddress: string) {
+        return await db.$transaction(async (tx) => {
+            // 1. 验证文章的创建者是否为当前用户
+            const article = await tx.article.findUnique({
+                where: { id },
+                select: { userAddress: true }
+            });
+
+            if (!article) {
+                throw new Error(`Article with ID ${id} not found`);
+            }
+
+            if (article.userAddress !== userAddress) {
+                throw new Error("You don't have permission to update this article");
+            }
+
+            // 2. 更新文章
+            const updatedArticle = await tx.article.update({
+                where: { id },
+                data: {
+                    title: params.title,
+                    description: params.description || '',
+                    content: params.content,
+                    image: params.image || ''
+                },
+                select: {
+                    id: true
+                }
+            });
+
+            // 3. 更新软件关联
+            if (params.softwares && params.softwares.length > 0) {
+                // 删除旧的关联
+                await tx.softwareOnArticle.deleteMany({
+                    where: { articleId: id }
+                });
+
+                // 创建新的关联
+                await Promise.all(
+                    params.softwares.map(softwareId =>
+                        tx.softwareOnArticle.create({
+                            data: {
+                                softwareId,
+                                articleId: updatedArticle.id
+                            }
+                        })
+                    )
+                );
+            }
+
+            // 返回更新后的文章（包含完整信息）
+            return await this.detail(updatedArticle.id, userAddress);
+        });
+    }
+    async delete(id: string, userAddress: string): Promise<boolean> {
+        return await db.$transaction(async (tx) => {
+            // 1. 查找文章并验证所有者
+            const article = await tx.article.findUnique({
+                where: { id },
+                select: {
+                    userAddress: true,
+                    rankId: true
+                }
+            });
+
+            // 2. 如果文章不存在，抛出错误
+            if (!article) {
+                throw new Error(`Article with ID ${id} not found`);
+            }
+
+            // 3. 验证当前用户是否为文章创建者
+            if (article.userAddress !== userAddress) {
+                throw new Error("You don't have permission to delete this article");
+            }
+
+            // 4. 先删除所有与文章相关的软件关联
+            await tx.softwareOnArticle.deleteMany({
+                where: {
+                    articleId: id
+                }
+            });
+
+            // 5. 删除文章本身
+            await tx.article.delete({
+                where: { id }
+            });
+
+            return true;
+        });
+    }
+
 }
 
 export default new ArticleService();
