@@ -11,50 +11,6 @@ export default async function Home() {
     { title: "Top LLM Libraries", token: 1280 }
   ]
 
-  const topRankedItems = [
-    {
-      title: "Top AI Developer Tools",
-      description: "Curated list of the best AI SDKs, APIs, and CLIs",
-      views: 112000,
-      likes: 112000,
-      imageUrl: "https://avatars.githubusercontent.com/u/6412038?v=4"
-    },
-    {
-      title: "Top AI Developer Tools",
-      description: "Curated list of the best AI SDKs, APIs, and CLIs",
-      views: 112000,
-      likes: 112000,
-      imageUrl: "https://avatars.githubusercontent.com/u/9892522?v=4"
-    },
-    {
-      title: "Top AI Developer Tools",
-      description: "Curated list of the best AI SDKs, APIs, and CLIs",
-      views: 112000,
-      likes: 112000,
-      imageUrl: "https://avatars.githubusercontent.com/u/17571969?v=4"
-    },
-    {
-      title: "Top AI Developer Tools",
-      description: "Curated list of the best AI SDKs, APIs, and CLIs",
-      views: 112000,
-      likes: 112000,
-      imageUrl: "https://avatars.githubusercontent.com/u/1315101?v=4"
-    },
-    {
-      title: "Top AI Developer Tools",
-      description: "Curated list of the best AI SDKs, APIs, and CLIs",
-      views: 112000,
-      likes: 112000,
-      imageUrl: "https://avatars.githubusercontent.com/u/4921183?v=4"
-    },
-    {
-      title: "Top AI Developer Tools",
-      description: "Curated list of the best AI SDKs, APIs, and CLIs",
-      views: 112000,
-      likes: 112000,
-      imageUrl: "https://avatars.githubusercontent.com/u/8784712?v=4"
-    }
-  ]
   const rankList = await api.rank.topRanks()
   return (
     <HydrateClient>

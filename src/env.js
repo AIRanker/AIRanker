@@ -14,6 +14,7 @@ export const env = createEnv({
     REDIS_PASSWORD: z.string(),
     DATABASE_URL: z.string().url(),
     NODE_ENV: z.enum(["development", "test", "production"]).default("development"),
+    GOOGLE_STORAGE_BUCKET: z.string().optional(),
     CHAIN_RPC_URL: z
       .preprocess(
         (val) => {
@@ -41,7 +42,6 @@ export const env = createEnv({
    * `NEXT_PUBLIC_`.
    */
   client: {
-    // NEXT_PUBLIC_CLIENTVAR: z.string(),
     NEXT_PUBLIC_REOWN_PROJECT_ID: z.string(),
     NEXT_PUBLIC_CHAIN_ID: z.preprocess((val) => Number(val), z.number()),
     NEXT_PUBLIC_GIT_SHA: z.string().optional(),
@@ -65,7 +65,8 @@ export const env = createEnv({
     NEXT_PUBLIC_REOWN_PROJECT_ID: process.env.NEXT_PUBLIC_REOWN_PROJECT_ID,
     NEXT_PUBLIC_GIT_SHA: process.env.NEXT_PUBLIC_GIT_SHA,
     NEXT_PUBLIC_MANAGER_CONTRACT_ADDRESS: process.env.NEXT_PUBLIC_MANAGER_CONTRACT_ADDRESS,
-    NEXT_PUBLIC_TOKEN_CONTRACT_ADDRESS: process.env.NEXT_PUBLIC_TOKEN_CONTRACT_ADDRESS
+    NEXT_PUBLIC_TOKEN_CONTRACT_ADDRESS: process.env.NEXT_PUBLIC_TOKEN_CONTRACT_ADDRESS,
+    GOOGLE_STORAGE_BUCKET: process.env.GOOGLE_STORAGE_BUCKET
     // NEXT_PUBLIC_CLIENTVAR: process.env.NEXT_PUBLIC_CLIENTVAR,
   },
   /**

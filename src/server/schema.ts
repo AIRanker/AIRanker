@@ -34,7 +34,7 @@ export const createRankParamsSchema = z.object({
   description: z.string().max(500).optional(),
   tags: z.array(z.string()).optional(),
   image: z.string().optional(),
-  softwares: z
+  softwareList: z
     .array(
       z.object({
         softwareId: z.string().optional(),
@@ -54,7 +54,7 @@ export const updateRankParamsSchema = z.object({
   description: z.string().max(500).optional(),
   tags: z.array(z.string()).optional(),
   image: z.string().optional(),
-  softwares: z
+  softwareList: z
     .array(
       z.object({
         softwareId: z.string().optional(),
@@ -75,7 +75,7 @@ export const createArticleParamsSchema = z.object({
   description: z.string().max(500).optional(),
   content: z.string(),
   image: z.string().optional(),
-  softwares: z.array(z.string()).max(20)
+  softwareList: z.array(z.string()).max(20)
 })
 
 export type RankSearchParams = z.infer<typeof rankSeachParamsSchema>
