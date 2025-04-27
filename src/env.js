@@ -1,4 +1,5 @@
 import { createEnv } from "@t3-oss/env-nextjs"
+import { isAddress } from "viem"
 import { z } from "zod"
 
 export const env = createEnv({
@@ -43,7 +44,9 @@ export const env = createEnv({
     // NEXT_PUBLIC_CLIENTVAR: z.string(),
     NEXT_PUBLIC_REOWN_PROJECT_ID: z.string(),
     NEXT_PUBLIC_CHAIN_ID: z.preprocess((val) => Number(val), z.number()),
-    NEXT_PUBLIC_GIT_SHA: z.string().optional()
+    NEXT_PUBLIC_GIT_SHA: z.string().optional(),
+    NEXT_PUBLIC_MANAGER_CONTRACT_ADDRESS: z.string().refine((v) => isAddress(v), "Invalid manager address"),
+    NEXT_PUBLIC_TOKEN_CONTRACT_ADDRESS: z.string().refine((v) => isAddress(v), "Invalid token address")
   },
 
   /**
@@ -60,7 +63,9 @@ export const env = createEnv({
     NEXT_PUBLIC_CHAIN_ID: process.env.NEXT_PUBLIC_CHAIN_ID,
     CHAIN_RPC_URL: process.env.CHAIN_RPC_URL,
     NEXT_PUBLIC_REOWN_PROJECT_ID: process.env.NEXT_PUBLIC_REOWN_PROJECT_ID,
-    NEXT_PUBLIC_GIT_SHA: process.env.NEXT_PUBLIC_GIT_SHA
+    NEXT_PUBLIC_GIT_SHA: process.env.NEXT_PUBLIC_GIT_SHA,
+    NEXT_PUBLIC_MANAGER_CONTRACT_ADDRESS: process.env.NEXT_PUBLIC_MANAGER_CONTRACT_ADDRESS,
+    NEXT_PUBLIC_TOKEN_CONTRACT_ADDRESS: process.env.NEXT_PUBLIC_TOKEN_CONTRACT_ADDRESS,
     // NEXT_PUBLIC_CLIENTVAR: process.env.NEXT_PUBLIC_CLIENTVAR,
   },
   /**
