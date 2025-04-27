@@ -41,12 +41,13 @@ class RankService {
 
     const total = await db.rank.count({ where: whereOptions })
     const pages = Math.ceil(total / params.pageable.size) || 1
+    const actualPage = Math.max(0, Math.min(params.pageable.page, pages - 1));
     const ranks = await db.rank.findMany({
       where: whereOptions,
       select: generateRankSelect(userAddress),
       orderBy: { [params.sort]: params.order },
       take: params.pageable.size,
-      skip: params.pageable.page * params.pageable.size
+      skip: actualPage * params.pageable.size
     })
 
     const list = ranks.map((rank) => ({

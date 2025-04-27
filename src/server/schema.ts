@@ -15,13 +15,18 @@ export const rankCommentSchema = z.object({
   replyToUser: z.string().nullable(),
   rootCommentId: z.string().nullable()
 })
-export const rankSeachParamsSchema = z.object({
+export const searchParamsSchema = z.object({
   search: z.string().optional(),
-  tags: z.array(z.string()).optional(),
-  sort: z.enum(["likes", "favorites"]).optional().default("likes"),
-  order: z.enum(["asc", "desc"]).optional().default("desc"),
   pageable: pageableSchema
 })
+export const rankSeachParamsSchema = searchParamsSchema.extend({
+  tags: z.array(z.string()).optional(),
+  sort: z.enum(["likes", "favorites"]).optional().default("likes"),
+  order: z.enum(["asc", "desc"]).optional().default("desc")
+})
+
+
+
 
 export const createRankParamsSchema = z.object({
   metadataId: z.string(),
@@ -78,6 +83,7 @@ export type Pageable = z.infer<typeof pageableSchema>
 export type CreateRankParams = z.infer<typeof createRankParamsSchema>
 export type CreateArticleParams = z.infer<typeof createArticleParamsSchema>
 export type UpdateRankParams = z.infer<typeof updateRankParamsSchema>
+export type SearchParams = z.infer<typeof searchParamsSchema>
 
 export interface PageableData<T> {
   list: T[]

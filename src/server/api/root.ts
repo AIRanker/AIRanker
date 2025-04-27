@@ -1,6 +1,10 @@
 import { userRouter } from "~/server/api/routers/user"
 import { createCallerFactory, createTRPCRouter } from "~/server/api/trpc"
 import rankRouter from "./routers/rank"
+import { articleRouter } from "./routers/article"
+import softwareRouter from "./routers/software"
+import { rankCommentRouter } from "./routers/rank-comment"
+import tagRouter from "./routers/tag"
 
 /**
  * This is the primary router for your server.
@@ -9,7 +13,11 @@ import rankRouter from "./routers/rank"
  */
 export const appRouter = createTRPCRouter({
   user: userRouter,
-  rank: rankRouter
+  article: articleRouter,
+  rank: rankRouter,
+  software: softwareRouter,
+  rankComment: rankCommentRouter,
+  tag: tagRouter
 })
 
 // export type definition of API
