@@ -9,8 +9,8 @@ import { Sheet, SheetTrigger, SheetContent, SheetHeader, SheetFooter, SheetClose
 import { cn } from "~/lib/utils"
 
 export const MobileMenu = ({
-                             navs
-                           }: {
+  navs
+}: {
   navs: Array<{ name: string; href: string; requiresLogin: boolean }>
 }) => {
   const pathname = usePathname()
@@ -30,7 +30,6 @@ export const MobileMenu = ({
         <SheetHeader>
           <header className="top-0 z-20 mx-auto flex w-full items-center justify-between border-b border-border bg-background/70 px-4 backdrop-blur">
             <div className="mx-auto flex w-full max-w-7xl items-center justify-between p-4 pr-2">
-
               <SheetClose>
                 <XIcon className="size-6" />
               </SheetClose>

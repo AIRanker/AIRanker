@@ -8,7 +8,7 @@ import { Button } from "../ui/button"
 import SignedIn from "./signed-in"
 import SignedOut from "./signed-out"
 import WalletAvatar from "./wallet-avatar"
-import type { Views } from "node_modules/@reown/appkit/dist/types/src/client/appkit-base-client";
+import type { Views } from "node_modules/@reown/appkit/dist/types/src/client/appkit-base-client"
 
 export default function WalletButton({
   children,
@@ -16,16 +16,16 @@ export default function WalletButton({
   variant = "outline"
 }: {
   children?:
-  | ReactNode
-  | ((props: {
-    address: string
-    openDialog: (options?: OpenOptions<Views>) => Promise<void>
-  }) => ReactNode)
+    | ReactNode
+    | ((props: {
+        address: string
+        openDialog: (options?: OpenOptions<Views>) => Promise<void>
+      }) => ReactNode)
   connectChildren?:
-  | ReactNode
-  | ((props: {
-    openDialog: (options?: OpenOptions<Views>) => Promise<void>
-  }) => ReactNode)
+    | ReactNode
+    | ((props: {
+        openDialog: (options?: OpenOptions<Views>) => Promise<void>
+      }) => ReactNode)
   variant?: "default" | "destructive" | "outline" | "secondary" | "ghost" | "link"
 }) {
   return (

@@ -72,7 +72,7 @@ export default async function Home() {
               Source Projects on Web3
             </div>
           </div>
-          <RankList items={topRankedItems} />
+          <RankList items={rankList} />
         </div>
         <div className={"col-span-1 space-y-4"}>
           <RankCard title="Top Earning Rankings" items={topEarningItems} className="w-full" />

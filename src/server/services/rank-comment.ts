@@ -53,40 +53,37 @@ class RankCommentService {
     const redis = getRedis()
     const replyInfos = await Promise.all(
       commentIds.map(async (id) => {
-        const [count, replyIds] = await Promise.all([
-          redis.zcard(`rank-comment-replies:${id}`),
-          redis.zrange(`rank-comment-replies:${id}`, 0, replyLimit - 1)
-        ])
+        const [count, replyIds] = await Promise.all([redis.zcard(`rank-comment-replies:${id}`), redis.zrange(`rank-comment-replies:${id}`, 0, replyLimit - 1)])
         return { rootId: id, count, replyIds, replies: [] as RankComment[] }
       })
     )
 
     // Get replies from db
     const replyIds = replyInfos.flatMap((reply) => reply.replyIds)
-
-      ; (
-        await db.rankComment.findMany({
-          where: {
-            id: { in: replyIds },
-            deletedAt: null
-          }
-        })
-      ).forEach((reply) => {
-        const replyInfo = replyInfos.find((replyInfo) => replyInfo.rootId === reply.rootCommentId)
-        if (replyInfo) {
-          replyInfo.replies.push(reply)
+    ;(
+      await db.rankComment.findMany({
+        where: {
+          id: { in: replyIds },
+          deletedAt: null
         }
       })
+    ).forEach((reply) => {
+      const replyInfo = replyInfos.find((replyInfo) => replyInfo.rootId === reply.rootCommentId)
+      if (replyInfo) {
+        replyInfo.replies.push(reply)
+      }
+    })
 
     const commentsWithReplies = comments.map((comment) => {
       const replyInfo = replyInfos.find((replyInfo) => replyInfo.rootId === comment.id)
       const replies = replyInfo
-        ? replyInfo.replies.sort((a, b) => replyInfo.replyIds.indexOf(a.id) - replyInfo.replyIds.indexOf(b.id))
-          .map(reply => ({
-            ...reply,
-            comment: reply.content,
-            createdBy: reply.userAddress
-          }))
+        ? replyInfo.replies
+            .sort((a, b) => replyInfo.replyIds.indexOf(a.id) - replyInfo.replyIds.indexOf(b.id))
+            .map((reply) => ({
+              ...reply,
+              comment: reply.content,
+              createdBy: reply.userAddress
+            }))
         : []
       const replyCount = replyInfo?.count ?? 0
 
@@ -360,17 +357,17 @@ class RankCommentService {
   async getCommentHistory(userAddress: string | null, limit = 10) {
     return userAddress
       ? await db.rankComment.findMany({
-        where: {
-          userAddress: {
-            contains: userAddress,
-            mode: "insensitive"
-          }
-        },
-        orderBy: {
-          createdAt: "desc"
-        },
-        take: limit
-      })
+          where: {
+            userAddress: {
+              contains: userAddress,
+              mode: "insensitive"
+            }
+          },
+          orderBy: {
+            createdAt: "desc"
+          },
+          take: limit
+        })
       : []
   }
 

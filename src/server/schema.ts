@@ -13,7 +13,7 @@ export const rankCommentSchema = z.object({
   deletedAt: z.coerce.date().nullable(),
   replyToComment: z.string().nullable(),
   replyToUser: z.string().nullable(),
-  rootCommentId: z.string().nullable(),
+  rootCommentId: z.string().nullable()
 })
 export const rankSeachParamsSchema = z.object({
   search: z.string().optional(),
@@ -23,40 +23,47 @@ export const rankSeachParamsSchema = z.object({
   pageable: pageableSchema
 })
 
-
 export const createRankParamsSchema = z.object({
   metadataId: z.string(),
   name: z.string().min(1).max(100),
   description: z.string().max(500).optional(),
   tags: z.array(z.string()).optional(),
   image: z.string().optional(),
-  softwares: z.array(z.object({
-    softwareId: z.string().optional(),
-    name: z.string().min(1).max(100).optional(),
-    image: z.string().optional(),
-    description: z.string().optional(),
-    url: z.string().optional(),
-    rankDescription: z.string().max(500),
-    rankIndex: z.number().min(0)
-  })).min(5).max(20)
+  softwares: z
+    .array(
+      z.object({
+        softwareId: z.string().optional(),
+        name: z.string().min(1).max(100).optional(),
+        image: z.string().optional(),
+        description: z.string().optional(),
+        url: z.string().optional(),
+        rankDescription: z.string().max(500),
+        rankIndex: z.number().min(0)
+      })
+    )
+    .min(5)
+    .max(20)
 })
 export const updateRankParamsSchema = z.object({
   name: z.string().min(1).max(100),
   description: z.string().max(500).optional(),
   tags: z.array(z.string()).optional(),
   image: z.string().optional(),
-  softwares: z.array(z.object({
-    softwareId: z.string().optional(),
-    name: z.string().min(1).max(100).optional(),
-    image: z.string().optional(),
-    description: z.string().optional(),
-    url: z.string().optional(),
-    rankDescription: z.string().max(500),
-    rankIndex: z.number().min(0)
-  })).min(5).max(20)
+  softwares: z
+    .array(
+      z.object({
+        softwareId: z.string().optional(),
+        name: z.string().min(1).max(100).optional(),
+        image: z.string().optional(),
+        description: z.string().optional(),
+        url: z.string().optional(),
+        rankDescription: z.string().max(500),
+        rankIndex: z.number().min(0)
+      })
+    )
+    .min(5)
+    .max(20)
 })
-
-
 
 export const createArticleParamsSchema = z.object({
   title: z.string().min(1).max(100),
@@ -71,7 +78,6 @@ export type Pageable = z.infer<typeof pageableSchema>
 export type CreateRankParams = z.infer<typeof createRankParamsSchema>
 export type CreateArticleParams = z.infer<typeof createArticleParamsSchema>
 export type UpdateRankParams = z.infer<typeof updateRankParamsSchema>
-
 
 export interface PageableData<T> {
   list: T[]

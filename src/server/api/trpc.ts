@@ -39,9 +39,9 @@ export const createTRPCContext = async (opts: { headers: Headers }) => {
     session:
       entity && "user" in entity
         ? {
-          address: entity.user.address,
-          user: entity.user,
-        }
+            address: entity.user.address,
+            user: entity.user
+          }
         : undefined,
     ...opts
   }
@@ -119,7 +119,6 @@ const timingMiddleware = t.middleware(async ({ next, path }) => {
  * are logged in.
  */
 export const publicProcedure = t.procedure.use(timingMiddleware)
-
 
 export const protectedProcedure = t.procedure.use(timingMiddleware).use(async ({ ctx, next }) => {
   if (!ctx.session?.address) {

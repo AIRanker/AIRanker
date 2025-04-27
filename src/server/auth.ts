@@ -3,7 +3,7 @@ import NextAuth, { type DefaultSession } from "next-auth"
 import Credentials from "next-auth/providers/credentials"
 import { db } from "~/server/db"
 import { userService, type UserWithPlatforms } from "./services/user"
-import {env} from "~/env";
+import { env } from "~/env"
 
 declare module "next-auth" {
   /**

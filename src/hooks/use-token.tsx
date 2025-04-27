@@ -56,19 +56,16 @@ export function useAllowance({
     }
   })
 
-  const checkAllowance = useCallback(
-    () => {
-      if (allowanceOk) {
-        return true
-      }
+  const checkAllowance = useCallback(() => {
+    if (allowanceOk) {
+      return true
+    }
 
-      if (simulateResult && !isSimulateError) {
-        writeContract(simulateResult.request)
-      }
-      return false
-    },
-    [allowanceOk, simulateResult, isSimulateError, writeContract]
-  )
+    if (simulateResult && !isSimulateError) {
+      writeContract(simulateResult.request)
+    }
+    return false
+  }, [allowanceOk, simulateResult, isSimulateError, writeContract])
 
   if (!allowanceOk && !!receipt) {
     void refetchAllowance()

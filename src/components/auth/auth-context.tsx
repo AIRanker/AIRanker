@@ -6,7 +6,7 @@ import type { OpenOptions } from "node_modules/@reown/appkit/dist/types/src/clie
 import posthog from "posthog-js"
 import { createContext, useContext } from "react"
 import type { ReactNode } from "react"
-import type { Views } from "node_modules/@reown/appkit/dist/types/src/client/appkit-base-client";
+import type { Views } from "node_modules/@reown/appkit/dist/types/src/client/appkit-base-client"
 
 type AuthContextProps =
   | {

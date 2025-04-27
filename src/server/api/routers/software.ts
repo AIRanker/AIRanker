@@ -3,22 +3,24 @@ import { createTRPCRouter, protectedProcedure, publicProcedure } from "~/server/
 import softwareService from "~/server/services/software"
 
 export const softwareRouter = createTRPCRouter({
-    getSoftwaresByRankId: publicProcedure
-        .input(z.object({
-            rankId: z.string()
-        }))
-        .query(async ({ input, ctx }) => {
-            const userAddress = ctx.session?.address
-            return await softwareService.getSoftwaresByRankId(input.rankId, userAddress)
-        }),
-    like: protectedProcedure.input(z.object({ softwareId: z.string() })).mutation(async ({ input, ctx }) => {
-        const userAddress = ctx.session!.address
-        return await softwareService.like(input.softwareId, userAddress)
+  getSoftwareByRankId: publicProcedure
+    .input(
+      z.object({
+        rankId: z.string()
+      })
+    )
+    .query(async ({ input, ctx }) => {
+      const userAddress = ctx.session?.address
+      return await softwareService.getSoftwareByRankId(input.rankId, userAddress)
     }),
-    favorite: protectedProcedure.input(z.object({ softwareId: z.string() })).mutation(async ({ input, ctx }) => {
-        const userAddress = ctx.session!.address
-        return await softwareService.favorite(input.softwareId, userAddress)
-    }),
+  like: protectedProcedure.input(z.object({ softwareId: z.string() })).mutation(async ({ input, ctx }) => {
+    const userAddress = ctx.session!.address
+    return await softwareService.like(input.softwareId, userAddress)
+  }),
+  favorite: protectedProcedure.input(z.object({ softwareId: z.string() })).mutation(async ({ input, ctx }) => {
+    const userAddress = ctx.session!.address
+    return await softwareService.favorite(input.softwareId, userAddress)
+  })
 })
 
 export default softwareRouter

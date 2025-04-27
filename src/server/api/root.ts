@@ -9,7 +9,7 @@ import rankRouter from "./routers/rank"
  */
 export const appRouter = createTRPCRouter({
   user: userRouter,
-  rank: rankRouter,
+  rank: rankRouter
 })
 
 // export type definition of API

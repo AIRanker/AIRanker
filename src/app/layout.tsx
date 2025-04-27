@@ -85,7 +85,6 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
                       </Badge>
                     </div>
                   </div>
-                  <p className="text-sm text-muted-foreground">© {new Date().getFullYear()} AI Ranker. All rights reserved.</p>
                 </div>
                 <div className="flex gap-6">
                   {socialMedias.map((social) => (

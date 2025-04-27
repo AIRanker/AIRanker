@@ -24,7 +24,7 @@ export const rankRouter = createTRPCRouter({
   create: protectedProcedure.input(createRankParamsSchema).mutation(async ({ input, ctx }) => {
     const userAddress = ctx.session!.address
     return await rankService.create(input, userAddress)
-  }),
+  })
 })
 
 export default rankRouter
