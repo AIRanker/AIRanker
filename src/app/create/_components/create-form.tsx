@@ -2,22 +2,22 @@
 
 import { zodResolver } from "@hookform/resolvers/zod"
 import { ImagePlus, TrashIcon } from "lucide-react"
-import { Calculator, Calendar, CreditCard, Settings, Smile, User } from "lucide-react"
 import { useForm } from "react-hook-form"
 import { uploadFile } from "~/app/actions"
 import PictureSelectPopover from "~/components/picture-select-popover"
-import TagList from "~/components/tag-list"
 import { Button } from "~/components/ui/button"
-import { Command, CommandDialog, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList, CommandSeparator, CommandShortcut } from "~/components/ui/command"
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "~/components/ui/form"
 
 import React from "react"
 import AddDialog from "~/app/create/_components/add-dialog"
 import RankSearch from "~/app/create/_components/rank-search"
 import SoftwareItem from "~/app/create/_components/software-item"
+import { TagsInput } from "~/components/extension/tags-input"
 import { Input } from "~/components/ui/input"
+import { MultiStepLoader } from "~/components/ui/multi-step-loader"
 import { Separator } from "~/components/ui/separator"
 import { Textarea } from "~/components/ui/textarea"
+import { useCreateStepState } from "~/hooks/use-create"
 import { UPLOAD_PATH_POST } from "~/lib/const"
 import { cn } from "~/lib/utils"
 import { type CreateRankParams, createRankParamsSchema } from "~/server/schema"
@@ -50,10 +50,27 @@ const CreateForm = () => {
     return () => document.removeEventListener("keydown", down)
   }, [])
 
-  const submit = (data: CreateRankParams) => {}
+  const { launchStepState, updateDescription, initStep, nextStep, errorStep, exitStep, finallyStep } = useCreateStepState()
+
+  const submit = (data: CreateRankParams) => {
+    initStep()
+  }
 
   return (
     <Form {...form}>
+      <MultiStepLoader
+        loadingStates={[]}
+        errorState={launchStepState.error}
+        visible={launchStepState.showSteps}
+        currentState={launchStepState.now}
+        description={launchStepState.description}
+        progressState={launchStepState.progress}
+        onClose={exitStep}
+        onFinish={() => {
+          exitStep()
+          // useUtils.dao.detail.invalidate()
+        }}
+      />
       <form onSubmit={handleSubmit(submit)} className={"pt-6 flex flex-col gap-12"}>
         <div className={"flex flex-row"}>
           <div className={"flex flex-col w-80"}>
@@ -145,7 +162,7 @@ const CreateForm = () => {
                 <FormItem>
                   <FormLabel>Tags</FormLabel>
                   <FormControl>
-                    <TagList tags={field.value ?? []} onTagsChange={(tags) => field.onChange(tags)} />
+                    <TagsInput value={field.value ?? []} onValueChange={field.onChange} placeholder="Enter your tag" />
                   </FormControl>
                   <FormDescription>Ranker tag</FormDescription>
                   <FormMessage>{errors.tags?.message}</FormMessage>
