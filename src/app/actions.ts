@@ -2,7 +2,7 @@
 import { Storage } from "@google-cloud/storage"
 import { env } from "~/env"
 
-const GoogleStorageBucket = env.GOOGLE_STORAGE_BUCKET ?? "airanker"
+const GoogleStorageBucket = env.GOOGLE_STORAGE_BUCKET ?? "repofi"
 const storage = new Storage()
 
 export const uploadFile = async ({

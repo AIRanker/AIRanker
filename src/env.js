@@ -15,6 +15,7 @@ export const env = createEnv({
     DATABASE_URL: z.string().url(),
     NODE_ENV: z.enum(["development", "test", "production"]).default("development"),
     GOOGLE_STORAGE_BUCKET: z.string().optional(),
+    GOOGLE_APPLICATION_CREDENTIALS: z.string(),
     CHAIN_RPC_URL: z
       .preprocess(
         (val) => {
@@ -58,6 +59,7 @@ export const env = createEnv({
     REDIS_PORT: process.env.REDIS_PORT,
     REDIS_DB: process.env.REDIS_DB,
     REDIS_PASSWORD: process.env.REDIS_PASSWORD,
+    GOOGLE_APPLICATION_CREDENTIALS: process.env.GOOGLE_APPLICATION_CREDENTIALS,
     DATABASE_URL: process.env.DATABASE_URL,
     NODE_ENV: process.env.NODE_ENV,
     NEXT_PUBLIC_CHAIN_ID: process.env.NEXT_PUBLIC_CHAIN_ID,

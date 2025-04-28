@@ -63,7 +63,13 @@ const RankSearch = ({ onAdd, children }: Props) => {
         </PopoverContent>
       </Popover>
       <div className={"flex flex-row gap-2"}>
-        <Plus className={current ? "cursor-pointer" : "text-gray-400"} size={18} onClick={() => current && onAdd(current)} />
+        <Plus
+          className={current ? "cursor-pointer" : "text-gray-400"}
+          size={18}
+          onClick={() => {
+            current && onAdd(current)
+          }}
+        />
         {children}
       </div>
     </div>

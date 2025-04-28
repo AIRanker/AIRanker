@@ -16,9 +16,11 @@ import type { CreateRankParams } from "~/server/schema"
 interface Props {
   value?: CreateRankParams["softwareList"][number]
   onSubmit: (params: CreateRankParams["softwareList"][number]) => void
+  actionClassname?: string
 }
 
-const AddDialog = ({ value, onSubmit }: Props) => {
+const AddDialog = ({ value, onSubmit, actionClassname }: Props) => {
+  const [open, setOpen] = useState(false)
   const [data, setData] = useState<CreateRankParams["softwareList"][number]>({
     name: value?.name ?? "",
     image: value?.image ?? "",
@@ -36,13 +38,13 @@ const AddDialog = ({ value, onSubmit }: Props) => {
     }))
   }
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <span className={"underline font-bold text-sm cursor-pointer"}>NEW</span>
+        <span className={actionClassname ?? "underline font-bold text-sm cursor-pointer"}>{value ? "EDIT" : "NEW"}</span>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[625px]">
         <DialogHeader>
-          <DialogTitle>Add software</DialogTitle>
+          <DialogTitle>{value ? "Edit" : "Add"} software</DialogTitle>
           <DialogDescription>You can add new software to your rank</DialogDescription>
         </DialogHeader>
         <div className="grid gap-4 py-4">
@@ -107,9 +109,9 @@ const AddDialog = ({ value, onSubmit }: Props) => {
           </div>
           <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="rankDescription" className="text-right">
-              Description
+              Rank Description
             </Label>
-            <Input id="rankDescription" value={data.rankDescription} onChange={handleChange} className="col-span-3" />
+            <Textarea id="rankDescription" value={data.rankDescription} onChange={handleChange} className="col-span-3" />
           </div>
           <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="rankIndex" className="text-right">
@@ -123,6 +125,7 @@ const AddDialog = ({ value, onSubmit }: Props) => {
             type="button"
             onClick={() => {
               onSubmit(data)
+              setOpen(false)
             }}
           >
             Save

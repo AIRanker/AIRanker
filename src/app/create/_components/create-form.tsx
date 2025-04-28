@@ -14,6 +14,7 @@ import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, For
 import React from "react"
 import AddDialog from "~/app/create/_components/add-dialog"
 import RankSearch from "~/app/create/_components/rank-search"
+import SoftwareItem from "~/app/create/_components/software-item"
 import { Input } from "~/components/ui/input"
 import { Separator } from "~/components/ui/separator"
 import { Textarea } from "~/components/ui/textarea"
@@ -153,6 +154,7 @@ const CreateForm = () => {
             />
           </div>
         </div>
+        <Separator />
         <div className={"flex flex-row"}>
           <div className={"flex flex-col w-80"}>
             <div className={"text-xl font-bold"}>Rank list</div>
@@ -168,36 +170,62 @@ const CreateForm = () => {
                     Search exist software of{" "}
                     <AddDialog
                       onSubmit={(data) => {
-                        const list: CreateRankParams["softwareList"] = field.value
+                        const list: CreateRankParams["softwareList"] = field.value ?? []
                         list.push(data)
                         field.onChange(list)
                       }}
                     />
                   </FormLabel>
                   <FormControl>
-                    <RankSearch
-                      onAdd={(item) => {
-                        const list: CreateRankParams["softwareList"] = field.value ?? []
-                        const data: CreateRankParams["softwareList"][number] = {
-                          softwareId: item.id,
-                          description: item.description ?? "",
-                          name: item.name ?? "",
-                          image: item.image ?? "",
-                          url: item.url ?? "",
-                          rankDescription: "",
-                          rankIndex: 0
-                        }
-                        const find = list.find((s) => s.softwareId === data.softwareId)
-                        if (!find) {
-                          list.push(data)
-                          field.onChange(list)
-                        }
-                      }}
-                    />
+                    <div className={"flex flex-col gap-6"}>
+                      <RankSearch
+                        onAdd={(item) => {
+                          const list: CreateRankParams["softwareList"] = field.value ?? []
+                          const data: CreateRankParams["softwareList"][number] = {
+                            softwareId: item.id,
+                            description: item.description ?? "",
+                            name: item.name ?? "",
+                            image: item.image ?? "",
+                            url: item.url ?? "",
+                            rankDescription: "",
+                            rankIndex: 0
+                          }
+                          const find = list.find((s) => s.softwareId === data.softwareId)
+                          if (!find) {
+                            list.push(data)
+                            field.onChange(list)
+                          }
+                        }}
+                      />
+                      {(field.value ?? []).map((item: CreateRankParams["softwareList"][number]) => (
+                        <SoftwareItem
+                          data={item}
+                          key={`item-${item.softwareId}-${item.name}`}
+                          onDelete={() => {
+                            const list = [...(field.value ?? [])]
+                            const index = list.findIndex((s) => s.softwareId === item.softwareId || (s.name === item.name && !s.softwareId))
+                            if (index !== -1) {
+                              list.splice(index, 1)
+                              field.onChange(list)
+                            }
+                          }}
+                        />
+                      ))}
+                    </div>
                   </FormControl>
                 </FormItem>
               )}
             />
+          </div>
+        </div>
+        <Separator />
+        <div className={"flex flex-row"}>
+          <div className={"flex flex-col w-80"}>
+            <div className={"text-xl font-bold"}>Actions</div>
+            <div className={"text-sm text-foreground/50"}>You can set base information</div>
+          </div>
+          <div className={"flex flex-row"}>
+            <Button>Submit</Button>
           </div>
         </div>
       </form>
