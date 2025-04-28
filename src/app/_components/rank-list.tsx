@@ -3,14 +3,6 @@ import Link from "next/link"
 import type { FC } from "react"
 import type { TopRanksResult } from "~/server/services/rank"
 
-interface RankItem {
-  title: string
-  description: string
-  views: number
-  likes: number
-  imageUrl: string
-}
-
 interface TopRankedProps {
   items: TopRanksResult
   title?: string
