@@ -3,7 +3,7 @@ import { useCallback, useState } from "react"
 import { decodeEventLog, erc20Abi, formatUnits, getAddress, parseEther } from "viem"
 import { useAccount, useConfig } from "wagmi"
 import { env } from "~/env"
-import leaderboardManagerAbi from "~/lib/abi/LeaderboardManager.json"
+import rankManagerAbi from "~/lib/abi/RankManager.json"
 import { defaultChain } from "~/lib/web3"
 import type { CreateRankParams } from "~/server/schema"
 import { api } from "~/trpc/react"
@@ -95,7 +95,7 @@ export function useApprovedTransaction({
     try {
       // 从 LeaderboardManager 合约中读取 createFee
       const createFee = (await readContract(config, {
-        abi: leaderboardManagerAbi,
+        abi: rankManagerAbi,
         address: targetContractAddress,
         chainId: defaultChain.id,
         functionName: "createFee",
@@ -153,36 +153,35 @@ export function useApprovedTransaction({
 }
 
 export function useCreateTransaction({
-  onLaunchMessage,
-  onLaunchError,
+  onCreateMessage,
+  onCreateError,
   targetContractAddress = env.NEXT_PUBLIC_MANAGER_CONTRACT_ADDRESS
 }: {
-  onLaunchMessage: (message: string) => void
-  onLaunchError?: (error: Error) => void
+  onCreateMessage: (message: string) => void
+  onCreateError?: (error: Error) => void
   targetContractAddress?: `0x${string}`
 }) {
   const { address } = useAccount()
   const config = useConfig()
   const execute = useCallback(async (): Promise<bigint | undefined> => {
     if (!address) {
-      onLaunchError?.(new Error("Wallet not connected."))
+      onCreateError?.(new Error("Wallet not connected."))
       return
     }
 
     try {
       // 调用 LeaderboardManager 合约的 createLeaderboard 方法
       const { request } = await simulateContract(config, {
-        abi: leaderboardManagerAbi,
+        abi: rankManagerAbi,
         address: targetContractAddress,
         functionName: "createLeaderboard",
         args: [], // 没有参数
         account: address
-        // 不需要 value
       })
 
-      onLaunchMessage("Creating leaderboard on blockchain...")
+      onCreateMessage("Creating Rank on chain...")
       const hash = await writeContract(config, request)
-      onLaunchMessage("Waiting for transaction confirmation...")
+      onCreateMessage("Waiting for transaction confirmation...")
       const receipt = await waitForTransactionReceipt(config, {
         hash
       })
@@ -190,47 +189,47 @@ export function useCreateTransaction({
       // 从交易日志中解析出leaderboardId
       const logs = receipt.logs
       const item = logs.find((log) => getAddress(log.address) === targetContractAddress)
-
       if (!item) {
-        onLaunchError?.(new Error("Failed to find leaderboard creation event."))
+        onCreateError?.(new Error("Failed to find rank creation event."))
         return
       }
 
       // 解析事件日志
       const { args } = decodeEventLog({
         ...item,
-        abi: leaderboardManagerAbi
+        abi: rankManagerAbi
       })
 
       console.log("Decoded event args:", args)
 
       // 假设 LeaderboardCreated 事件有 leaderboardId 和 owner 参数
-      const { metadataId: metadataId, owner } = args as unknown as {
-        metadataId: bigint
-        owner: `0x${string}`
-      }
+      const { id: metadataId, creator } = args as unknown as {
+        creator: `0x${string}`
+        id: bigint
 
-      if (!metadataId || !owner) {
-        onLaunchError?.(new Error("Failed to parse leaderboard creation event."))
+      }
+      console.log("Parsed metadataId:", metadataId,"creator:", creator)
+      if (!metadataId || !creator) {
+        onCreateError?.(new Error("Failed to parse leaderboard creation event."))
         return
       }
 
       // 验证创建者是当前用户
-      if (getAddress(owner) !== getAddress(address)) {
-        onLaunchError?.(new Error("Owner address mismatch."))
+      if (getAddress(creator) !== getAddress(address)) {
+        onCreateError?.(new Error("Creator address mismatch."))
         return
       }
 
       return metadataId
     } catch (error) {
       if (error instanceof Error && "shortMessage" in error) {
-        onLaunchError?.(new Error((error as any).shortMessage))
+        onCreateError?.(new Error((error as any).shortMessage))
       } else {
-        onLaunchError?.(new Error("Leaderboard creation failed.", { cause: error }))
+        onCreateError?.(new Error("Leaderboard creation failed.", { cause: error }))
       }
       return
     }
-  }, [address, config, targetContractAddress, onLaunchMessage, onLaunchError])
+  }, [address, config, targetContractAddress, onCreateMessage, onCreateError])
 
   return {
     execute
@@ -246,14 +245,14 @@ export function useDataPersistence({
 }) {
   const { mutateAsync: createMutate } = api.rank.create.useMutation()
   const execute = useCallback(
-    async (params: CreateRankParams) => {
+    async (params: CreateRankParams, metadataId: string) => {
       try {
         onPersistenceMessage("Persisting Rank...")
-        if (params.metadataId === undefined) {
+        if (metadataId === undefined) {
           onPersistenceError?.(new Error("MetadataId is undefined."))
           return
         }
-        return await createMutate(params)
+        return await createMutate({ forms: params, metadataId })
       } catch (error) {
         if (error instanceof Error && "shortMessage" in error) {
           onPersistenceError?.(new Error((error as any).shortMessage))

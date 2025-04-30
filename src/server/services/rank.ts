@@ -136,7 +136,7 @@ class RankService {
     })
     return true
   }
-  async create(params: CreateRankParams, userAddress: string) {
+  async create(params: CreateRankParams, userAddress: string, metadataId: string) {
     return await db.$transaction(async (tx) => {
       // 1. 创建 Rank
       const rank = await tx.rank.create({
@@ -154,7 +154,7 @@ class RankService {
       const rankMetadata = await tx.rankMetadata.create({
         data: {
           rankId: rank.id,
-          id: params.metadataId
+          id: metadataId,
         }
       })
 

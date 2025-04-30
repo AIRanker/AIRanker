@@ -37,13 +37,13 @@ const LoaderCore = ({
             transition={{ duration: 0.5 }}
           >
             <div>
-              {index > value && <CircleCheck className="text-white" />}
+              {index > value && <CircleCheck className="text-black" />}
               {index <= value && !currentProgress && !currentError && <CircleCheck className={"text-lime-500"} />}
-              {currentError ? <CircleX className={"text-destructive"} /> : currentProgress && <LoaderCircle className={"animate-spin"} />}
+              {currentError ? <CircleX className={"text-destructive"} /> : currentProgress && <LoaderCircle className={"animate-spin text-black"} />}
             </div>
-            <div className={cn("text-white flex flex-col", index <= value && "text-lime-500 opacity-100", currentProgress && "text-white", currentError && "text-destructive")}>
+            <div className={cn("text-black flex flex-col", index <= value && "text-lime-500 opacity-100", currentProgress && "text-black", currentError && "text-destructive")}>
               <div>{loadingState.text}</div>
-              {description && (currentProgress || currentError) && value === index && <div className="text-xs md:text-sm font-thin">{description}</div>}
+              {description && (currentProgress || currentError) && value === index && <div className="text-xs md:text-sm font-thin text-black">{description}</div>}
             </div>
           </motion.div>
         )

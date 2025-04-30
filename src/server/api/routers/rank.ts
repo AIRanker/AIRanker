@@ -21,9 +21,9 @@ export const rankRouter = createTRPCRouter({
     const userAddress = ctx.session!.address
     return await rankService.star(input.rankId, userAddress)
   }),
-  create: protectedProcedure.input(createRankParamsSchema).mutation(async ({ input, ctx }) => {
+  create: protectedProcedure.input(z.object({ forms: createRankParamsSchema, metadataId: z.string() })).mutation(async ({ input, ctx }) => {
     const userAddress = ctx.session!.address
-    return await rankService.create(input, userAddress)
+    return await rankService.create(input.forms, userAddress, input.metadataId)
   }),
   detail: publicProcedure.input(z.object({ rankId: z.string() })).query(async ({ input, ctx }) => {
     const userAddress = ctx.session!.address

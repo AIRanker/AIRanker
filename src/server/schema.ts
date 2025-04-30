@@ -29,7 +29,6 @@ export const rankSeachParamsSchema = searchParamsSchema.extend({
 })
 
 export const createRankParamsSchema = z.object({
-  metadataId: z.string(),
   name: z.string().min(1).max(100),
   description: z.string().max(500).optional(),
   tags: z.array(z.string()).optional(),

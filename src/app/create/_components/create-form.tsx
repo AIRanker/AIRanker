@@ -8,7 +8,7 @@ import PictureSelectPopover from "~/components/picture-select-popover"
 import { Button } from "~/components/ui/button"
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "~/components/ui/form"
 
-import React from "react"
+import React, { useTransition } from "react"
 import AddDialog from "~/app/create/_components/add-dialog"
 import RankSearch from "~/app/create/_components/rank-search"
 import SoftwareItem from "~/app/create/_components/software-item"
@@ -17,7 +17,7 @@ import { Input } from "~/components/ui/input"
 import { MultiStepLoader } from "~/components/ui/multi-step-loader"
 import { Separator } from "~/components/ui/separator"
 import { Textarea } from "~/components/ui/textarea"
-import { useCreateStepState } from "~/hooks/use-create"
+import { useApprovedTransaction, useCreateStepState, useCreateTransaction, useDataPersistence } from "~/hooks/use-create"
 import { UPLOAD_PATH_POST } from "~/lib/const"
 import { cn } from "~/lib/utils"
 import { type CreateRankParams, createRankParamsSchema } from "~/server/schema"
@@ -51,15 +51,45 @@ const CreateForm = () => {
   }, [])
 
   const { launchStepState, updateDescription, initStep, nextStep, errorStep, exitStep, finallyStep } = useCreateStepState()
-
+  const [isVerifying, startVerify] = useTransition()
+  const onError = (error: Error) => {
+    updateDescription(error.message)
+    errorStep()
+    throw error
+  }
+  const { execute: approvedTransaction } = useApprovedTransaction({
+    onApproveMessage: updateDescription,
+    onApproveError: onError
+  })
+  const { execute: createTransaction } = useCreateTransaction({
+    onCreateMessage: updateDescription,
+    onCreateError: onError
+  })
+  const { execute: dataPersistence } = useDataPersistence({
+    onPersistenceMessage: updateDescription,
+    onPersistenceError: onError
+  })
   const submit = (data: CreateRankParams) => {
+    console.log(data)
     initStep()
+    startVerify(async () => {
+      try {
+        await approvedTransaction()
+        nextStep()
+        const metadataId = await createTransaction()
+        nextStep()
+        await dataPersistence(data, metadataId!.toString())
+        finallyStep()
+      } catch (e) {
+        console.error(e)
+      }
+    })
   }
 
   return (
     <Form {...form}>
       <MultiStepLoader
-        loadingStates={[]}
+        loadingStates={[{ text: "Approve asset amount." }, { text: "Initializing Rank." },{text:"Finally loading."}]}
         errorState={launchStepState.error}
         visible={launchStepState.showSteps}
         currentState={launchStepState.now}
@@ -242,7 +272,9 @@ const CreateForm = () => {
             <div className={"text-sm text-foreground/50"}>You can set base information</div>
           </div>
           <div className={"flex flex-row"}>
-            <Button>Submit</Button>
+            <Button type="submit" disabled={isVerifying}>
+              {isVerifying ? "Submitting..." : "Submit"}
+            </Button>
           </div>
         </div>
       </form>
