@@ -1,5 +1,6 @@
 import { type Platform, Prisma, type User } from "@prisma/client"
 import { db } from "~/server/db"
+import type { UpdateUserParams } from "~/server/schema"
 import { fetchUserInfo } from "~/server/tools/platform"
 
 const generateReferralCode = (): string => {
@@ -60,6 +61,25 @@ class UserService {
         platformAvatar: user.avatar,
         platformName: user.name,
         platformId: user.id
+      }
+    })
+  }
+
+  async updateMe(params: UpdateUserParams, userAddress: string) {
+    return await db.user.update({
+      where: {
+        address: userAddress
+      },
+      data: {
+        name: params.name,
+        description: params.description,
+        email: params.email,
+        github: params.github,
+        instagram: params.instagram,
+        telegram: params.telegram,
+        website: params.website,
+        x: params.x,
+        avatar: params.avatar
       }
     })
   }

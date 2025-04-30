@@ -4,8 +4,10 @@ import MyRank from "~/app/profile/_components/my-rank"
 import Profile from "~/app/profile/_components/profile"
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs"
+import { api } from "~/trpc/server"
 
-const ProfilePage = () => {
+const ProfilePage = async () => {
+  await api.user.me.prefetch()
   return (
     <div className={"mt-4 space-y-6 max-w-4xl mx-auto"}>
       <div className={"flex flex-row gap-5 items-center"}>

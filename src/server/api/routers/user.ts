@@ -1,6 +1,7 @@
-import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc"
 import { z } from "zod"
 import { PlatformSchema } from "~/lib/zod"
+import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc"
+import { updateUserParamsSchema } from "~/server/schema"
 import { userService } from "~/server/services/user"
 
 export const userRouter = createTRPCRouter({
@@ -11,5 +12,9 @@ export const userRouter = createTRPCRouter({
   me: protectedProcedure.query(({ ctx }) => {
     const userAddress = ctx.session!.address
     return userService.getUserByAddress(userAddress)
+  }),
+  updateMe: protectedProcedure.input(updateUserParamsSchema).mutation(({ input, ctx }) => {
+    const userAddress = ctx.session!.address
+    return userService.updateMe(input, userAddress)
   })
 })

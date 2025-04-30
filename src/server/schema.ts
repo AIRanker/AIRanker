@@ -25,9 +25,6 @@ export const rankSeachParamsSchema = searchParamsSchema.extend({
   order: z.enum(["asc", "desc"]).optional().default("desc")
 })
 
-
-
-
 export const createRankParamsSchema = z.object({
   metadataId: z.string(),
   name: z.string().min(1).max(100),
@@ -78,12 +75,25 @@ export const createArticleParamsSchema = z.object({
   softwareList: z.array(z.string()).max(20)
 })
 
+export const updateUserParamsSchema = z.object({
+  name: z.string().min(1).max(100),
+  description: z.string().max(500).optional(),
+  email: z.string().email().optional(),
+  github: z.string().optional(),
+  instagram: z.string().optional(),
+  telegram: z.string().optional(),
+  website: z.string().optional(),
+  x: z.string().optional(),
+  avatar: z.string().optional()
+})
+
 export type RankSearchParams = z.infer<typeof rankSeachParamsSchema>
 export type Pageable = z.infer<typeof pageableSchema>
 export type CreateRankParams = z.infer<typeof createRankParamsSchema>
 export type CreateArticleParams = z.infer<typeof createArticleParamsSchema>
 export type UpdateRankParams = z.infer<typeof updateRankParamsSchema>
 export type SearchParams = z.infer<typeof searchParamsSchema>
+export type UpdateUserParams = z.infer<typeof updateUserParamsSchema>
 
 export interface PageableData<T> {
   list: T[]

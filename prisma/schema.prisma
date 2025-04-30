@@ -66,7 +66,7 @@ model User {
   website       String?        @map("website") @db.VarChar(255)
   telegram      String?        @map("telegram") @db.VarChar(255)
   github        String?        @map("github") @db.VarChar(255)
-  ingress       String?        @map("ingress") @db.VarChar(255)
+  instagram     String?        @map("instagram") @db.VarChar(255)
   createdAt     DateTime       @default(now()) @map("created_at")
   updatedAt     DateTime       @default(now()) @updatedAt @map("updated_at")
   invitedBy     String[]       @default([]) @map("invited_by")
