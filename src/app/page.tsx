@@ -1,5 +1,5 @@
-import { RankCard } from "~/app/_components/rank-card"
 import { RankList } from "~/app/_components/rank-list"
+import { RankToken } from "~/app/_components/rank-token"
 import { HydrateClient, api } from "~/trpc/server"
 
 export default async function Home() {
@@ -10,8 +10,7 @@ export default async function Home() {
     { title: "Top LLM Libraries", token: 1280 },
     { title: "Top LLM Libraries", token: 1280 }
   ]
-
-  const rankList = await api.rank.topRanks()
+  await api.rank.topRanks.prefetch()
   return (
     <HydrateClient>
       <div className={"h-full w-full grid grid-cols-1 md:grid-cols-4 mt-12 gap-6"}>
@@ -28,10 +27,10 @@ export default async function Home() {
               Source Projects on Web3
             </div>
           </div>
-          <RankList items={rankList} />
+          <RankList />
         </div>
         <div className={"col-span-1 space-y-4"}>
-          <RankCard title="Top Earning Rankings" items={topEarningItems} className="w-full" />
+          <RankToken title="Top Earning Rankings" items={topEarningItems} className="w-full" />
         </div>
       </div>
     </HydrateClient>

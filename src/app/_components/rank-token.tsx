@@ -27,7 +27,7 @@ interface RankCardProps {
   icon?: React.ReactNode
 }
 
-export const RankCard: FC<RankCardProps> = ({ icon = <BarChart2 className="size-5" />, title, items, className }) => {
+export const RankToken: FC<RankCardProps> = ({ icon = <BarChart2 className="size-5" />, title, items, className }) => {
   return (
     <div className={cn("p-4", className)}>
       <div className="mb-4 flex items-center gap-2 text-primary">
