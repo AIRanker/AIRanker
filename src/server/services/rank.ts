@@ -7,16 +7,16 @@ class RankService {
   async topRanks(userAddress?: string) {
     const topRanks = await db.rank.findMany({
       select: generateRankSelect(userAddress),
-      orderBy: [{ likes: { _count: "desc" } }, { favorites: { _count: "desc" } }],
+      orderBy: [{ likes: { _count: "desc" } }, { stars: { _count: "desc" } }],
       take: 10
     })
     return topRanks.map((rank) => ({
       ...rank,
       tags: rank.tags.map((tag) => tag.tag.name),
       isLiked: userAddress ? rank.likes.length > 0 : false,
-      isFavorite: userAddress ? rank.favorites.length > 0 : false,
+      isStared: userAddress ? rank.stars.length > 0 : false,
       likes: undefined,
-      favorites: undefined
+      stars: undefined
     }))
   }
   async pageRanks(params: RankSearchParams, userAddress?: string) {
@@ -54,9 +54,9 @@ class RankService {
       ...rank,
       tags: rank.tags.map((tag) => tag.tag.name),
       isLiked: userAddress ? rank.likes.length > 0 : false,
-      isFavorite: userAddress ? rank.favorites.length > 0 : false,
+      isStared: userAddress ? rank.stars.length > 0 : false,
       likes: undefined,
-      favorites: undefined
+      stars: undefined
     }))
     return {
       list,
@@ -91,15 +91,15 @@ class RankService {
     })
     return true
   }
-  async favorite(rankId: string, userAddress: string) {
-    const rankFavorite = await db.rankFavorite.findFirst({
+  async star(rankId: string, userAddress: string) {
+    const rankStar = await db.rankStar.findFirst({
       where: {
         rankId: rankId,
         userAddress
       }
     })
-    if (rankFavorite) {
-      await db.rankFavorite.delete({
+    if (rankStar) {
+      await db.rankStar.delete({
         where: {
           rankId_userAddress: {
             rankId: rankId,
@@ -109,7 +109,7 @@ class RankService {
       })
       return false
     }
-    await db.rankFavorite.create({
+    await db.rankStar.create({
       data: {
         rankId: rankId,
         userAddress
@@ -184,9 +184,9 @@ class RankService {
       }
 
       // 4. 处理软件
-      if (params.softwares && params.softwares.length > 0) {
+      if (params.softwareList && params.softwareList.length > 0) {
         await Promise.all(
-          params.softwares.map(async (softwareItem, index) => {
+          params.softwareList.map(async (softwareItem, index) => {
             let softwareId = softwareItem.softwareId
 
             // 如果没有提供 softwareId，则创建新软件
@@ -333,7 +333,7 @@ class RankService {
         }
 
         // 5. 处理软件更新（如果有提供）
-        if (params.softwares) {
+        if (params.softwareList) {
           // 删除当前的软件关联
           await tx.softwareOnRank.deleteMany({
             where: { rankId: id }
@@ -341,7 +341,7 @@ class RankService {
 
           // 添加新的软件关联
           await Promise.all(
-            params.softwares.map(async (softwareItem, index) => {
+            params.softwareList.map(async (softwareItem, index) => {
               let softwareId = softwareItem.softwareId
 
               // 如果没有提供 softwareId，则创建新软件

@@ -33,7 +33,7 @@ export const RankList: FC<TopRankedProps> = ({ title = "Top Ranked", items, clas
                 </div>
                 <div className="flex items-center gap-1">
                   <Heart className="h-5 w-5 text-primary" />
-                  <span className="text-sm font-medium">{item.favorites ?? 0}</span>
+                  <span className="text-sm font-medium">{item.stars ?? 0}</span>
                 </div>
               </div>
             </div>

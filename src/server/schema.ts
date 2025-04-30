@@ -21,7 +21,7 @@ export const searchParamsSchema = z.object({
 })
 export const rankSeachParamsSchema = searchParamsSchema.extend({
   tags: z.array(z.string()).optional(),
-  sort: z.enum(["likes", "favorites"]).optional().default("likes"),
+  sort: z.enum(["likes", "stars"]).optional().default("likes"),
   order: z.enum(["asc", "desc"]).optional().default("desc")
 })
 

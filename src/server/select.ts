@@ -21,7 +21,7 @@ export function generateRankSelect(userAddress?: string) {
         softwares: true,
         articles: true,
         likes: true,
-        favorites: true
+        stars: true
       }
     },
     ...(userAddress
@@ -35,7 +35,7 @@ export function generateRankSelect(userAddress?: string) {
             },
             take: 1
           },
-          favorites: {
+        stars: {
             where: {
               userAddress
             },
@@ -69,7 +69,7 @@ export function generateSoftwareSelect(userAddress?: string) {
     _count: {
       select: {
         likes: true,
-        favorites: true
+        stars: true
       }
     },
     ...(userAddress
@@ -83,7 +83,7 @@ export function generateSoftwareSelect(userAddress?: string) {
             },
             take: 1
           },
-          favorites: {
+        stars: {
             where: {
               userAddress
             },

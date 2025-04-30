@@ -5,7 +5,7 @@ import Link from "next/link"
 import { Avatar } from "~/components/ui/avatar"
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card"
 
-const LikeFavorite = () => {
+const LikeStar = () => {
   const likedRanks = [
     {
       id: "rank1",
@@ -44,7 +44,7 @@ const LikeFavorite = () => {
     }
   ]
 
-  const favoriteRanks = [
+  const starRanks = [
     {
       id: "rank6",
       title: "Top AI Developer Tools",
@@ -116,17 +116,17 @@ const LikeFavorite = () => {
         </CardContent>
       </Card>
 
-      {/* Favorites Card */}
+      {/* Star Card */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-primary">Favorite Rankings</CardTitle>
+          <CardTitle className="text-primary">Stared Rankings</CardTitle>
         </CardHeader>
         <CardContent>
-          <RankList ranks={favoriteRanks} icon="bookmark" />
+          <RankList ranks={starRanks} icon="bookmark" />
         </CardContent>
       </Card>
     </div>
   )
 }
 
-export default LikeFavorite
+export default LikeStar

@@ -22,9 +22,9 @@ export const softwareRouter = createTRPCRouter({
         const userAddress = ctx.session!.address
         return await softwareService.like(input.softwareId, userAddress)
     }),
-    favorite: protectedProcedure.input(z.object({ softwareId: z.string() })).mutation(async ({ input, ctx }) => {
+    fav: protectedProcedure.input(z.object({ softwareId: z.string() })).mutation(async ({ input, ctx }) => {
         const userAddress = ctx.session!.address
-        return await softwareService.favorite(input.softwareId, userAddress)
+        return await softwareService.star(input.softwareId, userAddress)
     }),
 })
 

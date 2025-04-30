@@ -60,6 +60,7 @@ class RankCommentService {
 
     // Get replies from db
     const replyIds = replyInfos.flatMap((reply) => reply.replyIds)
+    // biome-ignore lint/complexity/noForEach: <explanation>
     ;(
       await db.rankComment.findMany({
         where: {

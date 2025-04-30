@@ -63,9 +63,9 @@ class ArticleService {
           ...software,
           tags: software.tags.map((tag) => tag.tag.name),
           isLiked: userAddress ? software.likes?.length > 0 : false,
-          isFavorite: userAddress ? software.favorites?.length > 0 : false,
+          isStared: userAddress ? software.stars?.length > 0 : false,
           likes: undefined,
-          favorites: undefined
+          stars: undefined
         }
       })
 
@@ -107,9 +107,9 @@ class ArticleService {
       })
 
       // 验证并关联软件
-      if (params.softwares && params.softwares.length > 0) {
+      if (params.softwareList && params.softwareList.length > 0) {
         // 验证所有软件ID是否存在
-        const softwareIds = params.softwares
+        const softwareIds = params.softwareList
         const existingSoftwares = await tx.software.findMany({
           where: {
             id: {
@@ -178,7 +178,7 @@ class ArticleService {
       })
 
       // 3. 更新软件关联
-      if (params.softwares && params.softwares.length > 0) {
+      if (params.softwareList && params.softwareList.length > 0) {
         // 删除旧的关联
         await tx.softwareOnArticle.deleteMany({
           where: { articleId: id }
@@ -186,7 +186,7 @@ class ArticleService {
 
         // 创建新的关联
         await Promise.all(
-          params.softwares.map((softwareId) =>
+          params.softwareList.map((softwareId) =>
             tx.softwareOnArticle.create({
               data: {
                 softwareId,

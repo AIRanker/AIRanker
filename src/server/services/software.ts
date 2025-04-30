@@ -39,10 +39,10 @@ class SoftwareService {
       ...software,
       tags: software.tags.map((tag) => tag.tag.name),
       isLiked: userAddress ? software.likes?.length > 0 : false,
-      isFavorite: userAddress ? software.favorites?.length > 0 : false,
+      isStared: userAddress ? software.stars?.length > 0 : false,
       // 移除原始关联数据，只保留处理后的状态
       likes: undefined,
-      favorites: undefined
+      stars: undefined
     }))
 
     return {
@@ -77,9 +77,9 @@ class SoftwareService {
         rankIndex: item.rankIndex,
         tags: software.tags.map((tag) => tag.tag.name),
         isLiked: userAddress ? software.likes?.length > 0 : false,
-        isFavorite: userAddress ? software.favorites?.length > 0 : false,
+        isStared: userAddress ? software.stars?.length > 0 : false,
         likes: undefined,
-        favorites: undefined
+        stars: undefined
       }
     })
   }
@@ -110,15 +110,15 @@ class SoftwareService {
     return true
   }
 
-  async favorite(softwareId: string, userAddress: string) {
-    const softwareFavorite = await db.softwareFavorite.findFirst({
+  async star(softwareId: string, userAddress: string) {
+    const softwareStar = await db.softwareStar.findFirst({
       where: {
         softwareId: softwareId,
         userAddress
       }
     })
-    if (softwareFavorite) {
-      await db.softwareFavorite.delete({
+    if (softwareStar) {
+      await db.softwareStar.delete({
         where: {
           softwareId_userAddress: {
             softwareId: softwareId,
@@ -128,7 +128,7 @@ class SoftwareService {
       })
       return false
     }
-    await db.softwareFavorite.create({
+    await db.softwareStar.create({
       data: {
         softwareId: softwareId,
         userAddress

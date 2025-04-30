@@ -1,5 +1,5 @@
 import { Heart, List, User } from "lucide-react"
-import LikeFavorite from "~/app/profile/_components/like-favorite"
+import LikeStar from "~/app/profile/_components/like-star"
 import MyRank from "~/app/profile/_components/my-rank"
 import Profile from "~/app/profile/_components/profile"
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar"
@@ -24,7 +24,7 @@ const ProfilePage = () => {
             <User /> Profile
           </TabsTrigger>
           <TabsTrigger className={"transition-all cursor-pointer data-[state=active]:bg-primary data-[state=active]:text-background font-bold"} value="like">
-            <Heart /> Likes & Favorites
+            <Heart /> Likes & Stars
           </TabsTrigger>
           <TabsTrigger className={"transition-all cursor-pointer data-[state=active]:bg-primary data-[state=active]:text-background font-bold"} value="rank">
             <List /> My Rank
@@ -34,7 +34,7 @@ const ProfilePage = () => {
           <Profile />
         </TabsContent>
         <TabsContent value="like" className={"mt-6"}>
-          <LikeFavorite />
+          <LikeStar />
         </TabsContent>
         <TabsContent value="rank" className={"mt-6"}>
           <MyRank />
