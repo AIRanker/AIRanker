@@ -41,7 +41,7 @@ class RankService {
 
     const total = await db.rank.count({ where: whereOptions })
     const pages = Math.ceil(total / params.pageable.size) || 1
-    const actualPage = Math.max(0, Math.min(params.pageable.page, pages - 1));
+    const actualPage = Math.max(0, Math.min(params.pageable.page, pages - 1))
     const ranks = await db.rank.findMany({
       where: whereOptions,
       select: generateRankSelect(userAddress),
@@ -403,6 +403,10 @@ class RankService {
         console.error("Error updating rank:", error)
         throw new Error(`Failed to update rank: ${error.message}`)
       })
+  }
+
+  async detail(rankId: string, userAddress: string) {
+    // TODO
   }
 }
 
