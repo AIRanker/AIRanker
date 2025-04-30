@@ -425,7 +425,23 @@ class RankService {
   }
 
   async detail(rankId: string, userAddress: string) {
-    // TODO
+    const rank = await db.rank.findUnique({
+      where: {
+        id: rankId
+      },
+      select: generateRankSelect(userAddress)
+    })
+    if (!rank) {
+      throw new Error(`Rank with ID ${rankId} not found`)
+    }
+    return {
+      ...rank,
+      tags: rank.tags.map((tag) => tag.tag.name),
+      isLiked: userAddress ? rank.likes.length > 0 : false,
+      isStared: userAddress ? rank.stars.length > 0 : false,
+      likes: undefined,
+      stars: undefined
+    }
   }
 }
 
