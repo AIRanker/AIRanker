@@ -22,7 +22,10 @@ export const searchParamsSchema = z.object({
 export const rankSeachParamsSchema = searchParamsSchema.extend({
   tags: z.array(z.string()).optional(),
   sort: z.enum(["likes", "stars"]).optional().default("likes"),
-  order: z.enum(["asc", "desc"]).optional().default("desc")
+  order: z.enum(["asc", "desc"]).optional().default("desc"),
+  isStared: z.boolean().optional().default(false),
+  isLiked: z.boolean().optional().default(false),
+  isOwner: z.boolean().optional().default(false)
 })
 
 export const createRankParamsSchema = z.object({

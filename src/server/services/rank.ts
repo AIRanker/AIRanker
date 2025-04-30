@@ -39,6 +39,25 @@ class RankService {
       }
     }
 
+    if (userAddress && params.isOwner) {
+      whereOptions.userAddress = userAddress;
+
+    }
+    if (params.isLiked) {
+      whereOptions.likes = {
+        some: {
+          userAddress
+        }
+      };
+    }
+    if (params.isStared) {
+      whereOptions.stars = {
+        some: {
+          userAddress
+        }
+      };
+    }
+
     const total = await db.rank.count({ where: whereOptions })
     const pages = Math.ceil(total / params.pageable.size) || 1
     const actualPage = Math.max(0, Math.min(params.pageable.page, pages - 1))
