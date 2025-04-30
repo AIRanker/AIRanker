@@ -26,7 +26,7 @@ export const rankRouter = createTRPCRouter({
     return await rankService.create(input.forms, userAddress, input.metadataId)
   }),
   detail: publicProcedure.input(z.object({ rankId: z.string() })).query(async ({ input, ctx }) => {
-    const userAddress = ctx.session!.address
+    const userAddress = ctx.session?.address
     return await rankService.detail(input.rankId, userAddress)
   })
 })

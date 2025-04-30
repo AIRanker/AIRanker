@@ -40,22 +40,21 @@ class RankService {
     }
 
     if (userAddress && params.isOwner) {
-      whereOptions.userAddress = userAddress;
-
+      whereOptions.userAddress = userAddress
     }
     if (params.isLiked) {
       whereOptions.likes = {
         some: {
           userAddress
         }
-      };
+      }
     }
     if (params.isStared) {
       whereOptions.stars = {
         some: {
           userAddress
         }
-      };
+      }
     }
 
     const total = await db.rank.count({ where: whereOptions })
@@ -424,7 +423,7 @@ class RankService {
       })
   }
 
-  async detail(rankId: string, userAddress: string) {
+  async detail(rankId: string, userAddress?: string) {
     const rank = await db.rank.findUnique({
       where: {
         id: rankId

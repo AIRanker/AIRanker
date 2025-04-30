@@ -141,3 +141,4 @@ class SoftwareService {
 const softwareService = new SoftwareService()
 export default softwareService
 export type PageSoftwareResult = Awaited<ReturnType<typeof softwareService.pageSoftwares>>
+export type SoftwareByRankIdResult = Awaited<ReturnType<typeof softwareService.getSoftwaresByRankId>>

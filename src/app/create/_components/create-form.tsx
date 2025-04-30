@@ -8,6 +8,7 @@ import PictureSelectPopover from "~/components/picture-select-popover"
 import { Button } from "~/components/ui/button"
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "~/components/ui/form"
 
+import { useRouter } from "next/navigation"
 import React, { useTransition } from "react"
 import AddDialog from "~/app/create/_components/add-dialog"
 import RankSearch from "~/app/create/_components/rank-search"
@@ -23,6 +24,7 @@ import { cn } from "~/lib/utils"
 import { type CreateRankParams, createRankParamsSchema } from "~/server/schema"
 
 const CreateForm = () => {
+  const router = useRouter()
   const form = useForm<CreateRankParams>({
     resolver: zodResolver(createRankParamsSchema, { async: true }),
     reValidateMode: "onBlur",
@@ -89,7 +91,7 @@ const CreateForm = () => {
   return (
     <Form {...form}>
       <MultiStepLoader
-        loadingStates={[{ text: "Approve asset amount." }, { text: "Initializing Rank." },{text:"Finally loading."}]}
+        loadingStates={[{ text: "Approve asset amount." }, { text: "Initializing Rank." }, { text: "Finally loading." }]}
         errorState={launchStepState.error}
         visible={launchStepState.showSteps}
         currentState={launchStepState.now}
@@ -99,6 +101,7 @@ const CreateForm = () => {
         onFinish={() => {
           exitStep()
           // useUtils.dao.detail.invalidate()
+          void router.push("/")
         }}
       />
       <form onSubmit={handleSubmit(submit)} className={"pt-6 flex flex-col gap-12"}>

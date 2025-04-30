@@ -1,4 +1,5 @@
 "use client"
+import { SiGithub } from "@icons-pack/react-simple-icons"
 import { StarIcon, Wallet2 } from "lucide-react"
 import ProfileDetail from "~/app/profile/_components/profile-detail"
 import ProfileSocial from "~/app/profile/_components/profile-social"
@@ -26,6 +27,16 @@ const Profile = () => {
               <div>
                 <p className="text-primary font-medium">Web3 Wallet</p>
                 <p className="text-muted-foreground">{data?.address}</p>
+              </div>
+            </div>
+          </div>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="bg-muted p-2 rounded-full">
+                <SiGithub className="h-5 w-5 text-primary" />
+              </div>
+              <div>
+                <p className="text-primary font-medium">Coming soon...</p>
               </div>
             </div>
           </div>

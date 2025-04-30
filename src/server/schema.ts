@@ -45,7 +45,7 @@ export const createRankParamsSchema = z.object({
         rankIndex: z.number().min(0)
       })
     )
-    .min(5)
+    .min(1)
     .max(20)
 })
 export const updateRankParamsSchema = z.object({
@@ -65,7 +65,7 @@ export const updateRankParamsSchema = z.object({
         rankIndex: z.number().min(0)
       })
     )
-    .min(5)
+    .min(1)
     .max(20)
 })
 
