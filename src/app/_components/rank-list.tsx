@@ -71,7 +71,7 @@ export const RankList: FC<TopRankedProps> = ({ title = "Top Ranked", className }
                       event.stopPropagation()
                     }}
                   />
-                  <span className="text-sm font-medium">{item.likes ?? 0}</span>
+                  <span className="text-sm font-medium">{item._count.likes ?? 0}</span>
                 </div>
                 <div className="flex items-center gap-1">
                   <Heart
@@ -86,7 +86,7 @@ export const RankList: FC<TopRankedProps> = ({ title = "Top Ranked", className }
                       event.stopPropagation()
                     }}
                   />
-                  <span className="text-sm font-medium">{item.stars ?? 0}</span>
+                  <span className="text-sm font-medium">{item._count.stars ?? 0}</span>
                 </div>
               </div>
             </div>
