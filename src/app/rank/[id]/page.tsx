@@ -1,7 +1,7 @@
 import { Bookmark, Heart, Share2 } from "lucide-react"
 import Link from "next/link"
-import Comments from "~/app/ranker/[id]/_components/comment"
-import RankerContent from "~/app/ranker/[id]/_components/content"
+import Comments from "~/app/rank/[id]/_components/comment"
+import RankerContent from "~/app/rank/[id]/_components/content"
 import { Badge } from "~/components/ui/badge"
 
 const RankerPage = async ({ params }: { params: Promise<{ id: string }> }) => {
