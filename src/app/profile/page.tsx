@@ -7,13 +7,14 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs"
 import { api } from "~/trpc/server"
 
 const ProfilePage = async () => {
+  const user = await api.user.me()
   await api.user.me.prefetch()
   return (
     <div className={"mt-4 space-y-6 max-w-4xl mx-auto"}>
       <div className={"flex flex-row gap-5 items-center"}>
         <Avatar className={"rounded-full size-20 border border-primary"}>
-          <AvatarImage src="https://storage.googleapis.com/repofi/airanker/avatar/1745853400956__202504232.jpg" />
-          <AvatarFallback>CN</AvatarFallback>
+          <AvatarImage src={user?.avatar ?? "https://storage.googleapis.com/repofi-prod/launchpad/avatar/1745410111571_airanker.svg"} />
+          <AvatarFallback>{user?.name}</AvatarFallback>
         </Avatar>
         <div className={"flex flex-col gap-2"}>
           <div className={"text-2xl font-semibold"}>Account Settings</div>
