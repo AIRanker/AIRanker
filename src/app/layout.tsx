@@ -3,6 +3,7 @@ import "~/styles/globals.css"
 import type { Metadata } from "next"
 import { Geist } from "next/font/google"
 
+import { ClerkProvider, SignInButton, SignUpButton, SignedIn, SignedOut, UserButton } from "@clerk/nextjs"
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools"
 import { headers } from "next/headers"
@@ -12,7 +13,6 @@ import { cookieToInitialState } from "wagmi"
 import AuthProvider from "~/components/auth/auth-provider"
 import { wagmiConfig } from "~/components/auth/config"
 import WalletButton from "~/components/auth/wallet-button"
-import ToTop from "~/components/common/to-top"
 import LogoAiRankerFull from "~/components/icons/logo-ai-ranker-full"
 import Nav from "~/components/nav"
 import { Badge } from "~/components/ui/badge"
@@ -57,60 +57,68 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
   const hash = env.NEXT_PUBLIC_GIT_SHA?.slice(0, 7) ?? "DEV"
 
   return (
-    <html lang="en" className={`${geist.variable}`}>
-      <body className={"flex h-screen w-full gap-12 flex-col"}>
-        <QueryClientProvider client={queryClient}>
-          <AuthProvider session={session} wagmiState={wagmiState}>
-            <TRPCReactProvider>
-              <ReactQueryDevtools initialIsOpen={false} />
-              <Toaster />
-              <header className="bg-background fixed top-0 z-30 mx-auto flex h-20 w-full items-center justify-between shadow-lg px-4 xl:px-0">
-                <div className="mx-auto flex w-full max-w-7xl items-center justify-between pr-0">
-                  <Link className={"flex flex-row items-center gap-2"} href="/">
-                    <LogoAiRankerFull className="size-12 text-primary" />
-                  </Link>
-                  <div>
-                    <Nav />
-                  </div>
-                  <div className="hidden items-center gap-4 md:flex md:gap-4">
-                    <WalletButton variant={"default"} />
-                    <Link href={"/create"}>
-                      <Button variant={"outline"} className={"border-primary text-primary font-bold"}>
-                        Submit
-                      </Button>
+    <ClerkProvider>
+      <html lang="en" className={`${geist.variable}`}>
+        <body className={"flex h-screen w-full gap-12 flex-col"}>
+          <QueryClientProvider client={queryClient}>
+            <AuthProvider session={session} wagmiState={wagmiState}>
+              <TRPCReactProvider>
+                <ReactQueryDevtools initialIsOpen={false} />
+                <Toaster />
+                <header className="bg-background fixed top-0 z-30 mx-auto flex h-20 w-full items-center justify-between shadow-lg px-4 xl:px-0">
+                  <div className="mx-auto flex w-full max-w-7xl items-center justify-between pr-0">
+                    <Link className={"flex flex-row items-center gap-2"} href="/">
+                      <LogoAiRankerFull className="size-12 text-primary" />
                     </Link>
-                  </div>
-                </div>
-              </header>
-              <div className={"flex-1 mx-auto w-full max-w-7xl px-4 xl:px-0"}>{children}</div>
-              <footer className="bg-background mt-auto w-full border-t py-6">
-                <div className="mx-auto flex w-full max-w-7xl flex-col items-center justify-between gap-4 px-4 md:flex-row xl:px-0">
-                  <div className="flex flex-col items-center gap-2 md:items-start">
-                    <div className={"flex flex-row gap-4"}>
-                      <Link href="/" className="flex items-center gap-2">
-                        <LogoAiRankerFull className="size-8 text-primary" />
+                    <div>
+                      <Nav />
+                    </div>
+                    <div className="hidden items-center gap-4 md:flex md:gap-4">
+                      <SignedOut>
+                        <SignInButton />
+                        <SignUpButton />
+                      </SignedOut>
+                      <SignedIn>
+                        <UserButton />
+                      </SignedIn>
+                      <Link href={"/create"}>
+                        <Button variant={"outline"} className={"border-primary text-primary font-bold"}>
+                          Submit
+                        </Button>
                       </Link>
-                      <div className="flex items-center gap-2">
-                        <Badge variant="outline">{version}</Badge>
-                        <Badge className={"hidden"} variant="outline">
-                          {hash}
-                        </Badge>
-                      </div>
                     </div>
                   </div>
-                  <div className="flex gap-6">
-                    {socialMedias.map((social) => (
-                      <a key={social.type} href={social.href} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary">
-                        {social.title}
-                      </a>
-                    ))}
+                </header>
+                <div className={"flex-1 mx-auto w-full max-w-7xl px-4 xl:px-0"}>{children}</div>
+                <footer className="bg-background mt-auto w-full border-t py-6">
+                  <div className="mx-auto flex w-full max-w-7xl flex-col items-center justify-between gap-4 px-4 md:flex-row xl:px-0">
+                    <div className="flex flex-col items-center gap-2 md:items-start">
+                      <div className={"flex flex-row gap-4"}>
+                        <Link href="/" className="flex items-center gap-2">
+                          <LogoAiRankerFull className="size-8 text-primary" />
+                        </Link>
+                        <div className="flex items-center gap-2">
+                          <Badge variant="outline">{version}</Badge>
+                          <Badge className={"hidden"} variant="outline">
+                            {hash}
+                          </Badge>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="flex gap-6">
+                      {socialMedias.map((social) => (
+                        <a key={social.type} href={social.href} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary">
+                          {social.title}
+                        </a>
+                      ))}
+                    </div>
                   </div>
-                </div>
-              </footer>
-            </TRPCReactProvider>
-          </AuthProvider>
-        </QueryClientProvider>
-      </body>
-    </html>
+                </footer>
+              </TRPCReactProvider>
+            </AuthProvider>
+          </QueryClientProvider>
+        </body>
+      </html>
+    </ClerkProvider>
   )
 }
