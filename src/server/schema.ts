@@ -15,6 +15,18 @@ export const rankCommentSchema = z.object({
   replyToUser: z.string().nullable(),
   rootCommentId: z.string().nullable()
 })
+
+export const softwareCommentSchema = z.object({
+  id: z.string(),
+  softwareId: z.string(),
+  comment: z.string(),
+  createdAt: z.coerce.date(),
+  createdBy: z.string(),
+  deletedAt: z.coerce.date().nullable(),
+  replyToComment: z.string().nullable(),
+  replyToUser: z.string().nullable(),
+  rootCommentId: z.string().nullable()
+})
 export const searchParamsSchema = z.object({
   search: z.string().optional(),
   pageable: pageableSchema
@@ -26,6 +38,14 @@ export const rankSeachParamsSchema = searchParamsSchema.extend({
   isStared: z.boolean().optional().default(false),
   isLiked: z.boolean().optional().default(false),
   isOwner: z.boolean().optional().default(false)
+})
+
+export const softwareParamsSchema = z.object({
+  name: z.string().min(1).max(100),
+  image: z.string(),
+  description: z.string().optional(),
+  url: z.string().url(),
+  tags: z.array(z.string()).optional(),
 })
 
 export const createRankParamsSchema = z.object({
@@ -41,6 +61,7 @@ export const createRankParamsSchema = z.object({
         image: z.string().optional(),
         description: z.string().optional(),
         url: z.string().optional(),
+        tags: z.array(z.string()).optional(),
         rankDescription: z.string().max(500),
         rankIndex: z.number().min(0)
       })
@@ -61,6 +82,7 @@ export const updateRankParamsSchema = z.object({
         image: z.string().optional(),
         description: z.string().optional(),
         url: z.string().optional(),
+        tags: z.array(z.string()).optional(),
         rankDescription: z.string().max(500),
         rankIndex: z.number().min(0)
       })
@@ -68,6 +90,7 @@ export const updateRankParamsSchema = z.object({
     .min(1)
     .max(20)
 })
+
 
 export const createArticleParamsSchema = z.object({
   title: z.string().min(1).max(100),
@@ -96,6 +119,8 @@ export type CreateArticleParams = z.infer<typeof createArticleParamsSchema>
 export type UpdateRankParams = z.infer<typeof updateRankParamsSchema>
 export type SearchParams = z.infer<typeof searchParamsSchema>
 export type UpdateUserParams = z.infer<typeof updateUserParamsSchema>
+export type SoftwareParams = z.infer<typeof softwareParamsSchema>
+
 
 export interface PageableData<T> {
   list: T[]

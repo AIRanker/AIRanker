@@ -56,28 +56,29 @@ model ApiKey {
 }
 
 model User {
-  avatar        String?        @map("avatar") @db.VarChar(1024)
-  address       String         @id @map("address") @db.VarChar(255)
-  description   String?        @map("description") @db.VarChar(1024)
-  name          String?        @map("name") @db.VarChar(255)
-  email         String?        @unique @map("email") @db.VarChar(255)
-  referralCode  String         @unique @map("referral_code")
-  x             String?        @map("x") @db.VarChar(255)
-  website       String?        @map("website") @db.VarChar(255)
-  telegram      String?        @map("telegram") @db.VarChar(255)
-  github        String?        @map("github") @db.VarChar(255)
-  instagram     String?        @map("instagram") @db.VarChar(255)
-  createdAt     DateTime       @default(now()) @map("created_at")
-  updatedAt     DateTime       @default(now()) @updatedAt @map("updated_at")
-  invitedBy     String[]       @default([]) @map("invited_by")
-  ranks         Rank[]
-  platforms     UserPlatform[]
-  articles      Article[]
-  rankLikes     RankLike[]
-  rankStars     RankStar[]
-  softwareLikes SoftwareLike[]
-  softwareStars SoftwareStar[]
-  rankComments  RankComment[]
+  avatar           String?           @map("avatar") @db.VarChar(1024)
+  address          String            @id @map("address") @db.VarChar(255)
+  description      String?           @map("description") @db.VarChar(1024)
+  name             String?           @map("name") @db.VarChar(255)
+  email            String?           @unique @map("email") @db.VarChar(255)
+  referralCode     String            @unique @map("referral_code")
+  x                String?           @map("x") @db.VarChar(255)
+  website          String?           @map("website") @db.VarChar(255)
+  telegram         String?           @map("telegram") @db.VarChar(255)
+  github           String?           @map("github") @db.VarChar(255)
+  instagram        String?           @map("instagram") @db.VarChar(255)
+  createdAt        DateTime          @default(now()) @map("created_at")
+  updatedAt        DateTime          @default(now()) @updatedAt @map("updated_at")
+  invitedBy        String[]          @default([]) @map("invited_by")
+  ranks            Rank[]
+  platforms        UserPlatform[]
+  articles         Article[]
+  rankLikes        RankLike[]
+  rankStars        RankStar[]
+  softwareLikes    SoftwareLike[]
+  softwareStars    SoftwareStar[]
+  rankComments     RankComment[]
+  softwareComments SoftwareComment[]
 
   @@map("t_user")
 }
@@ -132,11 +133,22 @@ model RankTag {
   @@map("t_rank_tag")
 }
 
+model SoftwareCategory {
+  id        String     @id @default(dbgenerated("gen_random_uuid()")) @map("id")
+  name      String     @map("name") @db.VarChar(255)
+  createdAt DateTime   @default(now()) @map("created_at")
+  updatedAt DateTime   @default(now()) @updatedAt @map("updated_at")
+  softwares Software[]
+
+  @@map("t_software_category")
+}
+
 model Software {
   id          String              @id @default(dbgenerated("gen_random_uuid()")) @map("id")
   image       String              @map("image") @db.VarChar(255)
   name        String              @map("name") @db.VarChar(255)
   description String?             @map("description") @db.Text
+  categoryId  String?
   url         String              @map("url") @db.VarChar(255)
   createdAt   DateTime            @default(now()) @map("created_at")
   updatedAt   DateTime            @default(now()) @updatedAt @map("updated_at")
@@ -145,6 +157,8 @@ model Software {
   likes       SoftwareLike[]
   stars       SoftwareStar[]
   articles    SoftwareOnArticle[]
+  comments    SoftwareComment[]
+  category    SoftwareCategory?   @relation(fields: [categoryId], references: [id])
 
   @@map("t_software")
 }
@@ -267,4 +281,25 @@ model RankComment {
   @@index([rootCommentId])
   @@index([createdAt])
   @@map("t_rank_comment")
+}
+
+model SoftwareComment {
+  id         String   @id @default(dbgenerated("gen_random_uuid()")) @map("id")
+  softwareId String   @map("software_id")
+  content    String   @db.Text
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  userAddress String    @map("user_address") @db.VarChar(255)
+  deletedAt   DateTime? @map("deleted_at")
+
+  replyToComment String? @map("reply_to_comment") @db.VarChar(255)
+  replyToUser    String? @map("reply_to_user") @db.VarChar(255)
+  rootCommentId  String? @map("root_comment_id") @db.VarChar(255)
+
+  software Software @relation(fields: [softwareId], references: [id], onDelete: Cascade)
+  user     User     @relation(fields: [userAddress], references: [address])
+
+  @@index([rootCommentId])
+  @@index([createdAt])
+  @@map("t_software_comment")
 }

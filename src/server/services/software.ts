@@ -1,7 +1,62 @@
 import type { Prisma } from "@prisma/client"
 import { db } from "../db"
-import type { PageableData, SearchParams } from "../schema"
+import type { PageableData, SearchParams, SoftwareParams } from "../schema"
 import { generateSoftwareSelect } from "../select"
+export async function createSoftware(tx: Prisma.TransactionClient, softwareParams: SoftwareParams, userAddress: string) {
+  const newSoftware = await tx.software.create({
+    data: {
+      name: softwareParams.name,
+      description: softwareParams.description || "",
+      image: softwareParams.image || "",
+      url: softwareParams.url
+    },
+    select: generateSoftwareSelect(userAddress)
+  })
+  // 只有创建新软件时才处理标签
+  if (softwareParams.tags && softwareParams.tags.length > 0) {
+    // 查找已存在的标签
+    const existingTags = await tx.tag.findMany({
+      where: {
+        name: {
+          in: softwareParams.tags
+        }
+      },
+      select: {
+        id: true,
+        name: true
+      }
+    });
+
+    const existingTagNames = existingTags.map(tag => tag.name);
+    const newTagNames = softwareParams.tags.filter(tag => !existingTagNames.includes(tag));
+
+    // 创建新标签
+    const newTags = await Promise.all(
+      newTagNames.map(name =>
+        tx.tag.create({
+          data: { name },
+          select: { id: true, name: true }
+        })
+      )
+    );
+
+    // 合并所有标签
+    const allTags = [...existingTags, ...newTags];
+
+    // 将标签关联到软件
+    await Promise.all(
+      allTags.map(tag =>
+        tx.softwareTag.create({
+          data: {
+            softwareId: newSoftware.id,
+            tagId: tag.id
+          }
+        })
+      )
+    );
+  }
+  return newSoftware
+}
 
 class SoftwareService {
   async pageSoftwares(params: SearchParams, userAddress?: string) {
@@ -135,6 +190,12 @@ class SoftwareService {
       }
     })
     return true
+  }
+  async create(softwareParams: SoftwareParams, userAddress: string) {
+    return await db.$transaction(async (tx) => {
+      const newSoftware = await createSoftware(tx, softwareParams, userAddress)
+      return newSoftware
+    })
   }
 }
 

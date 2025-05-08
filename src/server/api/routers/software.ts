@@ -1,6 +1,6 @@
 import { z } from "zod"
 import { createTRPCRouter, protectedProcedure, publicProcedure } from "~/server/api/trpc"
-import { searchParamsSchema } from "~/server/schema"
+import { searchParamsSchema, softwareParamsSchema } from "~/server/schema"
 import softwareService from "~/server/services/software"
 
 export const softwareRouter = createTRPCRouter({
@@ -26,6 +26,11 @@ export const softwareRouter = createTRPCRouter({
         const userAddress = ctx.session!.address
         return await softwareService.star(input.softwareId, userAddress)
     }),
+    create: protectedProcedure.input(softwareParamsSchema).mutation(async ({ input, ctx }) => {
+        const userAddress = ctx.session!.address
+        return await softwareService.create(input, userAddress)
+    }
+    ),
 })
 
 export default softwareRouter

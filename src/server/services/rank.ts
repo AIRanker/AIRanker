@@ -2,6 +2,7 @@ import type { Prisma } from "@prisma/client"
 import { db } from "../db"
 import type { CreateRankParams, PageableData, RankSearchParams, UpdateRankParams } from "../schema"
 import { generateRankSelect } from "../select"
+import { createSoftware } from "./software"
 
 class RankService {
   async topRanks(userAddress?: string) {
@@ -206,48 +207,38 @@ class RankService {
         await Promise.all(
           params.softwareList.map(async (softwareItem, index) => {
             let softwareId = softwareItem.softwareId
-
             // 如果没有提供 softwareId，则创建新软件
-            if (!softwareId && softwareItem.name) {
-              const newSoftware = await tx.software.create({
-                data: {
-                  name: softwareItem.name,
-                  description: softwareItem.description || "",
-                  image: softwareItem.image || "",
-                  url: softwareItem.url || "" // 如果 CreateRankParams 中没有 url 字段，可能需要提供默认值或从其他地方获取
+            if (softwareId) {
+              // 检查软件是否存在
+              const softwareExists = await tx.software.findUnique({
+                where: {
+                  id: softwareId
                 },
                 select: {
                   id: true
                 }
               })
-
+              if (!softwareExists) {
+                throw new Error(`Software with ID ${softwareId} not found.`)
+              }
+            } else {
+              if (!softwareItem.name) {
+                throw new Error("Software name is required when creating a new software.")
+              }
+              const newSoftware = await createSoftware(tx, {
+                name: softwareItem.name,
+                description: softwareItem.description || "",
+                image: softwareItem.image || "",
+                url: softwareItem.url || "",
+                tags: softwareItem.tags
+              }, userAddress)
               softwareId = newSoftware.id
             }
-
-            // 确保 softwareId 存在
-            if (!softwareId) {
-              throw new Error("Software ID is required when creating a rank.")
-            }
-
-            // 检查软件是否存在
-            const softwareExists = await tx.software.findUnique({
-              where: {
-                id: softwareId
-              },
-              select: {
-                id: true
-              }
-            })
-
-            if (!softwareExists) {
-              throw new Error(`Software with ID ${softwareId} not found.`)
-            }
-
             // 将软件添加到排名中
             await tx.softwareOnRank.create({
               data: {
                 rankId: rank.id,
-                softwareId: softwareId,
+                softwareId: softwareId!,
                 description: softwareItem.rankDescription,
                 rankIndex: softwareItem.rankIndex // 如果没有提供 rankIndex，则使用数组索引
               }
@@ -361,43 +352,33 @@ class RankService {
           await Promise.all(
             params.softwareList.map(async (softwareItem, index) => {
               let softwareId = softwareItem.softwareId
-
               // 如果没有提供 softwareId，则创建新软件
-              if (!softwareId && softwareItem.name) {
-                const newSoftware = await tx.software.create({
-                  data: {
-                    name: softwareItem.name,
-                    description: softwareItem.description || "",
-                    image: softwareItem.image || "",
-                    url: softwareItem.url || ""
+              if (softwareId) {
+                // 检查软件是否存在
+                const softwareExists = await tx.software.findUnique({
+                  where: {
+                    id: softwareId
                   },
                   select: {
                     id: true
                   }
                 })
-
+                if (!softwareExists) {
+                  throw new Error(`Software with ID ${softwareId} not found.`)
+                }
+              } else {
+                if (!softwareItem.name) {
+                  throw new Error("Software name is required when creating a new software.")
+                }
+                const newSoftware = await createSoftware(tx, {
+                  name: softwareItem.name,
+                  description: softwareItem.description || "",
+                  image: softwareItem.image || "",
+                  url: softwareItem.url || "",
+                  tags: softwareItem.tags
+                }, userAddress)
                 softwareId = newSoftware.id
               }
-
-              // 确保 softwareId 存在
-              if (!softwareId) {
-                throw new Error("Software ID is required when updating a rank.")
-              }
-
-              // 检查软件是否存在
-              const softwareExists = await tx.software.findUnique({
-                where: {
-                  id: softwareId
-                },
-                select: {
-                  id: true
-                }
-              })
-
-              if (!softwareExists) {
-                throw new Error(`Software with ID ${softwareId} not found.`)
-              }
-
               // 将软件添加到排名中
               await tx.softwareOnRank.create({
                 data: {
