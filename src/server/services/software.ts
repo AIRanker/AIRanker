@@ -227,6 +227,23 @@ class SoftwareService {
       return newSoftware
     })
   }
+  async recentlySoftwares() {
+    const softwares = await db.software.findMany({
+      orderBy: {
+        updatedAt: "desc"
+      },
+      take: 5,
+      select: generateSoftwareSelect()
+    })
+    return softwares.map((software) => ({
+      ...software,
+      tags: software.tags.map((tag) => tag.tag.name),
+      isLiked: false,
+      isStared: false,
+      likes: undefined,
+      stars: undefined
+    }))
+  }
 }
 
 const softwareService = new SoftwareService()

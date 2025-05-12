@@ -31,6 +31,10 @@ export const softwareRouter = createTRPCRouter({
         return await softwareService.create(input, userAddress)
     }
     ),
+    recentlySoftwares: publicProcedure
+        .query(async ({ }) => {
+            return await softwareService.recentlySoftwares()
+        }),
 })
 
 export default softwareRouter
