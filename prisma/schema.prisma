@@ -90,6 +90,8 @@ model Tag {
   updatedAt DateTime      @default(now()) @updatedAt @map("updated_at")
   ranks     RankTag[]
   softwares SoftwareTag[]
+
+  @@map("t_tag")
 }
 
 model Rank {
