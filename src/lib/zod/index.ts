@@ -192,7 +192,7 @@ export const SoftwareSchema = z.object({
   image: z.string(),
   name: z.string(),
   description: z.string().nullable(),
-  categoryId: z.string().nullable(),
+  categoryId: z.string(),
   url: z.string(),
   createdAt: z.coerce.date(),
   updatedAt: z.coerce.date(),
@@ -1511,7 +1511,7 @@ export const SoftwareWhereInputSchema: z.ZodType<Prisma.SoftwareWhereInput> = z.
   image: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   name: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   description: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
-  categoryId: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
+  categoryId: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   url: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   createdAt: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
   updatedAt: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
@@ -1521,7 +1521,7 @@ export const SoftwareWhereInputSchema: z.ZodType<Prisma.SoftwareWhereInput> = z.
   stars: z.lazy(() => SoftwareStarListRelationFilterSchema).optional(),
   articles: z.lazy(() => SoftwareOnArticleListRelationFilterSchema).optional(),
   comments: z.lazy(() => SoftwareCommentListRelationFilterSchema).optional(),
-  category: z.union([ z.lazy(() => SoftwareCategoryNullableScalarRelationFilterSchema),z.lazy(() => SoftwareCategoryWhereInputSchema) ]).optional().nullable(),
+  category: z.union([ z.lazy(() => SoftwareCategoryScalarRelationFilterSchema),z.lazy(() => SoftwareCategoryWhereInputSchema) ]).optional(),
 }).strict();
 
 export const SoftwareOrderByWithRelationInputSchema: z.ZodType<Prisma.SoftwareOrderByWithRelationInput> = z.object({
@@ -1529,7 +1529,7 @@ export const SoftwareOrderByWithRelationInputSchema: z.ZodType<Prisma.SoftwareOr
   image: z.lazy(() => SortOrderSchema).optional(),
   name: z.lazy(() => SortOrderSchema).optional(),
   description: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
-  categoryId: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
+  categoryId: z.lazy(() => SortOrderSchema).optional(),
   url: z.lazy(() => SortOrderSchema).optional(),
   createdAt: z.lazy(() => SortOrderSchema).optional(),
   updatedAt: z.lazy(() => SortOrderSchema).optional(),
@@ -1553,7 +1553,7 @@ export const SoftwareWhereUniqueInputSchema: z.ZodType<Prisma.SoftwareWhereUniqu
   image: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   name: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   description: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
-  categoryId: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
+  categoryId: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   url: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   createdAt: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
   updatedAt: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
@@ -1563,7 +1563,7 @@ export const SoftwareWhereUniqueInputSchema: z.ZodType<Prisma.SoftwareWhereUniqu
   stars: z.lazy(() => SoftwareStarListRelationFilterSchema).optional(),
   articles: z.lazy(() => SoftwareOnArticleListRelationFilterSchema).optional(),
   comments: z.lazy(() => SoftwareCommentListRelationFilterSchema).optional(),
-  category: z.union([ z.lazy(() => SoftwareCategoryNullableScalarRelationFilterSchema),z.lazy(() => SoftwareCategoryWhereInputSchema) ]).optional().nullable(),
+  category: z.union([ z.lazy(() => SoftwareCategoryScalarRelationFilterSchema),z.lazy(() => SoftwareCategoryWhereInputSchema) ]).optional(),
 }).strict());
 
 export const SoftwareOrderByWithAggregationInputSchema: z.ZodType<Prisma.SoftwareOrderByWithAggregationInput> = z.object({
@@ -1571,7 +1571,7 @@ export const SoftwareOrderByWithAggregationInputSchema: z.ZodType<Prisma.Softwar
   image: z.lazy(() => SortOrderSchema).optional(),
   name: z.lazy(() => SortOrderSchema).optional(),
   description: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
-  categoryId: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
+  categoryId: z.lazy(() => SortOrderSchema).optional(),
   url: z.lazy(() => SortOrderSchema).optional(),
   createdAt: z.lazy(() => SortOrderSchema).optional(),
   updatedAt: z.lazy(() => SortOrderSchema).optional(),
@@ -1588,7 +1588,7 @@ export const SoftwareScalarWhereWithAggregatesInputSchema: z.ZodType<Prisma.Soft
   image: z.union([ z.lazy(() => StringWithAggregatesFilterSchema),z.string() ]).optional(),
   name: z.union([ z.lazy(() => StringWithAggregatesFilterSchema),z.string() ]).optional(),
   description: z.union([ z.lazy(() => StringNullableWithAggregatesFilterSchema),z.string() ]).optional().nullable(),
-  categoryId: z.union([ z.lazy(() => StringNullableWithAggregatesFilterSchema),z.string() ]).optional().nullable(),
+  categoryId: z.union([ z.lazy(() => StringWithAggregatesFilterSchema),z.string() ]).optional(),
   url: z.union([ z.lazy(() => StringWithAggregatesFilterSchema),z.string() ]).optional(),
   createdAt: z.union([ z.lazy(() => DateTimeWithAggregatesFilterSchema),z.coerce.date() ]).optional(),
   updatedAt: z.union([ z.lazy(() => DateTimeWithAggregatesFilterSchema),z.coerce.date() ]).optional(),
@@ -2813,7 +2813,7 @@ export const SoftwareCreateInputSchema: z.ZodType<Prisma.SoftwareCreateInput> = 
   stars: z.lazy(() => SoftwareStarCreateNestedManyWithoutSoftwareInputSchema).optional(),
   articles: z.lazy(() => SoftwareOnArticleCreateNestedManyWithoutSoftwareInputSchema).optional(),
   comments: z.lazy(() => SoftwareCommentCreateNestedManyWithoutSoftwareInputSchema).optional(),
-  category: z.lazy(() => SoftwareCategoryCreateNestedOneWithoutSoftwaresInputSchema).optional()
+  category: z.lazy(() => SoftwareCategoryCreateNestedOneWithoutSoftwaresInputSchema)
 }).strict();
 
 export const SoftwareUncheckedCreateInputSchema: z.ZodType<Prisma.SoftwareUncheckedCreateInput> = z.object({
@@ -2821,7 +2821,7 @@ export const SoftwareUncheckedCreateInputSchema: z.ZodType<Prisma.SoftwareUnchec
   image: z.string(),
   name: z.string(),
   description: z.string().optional().nullable(),
-  categoryId: z.string().optional().nullable(),
+  categoryId: z.string(),
   url: z.string(),
   createdAt: z.coerce.date().optional(),
   updatedAt: z.coerce.date().optional(),
@@ -2847,7 +2847,7 @@ export const SoftwareUpdateInputSchema: z.ZodType<Prisma.SoftwareUpdateInput> = 
   stars: z.lazy(() => SoftwareStarUpdateManyWithoutSoftwareNestedInputSchema).optional(),
   articles: z.lazy(() => SoftwareOnArticleUpdateManyWithoutSoftwareNestedInputSchema).optional(),
   comments: z.lazy(() => SoftwareCommentUpdateManyWithoutSoftwareNestedInputSchema).optional(),
-  category: z.lazy(() => SoftwareCategoryUpdateOneWithoutSoftwaresNestedInputSchema).optional()
+  category: z.lazy(() => SoftwareCategoryUpdateOneRequiredWithoutSoftwaresNestedInputSchema).optional()
 }).strict();
 
 export const SoftwareUncheckedUpdateInputSchema: z.ZodType<Prisma.SoftwareUncheckedUpdateInput> = z.object({
@@ -2855,7 +2855,7 @@ export const SoftwareUncheckedUpdateInputSchema: z.ZodType<Prisma.SoftwareUnchec
   image: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   description: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  categoryId: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  categoryId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   url: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
@@ -2872,7 +2872,7 @@ export const SoftwareCreateManyInputSchema: z.ZodType<Prisma.SoftwareCreateManyI
   image: z.string(),
   name: z.string(),
   description: z.string().optional().nullable(),
-  categoryId: z.string().optional().nullable(),
+  categoryId: z.string(),
   url: z.string(),
   createdAt: z.coerce.date().optional(),
   updatedAt: z.coerce.date().optional()
@@ -2893,7 +2893,7 @@ export const SoftwareUncheckedUpdateManyInputSchema: z.ZodType<Prisma.SoftwareUn
   image: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   description: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  categoryId: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  categoryId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   url: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
@@ -3992,9 +3992,9 @@ export const SoftwareOnArticleListRelationFilterSchema: z.ZodType<Prisma.Softwar
   none: z.lazy(() => SoftwareOnArticleWhereInputSchema).optional()
 }).strict();
 
-export const SoftwareCategoryNullableScalarRelationFilterSchema: z.ZodType<Prisma.SoftwareCategoryNullableScalarRelationFilter> = z.object({
-  is: z.lazy(() => SoftwareCategoryWhereInputSchema).optional().nullable(),
-  isNot: z.lazy(() => SoftwareCategoryWhereInputSchema).optional().nullable()
+export const SoftwareCategoryScalarRelationFilterSchema: z.ZodType<Prisma.SoftwareCategoryScalarRelationFilter> = z.object({
+  is: z.lazy(() => SoftwareCategoryWhereInputSchema).optional(),
+  isNot: z.lazy(() => SoftwareCategoryWhereInputSchema).optional()
 }).strict();
 
 export const SoftwareOnArticleOrderByRelationAggregateInputSchema: z.ZodType<Prisma.SoftwareOnArticleOrderByRelationAggregateInput> = z.object({
@@ -5424,12 +5424,10 @@ export const SoftwareCommentUpdateManyWithoutSoftwareNestedInputSchema: z.ZodTyp
   deleteMany: z.union([ z.lazy(() => SoftwareCommentScalarWhereInputSchema),z.lazy(() => SoftwareCommentScalarWhereInputSchema).array() ]).optional(),
 }).strict();
 
-export const SoftwareCategoryUpdateOneWithoutSoftwaresNestedInputSchema: z.ZodType<Prisma.SoftwareCategoryUpdateOneWithoutSoftwaresNestedInput> = z.object({
+export const SoftwareCategoryUpdateOneRequiredWithoutSoftwaresNestedInputSchema: z.ZodType<Prisma.SoftwareCategoryUpdateOneRequiredWithoutSoftwaresNestedInput> = z.object({
   create: z.union([ z.lazy(() => SoftwareCategoryCreateWithoutSoftwaresInputSchema),z.lazy(() => SoftwareCategoryUncheckedCreateWithoutSoftwaresInputSchema) ]).optional(),
   connectOrCreate: z.lazy(() => SoftwareCategoryCreateOrConnectWithoutSoftwaresInputSchema).optional(),
   upsert: z.lazy(() => SoftwareCategoryUpsertWithoutSoftwaresInputSchema).optional(),
-  disconnect: z.union([ z.boolean(),z.lazy(() => SoftwareCategoryWhereInputSchema) ]).optional(),
-  delete: z.union([ z.boolean(),z.lazy(() => SoftwareCategoryWhereInputSchema) ]).optional(),
   connect: z.lazy(() => SoftwareCategoryWhereUniqueInputSchema).optional(),
   update: z.union([ z.lazy(() => SoftwareCategoryUpdateToOneWithWhereWithoutSoftwaresInputSchema),z.lazy(() => SoftwareCategoryUpdateWithoutSoftwaresInputSchema),z.lazy(() => SoftwareCategoryUncheckedUpdateWithoutSoftwaresInputSchema) ]).optional(),
 }).strict();
@@ -7415,7 +7413,7 @@ export const SoftwareScalarWhereInputSchema: z.ZodType<Prisma.SoftwareScalarWher
   image: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   name: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   description: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
-  categoryId: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
+  categoryId: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   url: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   createdAt: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
   updatedAt: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
@@ -7747,7 +7745,7 @@ export const SoftwareCreateWithoutTagsInputSchema: z.ZodType<Prisma.SoftwareCrea
   stars: z.lazy(() => SoftwareStarCreateNestedManyWithoutSoftwareInputSchema).optional(),
   articles: z.lazy(() => SoftwareOnArticleCreateNestedManyWithoutSoftwareInputSchema).optional(),
   comments: z.lazy(() => SoftwareCommentCreateNestedManyWithoutSoftwareInputSchema).optional(),
-  category: z.lazy(() => SoftwareCategoryCreateNestedOneWithoutSoftwaresInputSchema).optional()
+  category: z.lazy(() => SoftwareCategoryCreateNestedOneWithoutSoftwaresInputSchema)
 }).strict();
 
 export const SoftwareUncheckedCreateWithoutTagsInputSchema: z.ZodType<Prisma.SoftwareUncheckedCreateWithoutTagsInput> = z.object({
@@ -7755,7 +7753,7 @@ export const SoftwareUncheckedCreateWithoutTagsInputSchema: z.ZodType<Prisma.Sof
   image: z.string(),
   name: z.string(),
   description: z.string().optional().nullable(),
-  categoryId: z.string().optional().nullable(),
+  categoryId: z.string(),
   url: z.string(),
   createdAt: z.coerce.date().optional(),
   updatedAt: z.coerce.date().optional(),
@@ -7822,7 +7820,7 @@ export const SoftwareUpdateWithoutTagsInputSchema: z.ZodType<Prisma.SoftwareUpda
   stars: z.lazy(() => SoftwareStarUpdateManyWithoutSoftwareNestedInputSchema).optional(),
   articles: z.lazy(() => SoftwareOnArticleUpdateManyWithoutSoftwareNestedInputSchema).optional(),
   comments: z.lazy(() => SoftwareCommentUpdateManyWithoutSoftwareNestedInputSchema).optional(),
-  category: z.lazy(() => SoftwareCategoryUpdateOneWithoutSoftwaresNestedInputSchema).optional()
+  category: z.lazy(() => SoftwareCategoryUpdateOneRequiredWithoutSoftwaresNestedInputSchema).optional()
 }).strict();
 
 export const SoftwareUncheckedUpdateWithoutTagsInputSchema: z.ZodType<Prisma.SoftwareUncheckedUpdateWithoutTagsInput> = z.object({
@@ -7830,7 +7828,7 @@ export const SoftwareUncheckedUpdateWithoutTagsInputSchema: z.ZodType<Prisma.Sof
   image: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   description: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  categoryId: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  categoryId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   url: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
@@ -7854,7 +7852,7 @@ export const SoftwareCreateWithoutRanksInputSchema: z.ZodType<Prisma.SoftwareCre
   stars: z.lazy(() => SoftwareStarCreateNestedManyWithoutSoftwareInputSchema).optional(),
   articles: z.lazy(() => SoftwareOnArticleCreateNestedManyWithoutSoftwareInputSchema).optional(),
   comments: z.lazy(() => SoftwareCommentCreateNestedManyWithoutSoftwareInputSchema).optional(),
-  category: z.lazy(() => SoftwareCategoryCreateNestedOneWithoutSoftwaresInputSchema).optional()
+  category: z.lazy(() => SoftwareCategoryCreateNestedOneWithoutSoftwaresInputSchema)
 }).strict();
 
 export const SoftwareUncheckedCreateWithoutRanksInputSchema: z.ZodType<Prisma.SoftwareUncheckedCreateWithoutRanksInput> = z.object({
@@ -7862,7 +7860,7 @@ export const SoftwareUncheckedCreateWithoutRanksInputSchema: z.ZodType<Prisma.So
   image: z.string(),
   name: z.string(),
   description: z.string().optional().nullable(),
-  categoryId: z.string().optional().nullable(),
+  categoryId: z.string(),
   url: z.string(),
   createdAt: z.coerce.date().optional(),
   updatedAt: z.coerce.date().optional(),
@@ -7937,7 +7935,7 @@ export const SoftwareUpdateWithoutRanksInputSchema: z.ZodType<Prisma.SoftwareUpd
   stars: z.lazy(() => SoftwareStarUpdateManyWithoutSoftwareNestedInputSchema).optional(),
   articles: z.lazy(() => SoftwareOnArticleUpdateManyWithoutSoftwareNestedInputSchema).optional(),
   comments: z.lazy(() => SoftwareCommentUpdateManyWithoutSoftwareNestedInputSchema).optional(),
-  category: z.lazy(() => SoftwareCategoryUpdateOneWithoutSoftwaresNestedInputSchema).optional()
+  category: z.lazy(() => SoftwareCategoryUpdateOneRequiredWithoutSoftwaresNestedInputSchema).optional()
 }).strict();
 
 export const SoftwareUncheckedUpdateWithoutRanksInputSchema: z.ZodType<Prisma.SoftwareUncheckedUpdateWithoutRanksInput> = z.object({
@@ -7945,7 +7943,7 @@ export const SoftwareUncheckedUpdateWithoutRanksInputSchema: z.ZodType<Prisma.So
   image: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   description: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  categoryId: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  categoryId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   url: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
@@ -8010,7 +8008,7 @@ export const SoftwareCreateWithoutArticlesInputSchema: z.ZodType<Prisma.Software
   likes: z.lazy(() => SoftwareLikeCreateNestedManyWithoutSoftwareInputSchema).optional(),
   stars: z.lazy(() => SoftwareStarCreateNestedManyWithoutSoftwareInputSchema).optional(),
   comments: z.lazy(() => SoftwareCommentCreateNestedManyWithoutSoftwareInputSchema).optional(),
-  category: z.lazy(() => SoftwareCategoryCreateNestedOneWithoutSoftwaresInputSchema).optional()
+  category: z.lazy(() => SoftwareCategoryCreateNestedOneWithoutSoftwaresInputSchema)
 }).strict();
 
 export const SoftwareUncheckedCreateWithoutArticlesInputSchema: z.ZodType<Prisma.SoftwareUncheckedCreateWithoutArticlesInput> = z.object({
@@ -8018,7 +8016,7 @@ export const SoftwareUncheckedCreateWithoutArticlesInputSchema: z.ZodType<Prisma
   image: z.string(),
   name: z.string(),
   description: z.string().optional().nullable(),
-  categoryId: z.string().optional().nullable(),
+  categoryId: z.string(),
   url: z.string(),
   createdAt: z.coerce.date().optional(),
   updatedAt: z.coerce.date().optional(),
@@ -8087,7 +8085,7 @@ export const SoftwareUpdateWithoutArticlesInputSchema: z.ZodType<Prisma.Software
   likes: z.lazy(() => SoftwareLikeUpdateManyWithoutSoftwareNestedInputSchema).optional(),
   stars: z.lazy(() => SoftwareStarUpdateManyWithoutSoftwareNestedInputSchema).optional(),
   comments: z.lazy(() => SoftwareCommentUpdateManyWithoutSoftwareNestedInputSchema).optional(),
-  category: z.lazy(() => SoftwareCategoryUpdateOneWithoutSoftwaresNestedInputSchema).optional()
+  category: z.lazy(() => SoftwareCategoryUpdateOneRequiredWithoutSoftwaresNestedInputSchema).optional()
 }).strict();
 
 export const SoftwareUncheckedUpdateWithoutArticlesInputSchema: z.ZodType<Prisma.SoftwareUncheckedUpdateWithoutArticlesInput> = z.object({
@@ -8095,7 +8093,7 @@ export const SoftwareUncheckedUpdateWithoutArticlesInputSchema: z.ZodType<Prisma
   image: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   description: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  categoryId: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  categoryId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   url: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
@@ -8768,7 +8766,7 @@ export const SoftwareCreateWithoutLikesInputSchema: z.ZodType<Prisma.SoftwareCre
   stars: z.lazy(() => SoftwareStarCreateNestedManyWithoutSoftwareInputSchema).optional(),
   articles: z.lazy(() => SoftwareOnArticleCreateNestedManyWithoutSoftwareInputSchema).optional(),
   comments: z.lazy(() => SoftwareCommentCreateNestedManyWithoutSoftwareInputSchema).optional(),
-  category: z.lazy(() => SoftwareCategoryCreateNestedOneWithoutSoftwaresInputSchema).optional()
+  category: z.lazy(() => SoftwareCategoryCreateNestedOneWithoutSoftwaresInputSchema)
 }).strict();
 
 export const SoftwareUncheckedCreateWithoutLikesInputSchema: z.ZodType<Prisma.SoftwareUncheckedCreateWithoutLikesInput> = z.object({
@@ -8776,7 +8774,7 @@ export const SoftwareUncheckedCreateWithoutLikesInputSchema: z.ZodType<Prisma.So
   image: z.string(),
   name: z.string(),
   description: z.string().optional().nullable(),
-  categoryId: z.string().optional().nullable(),
+  categoryId: z.string(),
   url: z.string(),
   createdAt: z.coerce.date().optional(),
   updatedAt: z.coerce.date().optional(),
@@ -8871,7 +8869,7 @@ export const SoftwareUpdateWithoutLikesInputSchema: z.ZodType<Prisma.SoftwareUpd
   stars: z.lazy(() => SoftwareStarUpdateManyWithoutSoftwareNestedInputSchema).optional(),
   articles: z.lazy(() => SoftwareOnArticleUpdateManyWithoutSoftwareNestedInputSchema).optional(),
   comments: z.lazy(() => SoftwareCommentUpdateManyWithoutSoftwareNestedInputSchema).optional(),
-  category: z.lazy(() => SoftwareCategoryUpdateOneWithoutSoftwaresNestedInputSchema).optional()
+  category: z.lazy(() => SoftwareCategoryUpdateOneRequiredWithoutSoftwaresNestedInputSchema).optional()
 }).strict();
 
 export const SoftwareUncheckedUpdateWithoutLikesInputSchema: z.ZodType<Prisma.SoftwareUncheckedUpdateWithoutLikesInput> = z.object({
@@ -8879,7 +8877,7 @@ export const SoftwareUncheckedUpdateWithoutLikesInputSchema: z.ZodType<Prisma.So
   image: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   description: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  categoryId: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  categoryId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   url: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
@@ -8964,7 +8962,7 @@ export const SoftwareCreateWithoutStarsInputSchema: z.ZodType<Prisma.SoftwareCre
   likes: z.lazy(() => SoftwareLikeCreateNestedManyWithoutSoftwareInputSchema).optional(),
   articles: z.lazy(() => SoftwareOnArticleCreateNestedManyWithoutSoftwareInputSchema).optional(),
   comments: z.lazy(() => SoftwareCommentCreateNestedManyWithoutSoftwareInputSchema).optional(),
-  category: z.lazy(() => SoftwareCategoryCreateNestedOneWithoutSoftwaresInputSchema).optional()
+  category: z.lazy(() => SoftwareCategoryCreateNestedOneWithoutSoftwaresInputSchema)
 }).strict();
 
 export const SoftwareUncheckedCreateWithoutStarsInputSchema: z.ZodType<Prisma.SoftwareUncheckedCreateWithoutStarsInput> = z.object({
@@ -8972,7 +8970,7 @@ export const SoftwareUncheckedCreateWithoutStarsInputSchema: z.ZodType<Prisma.So
   image: z.string(),
   name: z.string(),
   description: z.string().optional().nullable(),
-  categoryId: z.string().optional().nullable(),
+  categoryId: z.string(),
   url: z.string(),
   createdAt: z.coerce.date().optional(),
   updatedAt: z.coerce.date().optional(),
@@ -9067,7 +9065,7 @@ export const SoftwareUpdateWithoutStarsInputSchema: z.ZodType<Prisma.SoftwareUpd
   likes: z.lazy(() => SoftwareLikeUpdateManyWithoutSoftwareNestedInputSchema).optional(),
   articles: z.lazy(() => SoftwareOnArticleUpdateManyWithoutSoftwareNestedInputSchema).optional(),
   comments: z.lazy(() => SoftwareCommentUpdateManyWithoutSoftwareNestedInputSchema).optional(),
-  category: z.lazy(() => SoftwareCategoryUpdateOneWithoutSoftwaresNestedInputSchema).optional()
+  category: z.lazy(() => SoftwareCategoryUpdateOneRequiredWithoutSoftwaresNestedInputSchema).optional()
 }).strict();
 
 export const SoftwareUncheckedUpdateWithoutStarsInputSchema: z.ZodType<Prisma.SoftwareUncheckedUpdateWithoutStarsInput> = z.object({
@@ -9075,7 +9073,7 @@ export const SoftwareUncheckedUpdateWithoutStarsInputSchema: z.ZodType<Prisma.So
   image: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   description: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  categoryId: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  categoryId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   url: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
@@ -9352,7 +9350,7 @@ export const SoftwareCreateWithoutCommentsInputSchema: z.ZodType<Prisma.Software
   likes: z.lazy(() => SoftwareLikeCreateNestedManyWithoutSoftwareInputSchema).optional(),
   stars: z.lazy(() => SoftwareStarCreateNestedManyWithoutSoftwareInputSchema).optional(),
   articles: z.lazy(() => SoftwareOnArticleCreateNestedManyWithoutSoftwareInputSchema).optional(),
-  category: z.lazy(() => SoftwareCategoryCreateNestedOneWithoutSoftwaresInputSchema).optional()
+  category: z.lazy(() => SoftwareCategoryCreateNestedOneWithoutSoftwaresInputSchema)
 }).strict();
 
 export const SoftwareUncheckedCreateWithoutCommentsInputSchema: z.ZodType<Prisma.SoftwareUncheckedCreateWithoutCommentsInput> = z.object({
@@ -9360,7 +9358,7 @@ export const SoftwareUncheckedCreateWithoutCommentsInputSchema: z.ZodType<Prisma
   image: z.string(),
   name: z.string(),
   description: z.string().optional().nullable(),
-  categoryId: z.string().optional().nullable(),
+  categoryId: z.string(),
   url: z.string(),
   createdAt: z.coerce.date().optional(),
   updatedAt: z.coerce.date().optional(),
@@ -9455,7 +9453,7 @@ export const SoftwareUpdateWithoutCommentsInputSchema: z.ZodType<Prisma.Software
   likes: z.lazy(() => SoftwareLikeUpdateManyWithoutSoftwareNestedInputSchema).optional(),
   stars: z.lazy(() => SoftwareStarUpdateManyWithoutSoftwareNestedInputSchema).optional(),
   articles: z.lazy(() => SoftwareOnArticleUpdateManyWithoutSoftwareNestedInputSchema).optional(),
-  category: z.lazy(() => SoftwareCategoryUpdateOneWithoutSoftwaresNestedInputSchema).optional()
+  category: z.lazy(() => SoftwareCategoryUpdateOneRequiredWithoutSoftwaresNestedInputSchema).optional()
 }).strict();
 
 export const SoftwareUncheckedUpdateWithoutCommentsInputSchema: z.ZodType<Prisma.SoftwareUncheckedUpdateWithoutCommentsInput> = z.object({
@@ -9463,7 +9461,7 @@ export const SoftwareUncheckedUpdateWithoutCommentsInputSchema: z.ZodType<Prisma
   image: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   description: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  categoryId: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  categoryId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   url: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
