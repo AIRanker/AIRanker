@@ -1,10 +1,12 @@
 "use client"
 
 import { Heart } from "lucide-react"
-import type { FC } from "react"
+import { type FC, useEffect, useMemo, useState } from "react"
 import { Button } from "~/components/ui/button"
-import { Card, CardContent } from "~/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs"
+import { cn } from "~/lib/utils"
+import type { Pageable } from "~/server/schema"
+import { api } from "~/trpc/react"
 
 interface ToolItem {
   id: string
@@ -197,22 +199,60 @@ const CommunityPost: FC<{ post: CommunityPost }> = ({ post }) => {
   )
 }
 
+interface Condition {
+  currentCategory: string
+  pageable: Pageable
+}
+
 const TopTools = () => {
+  const { data: category, isPending: categoryPending } = api.softwareCategory.all.useQuery(undefined, {
+    refetchInterval: false,
+    refetchIntervalInBackground: false,
+    refetchOnWindowFocus: false
+  })
+  const [condition, setCondition] = useState<Condition>({
+    currentCategory: "",
+    pageable: {
+      page: 1,
+      size: 10
+    }
+  })
+  useEffect(() => {
+    if (category) {
+      const firstElement = category[0]
+      if (firstElement) {
+        setCondition({ ...condition, currentCategory: firstElement.id })
+      }
+    }
+  }, [category])
+  // const { data, isPending } = api.software.pageSoftwares.useQuery({
+  //   categoryIds: [condition.currentCategory],
+  //   sort: "stars",
+  //   pageable: {
+  //     page: condition.pageable.page ?? 1,
+  //     size: condition.pageable.size ?? 10
+  //   }
+  // })
+  // console.log("data", data)
   return (
     <>
       <h1 className="mt-20 text-4xl font-bold">Top Tools</h1>
       <div className="flex flex-row mx-auto py-8 w-full gap-28">
         <div className="flex-1">
-          <Tabs defaultValue="llms">
-            <TabsList className="mb-6">
-              <TabsTrigger value="llms" className="text-primary">
-                LLMS
-              </TabsTrigger>
-              <TabsTrigger value="agents">AI Agents</TabsTrigger>
-              <TabsTrigger value="frameworks">AgentFrameworks</TabsTrigger>
-              <TabsTrigger value="rag">RAG</TabsTrigger>
-              <TabsTrigger value="video">Video</TabsTrigger>
-              <TabsTrigger value="mcp">MCP</TabsTrigger>
+          <Tabs value={condition.currentCategory} onValueChange={(c) => setCondition({ ...condition, currentCategory: c })} className={"flex flex-col"}>
+            <TabsList className="flex shrink-0 border-b border-mauve6">
+              {category?.map((item) => (
+                <TabsTrigger
+                  value={item.id}
+                  className={cn(
+                    "flex bg-none shadow-none select-none items-center justify-center data-[state=active]:border-primary cursor-pointer",
+                    "data-[state=active]:text-primary data-[state=active]:font-bold data-[state=active]:border-b-2 data-[state=active]:bg-none data-[state=active]:shadow-none"
+                  )}
+                  key={`category-${item.id}`}
+                >
+                  {item.name}
+                </TabsTrigger>
+              ))}
             </TabsList>
 
             {Object.keys(mockTools).map((category) => (
@@ -236,7 +276,6 @@ const TopTools = () => {
               ))}
             </div>
           </div>
-
           <div>
             <h2 className="mb-4 text-2xl font-bold text-primary">Recently Added Tools</h2>
             <div className="space-y-2">
