@@ -6,6 +6,7 @@ import softwareRouter from "./routers/software"
 import { rankCommentRouter } from "./routers/rank-comment"
 import tagRouter from "./routers/tag"
 import softwareCommentRouter from "./routers/software-comment"
+import { softwareCategoryRouter } from "./routers/software-category"
 
 /**
  * This is the primary router for your server.
@@ -19,6 +20,7 @@ export const appRouter = createTRPCRouter({
   software: softwareRouter,
   rankComment: rankCommentRouter,
   softwareComment: softwareCommentRouter,
+  softwareCategory: softwareCategoryRouter,
   tag: tagRouter
 })
 

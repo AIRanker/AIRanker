@@ -8,7 +8,8 @@ export async function createSoftware(tx: Prisma.TransactionClient, softwareParam
       name: softwareParams.name,
       description: softwareParams.description || "",
       image: softwareParams.image || "",
-      url: softwareParams.url
+      url: softwareParams.url,
+      categoryId: softwareParams.categoryId,
     },
     select: generateSoftwareSelect(userAddress)
   })
@@ -134,7 +135,7 @@ class SoftwareService {
       pages
     } as PageableData<(typeof list)[number]>
   }
-  
+
 
   async getSoftwaresByRankId(rankId: string, userAddress?: string) {
     const softwaresOnRank = await db.softwareOnRank.findMany({

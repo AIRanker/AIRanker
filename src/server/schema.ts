@@ -52,6 +52,7 @@ export const rankSeachParamsSchema = searchParamsSchema.extend({
 export const softwareParamsSchema = z.object({
   name: z.string().min(1).max(100),
   image: z.string(),
+  categoryId: z.string(),
   description: z.string().optional(),
   url: z.string().url(),
   tags: z.array(z.string()).optional(),
@@ -66,6 +67,7 @@ export const createRankParamsSchema = z.object({
     .array(
       z.object({
         softwareId: z.string().optional(),
+        categoryId: z.string().optional(),
         name: z.string().min(1).max(100).optional(),
         image: z.string().optional(),
         description: z.string().optional(),
@@ -87,6 +89,7 @@ export const updateRankParamsSchema = z.object({
     .array(
       z.object({
         softwareId: z.string().optional(),
+        categoryId: z.string().optional(),
         name: z.string().min(1).max(100).optional(),
         image: z.string().optional(),
         description: z.string().optional(),

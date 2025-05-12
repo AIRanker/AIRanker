@@ -222,15 +222,16 @@ class RankService {
                 throw new Error(`Software with ID ${softwareId} not found.`)
               }
             } else {
-              if (!softwareItem.name) {
-                throw new Error("Software name is required when creating a new software.")
+              if (!softwareItem.name || !softwareItem.categoryId) {
+                throw new Error("Software name and category ID are required when creating a new software.")
               }
               const newSoftware = await createSoftware(tx, {
                 name: softwareItem.name,
                 description: softwareItem.description || "",
                 image: softwareItem.image || "",
                 url: softwareItem.url || "",
-                tags: softwareItem.tags
+                tags: softwareItem.tags,
+                categoryId: softwareItem.categoryId,
               }, userAddress)
               softwareId = newSoftware.id
             }
@@ -367,15 +368,16 @@ class RankService {
                   throw new Error(`Software with ID ${softwareId} not found.`)
                 }
               } else {
-                if (!softwareItem.name) {
-                  throw new Error("Software name is required when creating a new software.")
+                if (!softwareItem.name || !softwareItem.categoryId) {
+                  throw new Error("Software name and category ID are required when creating a new software.")
                 }
                 const newSoftware = await createSoftware(tx, {
                   name: softwareItem.name,
                   description: softwareItem.description || "",
                   image: softwareItem.image || "",
                   url: softwareItem.url || "",
-                  tags: softwareItem.tags
+                  tags: softwareItem.tags,
+                  categoryId: softwareItem.categoryId
                 }, userAddress)
                 softwareId = newSoftware.id
               }
