@@ -1,11 +1,11 @@
 import { z } from "zod"
 import { createTRPCRouter, protectedProcedure, publicProcedure } from "~/server/api/trpc"
-import { searchParamsSchema, softwareParamsSchema } from "~/server/schema"
+import { searchParamsSchema, softwareParamsSchema, softwareSearchParamsSchema } from "~/server/schema"
 import softwareService from "~/server/services/software"
 
 export const softwareRouter = createTRPCRouter({
     pageSoftwares: publicProcedure
-        .input(searchParamsSchema)
+        .input(softwareSearchParamsSchema)
         .query(async ({ input, ctx }) => {
             const userAddress = ctx.session?.address
             return await softwareService.pageSoftwares(input, userAddress)

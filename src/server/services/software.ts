@@ -1,6 +1,6 @@
 import type { Prisma } from "@prisma/client"
 import { db } from "../db"
-import type { PageableData, SearchParams, SoftwareParams } from "../schema"
+import type { PageableData, SearchParams, SoftwareParams, SoftwareSearchParams } from "../schema"
 import { generateSoftwareSelect } from "../select"
 export async function createSoftware(tx: Prisma.TransactionClient, softwareParams: SoftwareParams, userAddress: string) {
   const newSoftware = await tx.software.create({
@@ -59,13 +59,43 @@ export async function createSoftware(tx: Prisma.TransactionClient, softwareParam
 }
 
 class SoftwareService {
-  async pageSoftwares(params: SearchParams, userAddress?: string) {
+  async pageSoftwares(params: SoftwareSearchParams, userAddress?: string) {
     const whereOptions: Prisma.SoftwareWhereInput = {}
 
     if (params.search) {
       whereOptions.name = {
         contains: params.search,
         mode: "insensitive" // 不区分大小写
+      }
+    }
+    if (params.tags && params.tags.length > 0) {
+      whereOptions.tags = {
+        some: {
+          tag: {
+            name: {
+              in: params.tags
+            }
+          }
+        }
+      }
+    }
+    if (params.isLiked) {
+      whereOptions.likes = {
+        some: {
+          userAddress
+        }
+      }
+    }
+    if (params.isStared) {
+      whereOptions.stars = {
+        some: {
+          userAddress
+        }
+      }
+    }
+    if (params.categoryIds && params.categoryIds.length > 0) {
+      whereOptions.categoryId = {
+        in: params.categoryIds
       }
     }
 
@@ -82,9 +112,7 @@ class SoftwareService {
     const softwares = await db.software.findMany({
       where: whereOptions,
       select: generateSoftwareSelect(userAddress),
-      orderBy: {
-        name: "asc" // 默认按名称字母顺序排序
-      },
+      orderBy: { [params.sort]: params.order },
       skip: actualPage * params.pageable.size,
       take: params.pageable.size
     })
@@ -106,6 +134,7 @@ class SoftwareService {
       pages
     } as PageableData<(typeof list)[number]>
   }
+  
 
   async getSoftwaresByRankId(rankId: string, userAddress?: string) {
     const softwaresOnRank = await db.softwareOnRank.findMany({

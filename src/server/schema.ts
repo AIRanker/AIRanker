@@ -31,6 +31,15 @@ export const searchParamsSchema = z.object({
   search: z.string().optional(),
   pageable: pageableSchema
 })
+export const softwareSearchParamsSchema = searchParamsSchema.extend({
+  tags: z.array(z.string()).optional(),
+  sort: z.enum(["likes", "stars"]).optional().default("likes"),
+  order: z.enum(["asc", "desc"]).optional().default("desc"),
+  isStared: z.boolean().optional().default(false),
+  isLiked: z.boolean().optional().default(false),
+  categoryIds: z.array(z.string()).optional(),
+})
+
 export const rankSeachParamsSchema = searchParamsSchema.extend({
   tags: z.array(z.string()).optional(),
   sort: z.enum(["likes", "stars"]).optional().default("likes"),
@@ -120,7 +129,7 @@ export type UpdateRankParams = z.infer<typeof updateRankParamsSchema>
 export type SearchParams = z.infer<typeof searchParamsSchema>
 export type UpdateUserParams = z.infer<typeof updateUserParamsSchema>
 export type SoftwareParams = z.infer<typeof softwareParamsSchema>
-
+export type SoftwareSearchParams = z.infer<typeof softwareSearchParamsSchema>
 
 export interface PageableData<T> {
   list: T[]

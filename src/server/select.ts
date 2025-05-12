@@ -26,25 +26,25 @@ export function generateRankSelect(userAddress?: string) {
     },
     ...(userAddress
       ? {
-          likes: {
-            where: {
-              userAddress
-            },
-            select: {
-              rankId: true
-            },
-            take: 1
+        likes: {
+          where: {
+            userAddress
           },
+          select: {
+            rankId: true
+          },
+          take: 1
+        },
         stars: {
-            where: {
-              userAddress
-            },
-            select: {
-              rankId: true
-            },
-            take: 1
-          }
+          where: {
+            userAddress
+          },
+          select: {
+            rankId: true
+          },
+          take: 1
         }
+      }
       : {})
   }
 }
@@ -57,6 +57,7 @@ export function generateSoftwareSelect(userAddress?: string) {
     url: true,
     createdAt: true,
     updatedAt: true,
+    categoryId: true,
     tags: {
       select: {
         tag: {
@@ -64,6 +65,14 @@ export function generateSoftwareSelect(userAddress?: string) {
             name: true
           }
         }
+      }
+    },
+    category: {
+      select: {
+        id: true,
+        name: true,
+        createdAt: true,
+        updatedAt: true
       }
     },
     _count: {
@@ -74,25 +83,25 @@ export function generateSoftwareSelect(userAddress?: string) {
     },
     ...(userAddress
       ? {
-          likes: {
-            where: {
-              userAddress
-            },
-            select: {
-              softwareId: true
-            },
-            take: 1
+        likes: {
+          where: {
+            userAddress
           },
+          select: {
+            softwareId: true
+          },
+          take: 1
+        },
         stars: {
-            where: {
-              userAddress
-            },
-            select: {
-              softwareId: true
-            },
-            take: 1
-          }
+          where: {
+            userAddress
+          },
+          select: {
+            softwareId: true
+          },
+          take: 1
         }
+      }
       : {})
   }
 }
