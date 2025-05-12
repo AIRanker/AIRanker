@@ -6,6 +6,7 @@ import { Button } from "~/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs"
 import { cn } from "~/lib/utils"
 import type { Pageable } from "~/server/schema"
+import type { PageSoftwareResult } from "~/server/services/software"
 import { api } from "~/trpc/react"
 
 interface ToolItem {
@@ -30,58 +31,6 @@ interface ContributorItem {
   id: string
   username: string
   points: number
-}
-
-const mockTools: Record<string, ToolItem[]> = {
-  llms: [
-    {
-      id: "gpt-4-1",
-      name: "GPT-4",
-      description: "A large multimodal model developed by OpenAI",
-      likes: 12000,
-      image: "/gpt4.png"
-    },
-    {
-      id: "gpt-4-2",
-      name: "GPT-4",
-      description: "A large multimodal model developed by OpenAI",
-      likes: 12000,
-      image: "/gpt4.png"
-    },
-    {
-      id: "gpt-4-3",
-      name: "GPT-4",
-      description: "A large multimodal model developed by OpenAI",
-      likes: 12000,
-      image: "/gpt4.png"
-    },
-    {
-      id: "gpt-4-4",
-      name: "GPT-4",
-      description: "A large multimodal model developed by OpenAI",
-      likes: 12000,
-      image: "/gpt4.png"
-    },
-    {
-      id: "gpt-4-5",
-      name: "GPT-4",
-      description: "A large multimodal model developed by OpenAI",
-      likes: 12000,
-      image: "/gpt4.png"
-    },
-    {
-      id: "gpt-4-6",
-      name: "GPT-4",
-      description: "A large multimodal model developed by OpenAI",
-      likes: 12000,
-      image: "/gpt4.png"
-    }
-  ],
-  agents: [],
-  frameworks: [],
-  rag: [],
-  video: [],
-  mcp: []
 }
 
 const communityPosts: CommunityPost[] = [
@@ -156,7 +105,7 @@ const contributors: ContributorItem[] = [
   }
 ]
 
-const ToolCard: FC<{ tool: ToolItem }> = ({ tool }) => {
+const ToolCard: FC<{ tool: PageSoftwareResult["list"][number] }> = ({ tool }) => {
   return (
     <div className="flex items-center justify-between border-b py-4">
       <div className="flex items-center gap-3">
@@ -168,10 +117,10 @@ const ToolCard: FC<{ tool: ToolItem }> = ({ tool }) => {
           <p className="text-sm text-gray-600">{tool.description}</p>
         </div>
       </div>
-      <button className="flex items-center gap-1 text-primary">
+      <div className="flex items-center gap-1 text-primary ml-4">
         <Heart className="size-5" />
-        <span>{tool.likes > 1000 ? `${Math.floor(tool.likes / 1000)}K` : tool.likes}</span>
-      </button>
+        <span>{tool._count.likes > 1000 ? `${Math.floor(tool._count.likes / 1000)}K` : tool._count.likes}</span>
+      </div>
     </div>
   )
 }
@@ -225,15 +174,24 @@ const TopTools = () => {
       }
     }
   }, [category])
-  // const { data, isPending } = api.software.pageSoftwares.useQuery({
-  //   categoryIds: [condition.currentCategory],
-  //   sort: "stars",
-  //   pageable: {
-  //     page: condition.pageable.page ?? 1,
-  //     size: condition.pageable.size ?? 10
-  //   }
-  // })
-  // console.log("data", data)
+  const { data, isPending } = api.software.pageSoftwares.useQuery(
+    {
+      categoryIds: [condition.currentCategory],
+      sort: "stars",
+      pageable: {
+        page: condition.pageable.page ?? 1,
+        size: condition.pageable.size ?? 10
+      }
+    },
+    {
+      enabled: condition.currentCategory.trim().length > 0
+    }
+  )
+  const currentCategory = useMemo(() => {
+    return category?.find((item) => item.id === condition.currentCategory)
+  }, [condition])
+  console.log("data", data)
+  const { data: recentlySoftware } = api.software.recentlySoftwares.useQuery()
   return (
     <>
       <h1 className="mt-20 text-4xl font-bold">Top Tools</h1>
@@ -255,16 +213,14 @@ const TopTools = () => {
               ))}
             </TabsList>
 
-            {Object.keys(mockTools).map((category) => (
-              <TabsContent key={category} value={category}>
-                <h2 className="mb-4 text-2xl font-bold text-primary">Top Tools in {category.toUpperCase()}</h2>
-                <div className="space-y-2">
-                  {mockTools[category]?.map((tool) => (
-                    <ToolCard key={tool.id} tool={tool} />
-                  ))}
-                </div>
-              </TabsContent>
-            ))}
+            <div>
+              {currentCategory && <h2 className="mb-4 text-2xl font-bold text-primary">Top Tools in {currentCategory.name.toUpperCase()}</h2>}
+              <div className="space-y-2">
+                {data?.list?.map((tool) => (
+                  <ToolCard key={tool.id} tool={tool} />
+                ))}
+              </div>
+            </div>
           </Tabs>
         </div>
         <div className="space-y-4 min-w-[330px]">
@@ -279,13 +235,13 @@ const TopTools = () => {
           <div>
             <h2 className="mb-4 text-2xl font-bold text-primary">Recently Added Tools</h2>
             <div className="space-y-2">
-              {recentTools.map((tool) => (
+              {recentlySoftware?.map((tool) => (
                 <div key={tool.id} className="flex items-center justify-between py-2">
                   <div className="flex items-center gap-2 text-sm font-bold">
                     <div className="flex h-8 w-8 items-center justify-center rounded-full bg-green-100">
-                      <img src={tool.image} alt={tool.name} className="h-6 w-6" />
+                      <img src={tool.image} alt={tool.name} className="size-5" />
                     </div>
-                    <span>{tool.name}</span>
+                    <span className={"truncate"}>{tool.name}</span>
                   </div>
                   <span className="text-sm text-gray-500">3 days ago</span>
                 </div>

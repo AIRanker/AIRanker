@@ -9,7 +9,7 @@ export async function createSoftware(tx: Prisma.TransactionClient, softwareParam
       description: softwareParams.description || "",
       image: softwareParams.image || "",
       url: softwareParams.url,
-      categoryId: softwareParams.categoryId,
+      categoryId: softwareParams.categoryId
     },
     select: generateSoftwareSelect(userAddress)
   })
@@ -26,27 +26,27 @@ export async function createSoftware(tx: Prisma.TransactionClient, softwareParam
         id: true,
         name: true
       }
-    });
+    })
 
-    const existingTagNames = existingTags.map(tag => tag.name);
-    const newTagNames = softwareParams.tags.filter(tag => !existingTagNames.includes(tag));
+    const existingTagNames = existingTags.map((tag) => tag.name)
+    const newTagNames = softwareParams.tags.filter((tag) => !existingTagNames.includes(tag))
 
     // 创建新标签
     const newTags = await Promise.all(
-      newTagNames.map(name =>
+      newTagNames.map((name) =>
         tx.tag.create({
           data: { name },
           select: { id: true, name: true }
         })
       )
-    );
+    )
 
     // 合并所有标签
-    const allTags = [...existingTags, ...newTags];
+    const allTags = [...existingTags, ...newTags]
 
     // 将标签关联到软件
     await Promise.all(
-      allTags.map(tag =>
+      allTags.map((tag) =>
         tx.softwareTag.create({
           data: {
             softwareId: newSoftware.id,
@@ -54,7 +54,7 @@ export async function createSoftware(tx: Prisma.TransactionClient, softwareParam
           }
         })
       )
-    );
+    )
   }
   return newSoftware
 }
@@ -113,7 +113,7 @@ class SoftwareService {
     const softwares = await db.software.findMany({
       where: whereOptions,
       select: generateSoftwareSelect(userAddress),
-      orderBy: { [params.sort]: params.order },
+      // orderBy: { [params.sort]: params.order },
       skip: actualPage * params.pageable.size,
       take: params.pageable.size
     })
@@ -135,7 +135,6 @@ class SoftwareService {
       pages
     } as PageableData<(typeof list)[number]>
   }
-
 
   async getSoftwaresByRankId(rankId: string, userAddress?: string) {
     const softwaresOnRank = await db.softwareOnRank.findMany({
@@ -250,3 +249,4 @@ const softwareService = new SoftwareService()
 export default softwareService
 export type PageSoftwareResult = Awaited<ReturnType<typeof softwareService.pageSoftwares>>
 export type SoftwareByRankIdResult = Awaited<ReturnType<typeof softwareService.getSoftwaresByRankId>>
+export type RecentlySoftwaresResult = Awaited<ReturnType<typeof softwareService.recentlySoftwares>>

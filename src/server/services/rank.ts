@@ -64,7 +64,7 @@ class RankService {
     const ranks = await db.rank.findMany({
       where: whereOptions,
       select: generateRankSelect(userAddress),
-      orderBy: { [params.sort]: params.order },
+      // orderBy: { [params.sort]: params.order },
       take: params.pageable.size,
       skip: actualPage * params.pageable.size
     })
@@ -154,7 +154,7 @@ class RankService {
       const rankMetadata = await tx.rankMetadata.create({
         data: {
           rankId: rank.id,
-          id: metadataId,
+          id: metadataId
         }
       })
 
@@ -225,14 +225,18 @@ class RankService {
               if (!softwareItem.name || !softwareItem.categoryId) {
                 throw new Error("Software name and category ID are required when creating a new software.")
               }
-              const newSoftware = await createSoftware(tx, {
-                name: softwareItem.name,
-                description: softwareItem.description || "",
-                image: softwareItem.image || "",
-                url: softwareItem.url || "",
-                tags: softwareItem.tags,
-                categoryId: softwareItem.categoryId,
-              }, userAddress)
+              const newSoftware = await createSoftware(
+                tx,
+                {
+                  name: softwareItem.name,
+                  description: softwareItem.description || "",
+                  image: softwareItem.image || "",
+                  url: softwareItem.url || "",
+                  tags: softwareItem.tags,
+                  categoryId: softwareItem.categoryId
+                },
+                userAddress
+              )
               softwareId = newSoftware.id
             }
             // 将软件添加到排名中
@@ -371,14 +375,18 @@ class RankService {
                 if (!softwareItem.name || !softwareItem.categoryId) {
                   throw new Error("Software name and category ID are required when creating a new software.")
                 }
-                const newSoftware = await createSoftware(tx, {
-                  name: softwareItem.name,
-                  description: softwareItem.description || "",
-                  image: softwareItem.image || "",
-                  url: softwareItem.url || "",
-                  tags: softwareItem.tags,
-                  categoryId: softwareItem.categoryId
-                }, userAddress)
+                const newSoftware = await createSoftware(
+                  tx,
+                  {
+                    name: softwareItem.name,
+                    description: softwareItem.description || "",
+                    image: softwareItem.image || "",
+                    url: softwareItem.url || "",
+                    tags: softwareItem.tags,
+                    categoryId: softwareItem.categoryId
+                  },
+                  userAddress
+                )
                 softwareId = newSoftware.id
               }
               // 将软件添加到排名中
