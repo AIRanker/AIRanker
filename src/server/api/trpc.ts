@@ -6,11 +6,13 @@
  * TL;DR - This is where all the tRPC server stuff is created and plugged in. The pieces you will
  * need to use are documented accordingly near the end.
  */
+import { createClerkClient, type getAuth } from "@clerk/nextjs/server"
 import { initTRPC, TRPCError } from "@trpc/server"
 import superjson from "superjson"
 import { ZodError } from "zod"
-import { auth, getApiKey } from "~/server/auth"
 import { db } from "~/server/db"
+import { userService } from "../services/user"
+type AuthObject = ReturnType<typeof getAuth>
 
 /**
  * 1. CONTEXT
@@ -24,27 +26,42 @@ import { db } from "~/server/db"
  *
  * @see https://trpc.io/docs/server/context
  */
-export const createTRPCContext = async (opts: { headers: Headers }) => {
-  const session = await auth()
-  if (session) {
-    return {
-      db,
-      session,
-      ...opts
+export const createTRPCContext = async (opts: { headers: Headers, auth: AuthObject }) => {
+  // const session = await auth()
+  // if (session) {
+  //   return {
+  //     db,
+  //     session,
+  //     ...opts
+  //   }
+  // }
+  // const entity = await getApiKey(opts.headers.get("x-api-key"))
+  // return {
+  //   db,
+  //   session:
+  //     entity && "user" in entity
+  //       ? {
+  //         address: entity.user.address,
+  //         user: entity.user
+  //       }
+  //       : undefined,
+  //   ...opts
+  // }
+  if (opts.auth) {
+    const currentUser = await userService.getUserByAddress(opts.auth.userId!)
+    if (!currentUser) {
+      await userService.createUser(opts.auth.userId!, undefined)
     }
   }
-  const entity = await getApiKey(opts.headers.get("x-api-key"))
+  console.log("auth", opts.auth)
   return {
     db,
-    session:
-      entity && "user" in entity
-        ? {
-            address: entity.user.address,
-            user: entity.user
-          }
-        : undefined,
-    ...opts
+    userAddress: opts.auth?.userId || undefined,
+    ...opts,
+    auth: opts.auth,
+    clerk: createClerkClient({ secretKey: process.env.CLERK_SECRET_KEY }),
   }
+
 }
 
 /**
@@ -121,7 +138,7 @@ const timingMiddleware = t.middleware(async ({ next, path }) => {
 export const publicProcedure = t.procedure.use(timingMiddleware)
 
 export const protectedProcedure = t.procedure.use(timingMiddleware).use(async ({ ctx, next }) => {
-  if (!ctx.session?.address) {
+  if (!ctx.userAddress!) {
     throw new TRPCError({ code: "UNAUTHORIZED" })
   }
   return next({ ctx })
