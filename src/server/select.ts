@@ -7,6 +7,23 @@ export function generateRankSelect(userAddress?: string) {
     createdAt: true,
     updatedAt: true,
     user: true,
+    softwares: {
+      select: {
+        software: {
+          select: {
+            id: true,
+            name: true,
+            image: true,
+            url: true,
+            createdAt: true,
+            updatedAt: true,
+            categoryId: true,
+          }
+        },
+        rankDescription: true,
+        rankIndex: true
+      }
+    },
     tags: {
       select: {
         tag: {
