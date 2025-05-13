@@ -113,7 +113,11 @@ class SoftwareService {
     const softwares = await db.software.findMany({
       where: whereOptions,
       select: generateSoftwareSelect(userAddress),
-      // orderBy: { [params.sort]: params.order },
+      orderBy: {
+        [params.sort]: {
+          _count: params.order
+        }
+      },
       skip: actualPage * params.pageable.size,
       take: params.pageable.size
     })

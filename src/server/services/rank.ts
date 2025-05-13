@@ -64,7 +64,11 @@ class RankService {
     const ranks = await db.rank.findMany({
       where: whereOptions,
       select: generateRankSelect(userAddress),
-      // orderBy: { [params.sort]: params.order },
+      orderBy: {
+        [params.sort]: {
+          _count: params.order
+        }
+      },
       take: params.pageable.size,
       skip: actualPage * params.pageable.size
     })
