@@ -1,6 +1,7 @@
 "use client"
 
 import { Heart } from "lucide-react"
+import Link from "next/link"
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar"
 import { AvatarGroup } from "~/components/ui/avatar-group"
 import { Badge } from "~/components/ui/badge"
@@ -23,12 +24,14 @@ const CuratedCollection = () => {
               alt={"data"}
               src={"https://storage.googleapis.com/repofi-prod/launchpad/avatar/1745410111571_airanker.svg"}
             />
-            <div className={"text-primary text-2xl font-bold"}>{item.name}</div>
+            <Link href={`/rank/${item.id}`} className={"text-primary text-2xl font-bold hover:underline"}>
+              {item.name}
+            </Link>
             <div className={"text-md flex-1"}>{item.description}</div>
             <div className={"flex flex-row gap-3 items-center"}>
               <Avatar className={"w-10 h-10"}>
-                <AvatarImage src={"https://storage.googleapis.com/repofi-prod/launchpad/avatar/1745410111571_airanker.svg"} />
-                <AvatarFallback>{"err"}</AvatarFallback>
+                <AvatarImage src={item.user?.avatar ?? ""} />
+                <AvatarFallback>A</AvatarFallback>
               </Avatar>
               <div className={"flex flex-col justify-between"}>
                 <div className={"font-bold"}>@alex</div>

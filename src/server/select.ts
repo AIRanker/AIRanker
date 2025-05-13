@@ -20,6 +20,7 @@ export function generateRankSelect(userAddress?: string) {
             createdAt: true,
             updatedAt: true,
             categoryId: true,
+            description: true
           }
         },
         description: true,

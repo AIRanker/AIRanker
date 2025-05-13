@@ -8,6 +8,7 @@ import { cn } from "~/lib/utils"
 import type { Pageable } from "~/server/schema"
 import type { PageSoftwareResult } from "~/server/services/software"
 import { api } from "~/trpc/react"
+import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar"
 
 interface ToolItem {
   id: string
@@ -110,11 +111,14 @@ const ToolCard: FC<{ tool: PageSoftwareResult["list"][number] }> = ({ tool }) =>
     <div className="flex items-center justify-between border-b py-4">
       <div className="flex items-center gap-3">
         <div className="flex h-12 w-12 items-center justify-center rounded-full bg-green-100">
-          <img src={tool.image} alt={tool.name} className="h-8 w-8" />
+          <Avatar className={"size-8"}>
+            <AvatarImage src={tool.image ?? ""} />
+            <AvatarFallback>{tool.name[0]}</AvatarFallback>
+          </Avatar>
         </div>
-        <div>
+        <div className="flex-1">
           <h3 className="font-bold">{tool.name}</h3>
-          <p className="text-sm text-gray-600">{tool.description}</p>
+          <p className="text-sm text-gray-600 line-clamp-3">{tool.description}</p>
         </div>
       </div>
       <div className="flex items-center gap-1 text-primary ml-4">
@@ -203,7 +207,7 @@ const TopTools = () => {
                 <TabsTrigger
                   value={item.id}
                   className={cn(
-                    "flex bg-none shadow-none select-none items-center justify-center data-[state=active]:border-primary cursor-pointer",
+                    "flex bg-none shadow-none select-none items-center justify-center data-[state=active]:border-primary cursor-pointer text-lg mr-4",
                     "data-[state=active]:text-primary data-[state=active]:font-bold data-[state=active]:border-b-2 data-[state=active]:bg-none data-[state=active]:shadow-none"
                   )}
                   key={`category-${item.id}`}
@@ -213,25 +217,22 @@ const TopTools = () => {
               ))}
             </TabsList>
 
-            <div>
-              {currentCategory && <h2 className="mb-4 text-2xl font-bold text-primary">Top Tools in {currentCategory.name.toUpperCase()}</h2>}
-              <div className="space-y-2">
-                {data?.list?.map((tool) => (
-                  <ToolCard key={tool.id} tool={tool} />
-                ))}
-              </div>
+            <div className="space-y-2">
+              {data?.list?.map((tool) => (
+                <ToolCard key={tool.id} tool={tool} />
+              ))}
             </div>
           </Tabs>
         </div>
         <div className="space-y-4 min-w-[330px]">
-          <div>
-            <h2 className="mb-4 text-2xl font-bold text-primary">Community Pulse</h2>
-            <div className="space-y-4 divide-y">
-              {communityPosts.map((post) => (
-                <CommunityPost key={post.id} post={post} />
-              ))}
-            </div>
-          </div>
+          {/*<div>*/}
+          {/*  <h2 className="mb-4 text-2xl font-bold text-primary">Community Pulse</h2>*/}
+          {/*  <div className="space-y-4 divide-y">*/}
+          {/*    {communityPosts.map((post) => (*/}
+          {/*      <CommunityPost key={post.id} post={post} />*/}
+          {/*    ))}*/}
+          {/*  </div>*/}
+          {/*</div>*/}
           <div>
             <h2 className="mb-4 text-2xl font-bold text-primary">Recently Added Tools</h2>
             <div className="space-y-2">
@@ -239,7 +240,10 @@ const TopTools = () => {
                 <div key={tool.id} className="flex items-center justify-between py-2">
                   <div className="flex items-center gap-2 text-sm font-bold">
                     <div className="flex h-8 w-8 items-center justify-center rounded-full bg-green-100">
-                      <img src={tool.image} alt={tool.name} className="size-5" />
+                      <Avatar className={"size-5"}>
+                        <AvatarImage src={tool.image ?? ""} />
+                        <AvatarFallback>{tool.name[0]}</AvatarFallback>
+                      </Avatar>
                     </div>
                     <span className={"truncate"}>{tool.name}</span>
                   </div>
@@ -249,7 +253,7 @@ const TopTools = () => {
             </div>
 
             <div>
-              <h2 className="mb-4 text-2xl font-bold text-primary">Top Contributors</h2>
+              <h2 className="mt-4 mb-4 text-2xl font-bold text-primary">Top Contributors</h2>
               <div className="space-y-2">
                 {contributors.map((contributor) => (
                   <div key={contributor.id} className="flex items-center justify-between py-2">
