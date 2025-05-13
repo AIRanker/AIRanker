@@ -2,13 +2,13 @@
 
 import { Heart } from "lucide-react"
 import { type FC, useEffect, useMemo, useState } from "react"
+import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar"
 import { Button } from "~/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs"
 import { cn } from "~/lib/utils"
 import type { Pageable } from "~/server/schema"
 import type { PageSoftwareResult } from "~/server/services/software"
 import { api } from "~/trpc/react"
-import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar"
 
 interface ToolItem {
   id: string
@@ -224,7 +224,7 @@ const TopTools = () => {
             </div>
           </Tabs>
         </div>
-        <div className="space-y-4 min-w-[330px]">
+        <div className="space-y-4 min-w-[330px] flex flex-col">
           {/*<div>*/}
           {/*  <h2 className="mb-4 text-2xl font-bold text-primary">Community Pulse</h2>*/}
           {/*  <div className="space-y-4 divide-y">*/}
@@ -233,49 +233,47 @@ const TopTools = () => {
           {/*    ))}*/}
           {/*  </div>*/}
           {/*</div>*/}
-          <div>
-            <h2 className="mb-4 text-2xl font-bold text-primary">Recently Added Tools</h2>
-            <div className="space-y-2">
-              {recentlySoftware?.map((tool) => (
-                <div key={tool.id} className="flex items-center justify-between py-2">
-                  <div className="flex items-center gap-2 text-sm font-bold">
-                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-green-100">
-                      <Avatar className={"size-5"}>
-                        <AvatarImage src={tool.image ?? ""} />
-                        <AvatarFallback>{tool.name[0]}</AvatarFallback>
-                      </Avatar>
-                    </div>
-                    <span className={"truncate"}>{tool.name}</span>
+          <h2 className="mb-4 text-2xl font-bold text-primary">Recently Added Tools</h2>
+          <div className="space-y-2">
+            {recentlySoftware?.map((tool) => (
+              <div key={tool.id} className="flex items-center justify-between py-2 gap-4">
+                <div className="flex items-center gap-2 text-sm font-bold">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-green-100">
+                    <Avatar className={"size-5"}>
+                      <AvatarImage src={tool.image ?? ""} />
+                      <AvatarFallback>{tool.name[0]}</AvatarFallback>
+                    </Avatar>
                   </div>
-                  <span className="text-sm text-gray-500">3 days ago</span>
+                  <span className={"truncate"}>{tool.name}</span>
+                </div>
+                <span className="text-sm text-gray-500">3 days ago</span>
+              </div>
+            ))}
+          </div>
+
+          <div className={"flex-1"}>
+            <h2 className="mt-4 mb-4 text-2xl font-bold text-primary">Top Contributors</h2>
+            <div className="space-y-2">
+              {contributors.map((contributor) => (
+                <div key={contributor.id} className="flex items-center justify-between py-2">
+                  <div className="flex items-center gap-2">
+                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-green-100" />
+                    <span>{contributor.username}</span>
+                    <span className="text-sm text-gray-500">{contributor.points} points</span>
+                  </div>
+                  <button className="flex items-center gap-1 text-primary">
+                    <Heart className="size-4" />
+                    <span>{contributor.points}</span>
+                  </button>
                 </div>
               ))}
             </div>
+          </div>
 
-            <div>
-              <h2 className="mt-4 mb-4 text-2xl font-bold text-primary">Top Contributors</h2>
-              <div className="space-y-2">
-                {contributors.map((contributor) => (
-                  <div key={contributor.id} className="flex items-center justify-between py-2">
-                    <div className="flex items-center gap-2">
-                      <div className="flex h-8 w-8 items-center justify-center rounded-full bg-green-100" />
-                      <span>{contributor.username}</span>
-                      <span className="text-sm text-gray-500">{contributor.points} points</span>
-                    </div>
-                    <button className="flex items-center gap-1 text-primary">
-                      <Heart className="size-4" />
-                      <span>{contributor.points}</span>
-                    </button>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div className="py-6">
-              <h2 className="mb-2 text-2xl font-bold text-primary">Got an AI tool to share?</h2>
-              <p className="mb-4">You can submit and promote your own toolhere.</p>
-              <Button className="w-full">Submit your tool</Button>
-            </div>
+          <div className="py-6">
+            <h2 className="mb-2 text-2xl font-bold text-primary">Got an AI tool to share?</h2>
+            <p className="mb-4">You can submit and promote your own toolhere.</p>
+            <Button className="w-full">Submit your tool</Button>
           </div>
         </div>
       </div>

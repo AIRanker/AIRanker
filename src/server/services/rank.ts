@@ -443,3 +443,4 @@ const rankService = new RankService()
 export default rankService
 export type TopRanksResult = Awaited<ReturnType<typeof rankService.topRanks>>
 export type RankDetailsResult = Awaited<ReturnType<typeof rankService.detail>>
+export type PageRankResult = Awaited<ReturnType<typeof rankService.pageRanks>>
