@@ -83,6 +83,40 @@ class UserService {
       }
     })
   }
+  async topContributors() {
+    // 使用聚合查询获取创建 rank 数量最多的用户
+    const topContributors = await db.user.findMany({
+      where: {
+        ranks: {
+          some: {} // 确保用户至少有一个 rank
+        }
+      },
+      select: {
+        address: true,
+        name: true,
+        avatar: true,
+        _count: {
+          select: {
+            ranks: true // 计算每个用户的 rank 数量
+          }
+        }
+      },
+      orderBy: {
+        ranks: {
+          _count: 'desc' // 按 rank 数量降序排序
+        }
+      },
+      take: 10 // 只取前 10 名
+    });
+
+    // 格式化返回结果
+    return topContributors.map(user => ({
+      address: user.address,
+      name: user.name,
+      avatar: user.avatar,
+      rankCount: user._count.ranks
+    }));
+  }
 }
 const userWithPlatforms = Prisma.validator<Prisma.UserDefaultArgs>()({ include: { platforms: true } })
 export type UserWithPlatforms = Prisma.UserGetPayload<typeof userWithPlatforms>
