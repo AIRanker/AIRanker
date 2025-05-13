@@ -230,22 +230,97 @@ class SoftwareService {
       return newSoftware
     })
   }
-  async recentlySoftwares() {
+  async recentlySoftwares(userAddress?: string) {
     const softwares = await db.software.findMany({
       orderBy: {
         updatedAt: "desc"
       },
       take: 5,
-      select: generateSoftwareSelect()
+      select: generateSoftwareSelect(userAddress)
     })
     return softwares.map((software) => ({
       ...software,
       tags: software.tags.map((tag) => tag.tag.name),
-      isLiked: false,
-      isStared: false,
+      isLiked: userAddress ? software.likes?.length > 0 : false,
+      isStared: userAddress ? software.stars?.length > 0 : false,
       likes: undefined,
       stars: undefined
     }))
+  }
+  async recentlyStarAndLikeSoftwares(userAddress?: string) {
+    const recentStarSoftwares = await db.softwareStar.findMany({
+      orderBy: {
+        createdAt: "desc"
+      },
+      take: 5,
+      select: {
+        user: {
+          select: {
+            address: true,
+            name: true,
+            avatar: true
+          }
+        },
+        software: {
+          select: generateSoftwareSelect(userAddress)
+        },
+        createdAt: true,
+        userAddress: true
+      }
+    });
+
+    // 查询最近的点赞记录
+    const recentLikeSoftwares = await db.softwareLike.findMany({
+      orderBy: {
+        createdAt: "desc"
+      },
+      take: 5,
+      select: {
+        software: {
+          select: generateSoftwareSelect(userAddress)
+        },
+        createdAt: true,
+        userAddress: true
+      }
+    });
+    return {
+      star: recentStarSoftwares.map((item) => {
+        const software = item.software
+        return {
+          software: {
+            ...software,
+            tags: software.tags.map((tag) => tag.tag.name),
+            isLiked: userAddress ? software.likes?.length > 0 : false,
+            isStared: userAddress ? software.stars?.length > 0 : false,
+            likes: undefined,
+            stars: undefined
+          },
+          user: {
+            address: item.user.address,
+            name: item.user.name,
+            avatar: item.user.avatar
+          },
+        }
+      }),
+      like: recentLikeSoftwares.map((item) => {
+        const software = item.software
+        return {
+          software: {
+            ...software,
+            tags: software.tags.map((tag) => tag.tag.name),
+            isLiked: userAddress ? software.likes?.length > 0 : false,
+            isStared: userAddress ? software.stars?.length > 0 : false,
+            likes: undefined,
+            stars: undefined,
+          },
+          user: {
+            address: item.userAddress,
+            name: item.userAddress,
+            avatar: item.userAddress
+          },
+        }
+      })
+    }
   }
 }
 

@@ -4,35 +4,38 @@ import { searchParamsSchema, softwareParamsSchema, softwareSearchParamsSchema } 
 import softwareService from "~/server/services/software"
 
 export const softwareRouter = createTRPCRouter({
-  pageSoftwares: publicProcedure.input(softwareSearchParamsSchema).query(async ({ input, ctx }) => {
-    const userAddress = ctx.userAddress
-    return await softwareService.pageSoftwares(input, userAddress)
-  }),
-  getSoftwaresByRankId: publicProcedure
-    .input(
-      z.object({
-        rankId: z.string()
-      })
-    )
-    .query(async ({ input, ctx }) => {
-      const userAddress = ctx.userAddress
-      return await softwareService.getSoftwaresByRankId(input.rankId, userAddress)
+    pageSoftwares: publicProcedure.input(softwareSearchParamsSchema).query(async ({ input, ctx }) => {
+        const userAddress = ctx.userAddress
+        return await softwareService.pageSoftwares(input, userAddress)
     }),
-  like: protectedProcedure.input(z.object({ softwareId: z.string() })).mutation(async ({ input, ctx }) => {
-    const userAddress = ctx.userAddress!
-    return await softwareService.like(input.softwareId, userAddress)
-  }),
-  fav: protectedProcedure.input(z.object({ softwareId: z.string() })).mutation(async ({ input, ctx }) => {
-    const userAddress = ctx.userAddress!
-    return await softwareService.star(input.softwareId, userAddress)
-  }),
-  create: protectedProcedure.input(softwareParamsSchema).mutation(async ({ input, ctx }) => {
-    const userAddress = ctx.userAddress!
-    return await softwareService.create(input, userAddress)
-  }),
-  recentlySoftwares: publicProcedure.query(async () => {
-    return await softwareService.recentlySoftwares()
-  })
+    getSoftwaresByRankId: publicProcedure
+        .input(
+            z.object({
+                rankId: z.string()
+            })
+        )
+        .query(async ({ input, ctx }) => {
+            const userAddress = ctx.userAddress
+            return await softwareService.getSoftwaresByRankId(input.rankId, userAddress)
+        }),
+    like: protectedProcedure.input(z.object({ softwareId: z.string() })).mutation(async ({ input, ctx }) => {
+        const userAddress = ctx.userAddress!
+        return await softwareService.like(input.softwareId, userAddress)
+    }),
+    fav: protectedProcedure.input(z.object({ softwareId: z.string() })).mutation(async ({ input, ctx }) => {
+        const userAddress = ctx.userAddress!
+        return await softwareService.star(input.softwareId, userAddress)
+    }),
+    create: protectedProcedure.input(softwareParamsSchema).mutation(async ({ input, ctx }) => {
+        const userAddress = ctx.userAddress!
+        return await softwareService.create(input, userAddress)
+    }),
+    recentlySoftwares: publicProcedure.query(async () => {
+        return await softwareService.recentlySoftwares()
+    }),
+    recentlyStarAndLikeSoftwares: publicProcedure.query(async ({ ctx }) => {
+        return await softwareService.recentlyStarAndLikeSoftwares(ctx.userAddress)
+    }),
 })
 
 export default softwareRouter
