@@ -264,8 +264,7 @@ class SoftwareService {
         software: {
           select: generateSoftwareSelect(userAddress)
         },
-        createdAt: true,
-        userAddress: true
+        createdAt: true
       }
     });
 
@@ -276,11 +275,17 @@ class SoftwareService {
       },
       take: 5,
       select: {
+        user: {
+          select: {
+            address: true,
+            name: true,
+            avatar: true
+          }
+        },
         software: {
           select: generateSoftwareSelect(userAddress)
         },
-        createdAt: true,
-        userAddress: true
+        createdAt: true
       }
     });
     return {
@@ -300,6 +305,7 @@ class SoftwareService {
             name: item.user.name,
             avatar: item.user.avatar
           },
+          createdAt: item.createdAt
         }
       }),
       like: recentLikeSoftwares.map((item) => {
@@ -314,10 +320,11 @@ class SoftwareService {
             stars: undefined,
           },
           user: {
-            address: item.userAddress,
-            name: item.userAddress,
-            avatar: item.userAddress
+            address: item.user.address,
+            name: item.user.name,
+            avatar: item.user.avatar
           },
+          createdAt: item.createdAt
         }
       })
     }
