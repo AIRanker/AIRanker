@@ -1,3 +1,5 @@
+import { create } from "domain"
+
 export function generateRankSelect(userAddress?: string) {
   return {
     id: true,
@@ -20,8 +22,10 @@ export function generateRankSelect(userAddress?: string) {
             categoryId: true,
           }
         },
-        rankDescription: true,
-        rankIndex: true
+        description: true,
+        rankIndex: true,
+        createdAt: true,
+        updatedAt: true,
       }
     },
     tags: {
