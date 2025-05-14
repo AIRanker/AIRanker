@@ -166,7 +166,7 @@ const TopTools = () => {
   const [condition, setCondition] = useState<Condition>({
     currentCategory: "",
     pageable: {
-      page: 1,
+      page: 0,
       size: 10
     }
   })
@@ -183,7 +183,7 @@ const TopTools = () => {
       categoryIds: [condition.currentCategory],
       sort: "stars",
       pageable: {
-        page: condition.pageable.page ?? 1,
+        page: condition.pageable.page ?? 0,
         size: condition.pageable.size ?? 10
       }
     },

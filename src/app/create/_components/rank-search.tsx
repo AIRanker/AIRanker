@@ -20,7 +20,7 @@ const RankSearch = ({ onAdd, children }: Props) => {
   const [value, setValue] = React.useState("")
   const { data, isPending } = api.software.pageSoftwares.useQuery({
     pageable: {
-      page: 1,
+      page: 0,
       size: 10
     },
     search: value
