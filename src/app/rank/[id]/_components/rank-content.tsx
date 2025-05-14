@@ -1,14 +1,14 @@
 "use client"
-import { motion } from "framer-motion"
-import { cn } from "~/lib/utils"
-import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar"
-import Link from "next/link"
-import { Separator } from "~/components/ui/separator"
-import { Heart, MessageCircle, Share2, Star } from "lucide-react"
-import { api } from "~/trpc/react"
-import type { SoftwareByRankIdResult } from "~/server/services/software"
-import { toast } from "sonner"
 import { useAuth, useClerk } from "@clerk/nextjs"
+import { motion } from "framer-motion"
+import { Heart, MessageCircle, Share2, Star } from "lucide-react"
+import Link from "next/link"
+import { toast } from "sonner"
+import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar"
+import { Separator } from "~/components/ui/separator"
+import { cn } from "~/lib/utils"
+import type { SoftwareByRankIdResult } from "~/server/services/software"
+import { api } from "~/trpc/react"
 interface RankerContentProps {
   id: string
 }
@@ -146,7 +146,7 @@ const RankContent = ({ id }: RankerContentProps) => {
     <div className={"flex flex-col justify-center -mt-40"}>
       {data && <RankTopList data={data} />}
       <div className="mt-20 grid grid-cols-3 gap-8">
-        <div className="col-span-2 flex flex-col gap-4">
+        <div className="col-span-2 flex flex-col gap-6">
           {(data?.length ?? 0) > 3 &&
             data?.slice(3).map((item, index) => (
               <div key={`item-${item.id}`} className="rounded-2xl border-[1px] p-6 bg-background relative flex flex-col gap-4">
@@ -163,7 +163,7 @@ const RankContent = ({ id }: RankerContentProps) => {
                       </Link>
                       <SoftwareAction item={item} className="size 4" />
                     </div>
-                    <div className={"text-muted-foreground/60"}>{item.description}</div>
+                    <div className={"text-sm text-muted-foreground/60"}>{item.description}</div>
                   </div>
                 </div>
                 <div className="relative text-left text-primary border-l-4 border-primary pl-4 w-full">
@@ -172,18 +172,16 @@ const RankContent = ({ id }: RankerContentProps) => {
               </div>
             ))}
         </div>
-        <div className="col-span-1 flex flex-col rounded-2xl border-[1px] p-6 bg-background">
+        <div className="col-span-1 h-fit flex flex-col rounded-2xl border-[1px] p-6 bg-background">
           <div className="mb-4 text-2xl font-bold text-primary"># Recently Articles</div>
-          {
-            articleData?.map((item) => (
-              <div key={item.id} className="flex flex-row gap-4 items-center mb-4 justify-between">
-                <Link target="_blank" href={"/"} className="font-semibold text-muted-foreground hover:underline">
-                  {item.title}
-                </Link>
-                <div className="text-xs text-muted-foreground">{item.createdAt.toLocaleDateString()}</div>
-              </div>
-            ))
-          }
+          {articleData?.map((item) => (
+            <div key={item.id} className="flex flex-row gap-4 items-center mb-4 justify-between">
+              <Link target="_blank" href={"/"} className="font-semibold text-muted-foreground hover:underline">
+                {item.title}
+              </Link>
+              <div className="text-xs text-muted-foreground">{item.createdAt.toLocaleDateString()}</div>
+            </div>
+          ))}
         </div>
       </div>
     </div>

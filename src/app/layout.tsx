@@ -4,7 +4,7 @@ import type { Metadata } from "next"
 import { Geist } from "next/font/google"
 
 import { ClerkProvider, SignInButton, SignUpButton, SignedIn, SignedOut, UserButton } from "@clerk/nextjs"
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
+import { QueryClientProvider } from "@tanstack/react-query"
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools"
 import { headers } from "next/headers"
 import Link from "next/link"

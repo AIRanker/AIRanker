@@ -1,6 +1,6 @@
+import { CommandSearch } from "~/app/_components/command-search"
 import CuratedCollection from "~/app/_components/curated-collection"
 import TopTools from "~/app/_components/top-tools"
-import BannerIcon from "~/components/icons/banner"
 import { SplineScene } from "~/components/ui/splite"
 import { cn } from "~/lib/utils"
 import { HydrateClient, api } from "~/trpc/server"
@@ -19,6 +19,7 @@ export default async function Home() {
           <div className={"text-lg opacity-50"}>
             Discover the most impactful AI tools across categories — ranked by the global community, tracked by region, and driven by open participation.
           </div>
+          <CommandSearch />
         </div>
         {/*<BannerIcon />*/}
         <SplineScene

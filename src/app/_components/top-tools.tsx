@@ -1,7 +1,9 @@
 "use client"
 
-import { Heart } from "lucide-react"
+import { useAuth, useClerk } from "@clerk/nextjs"
+import { Heart, MessageCircle, Share2, Star } from "lucide-react"
 import { type FC, useEffect, useMemo, useState } from "react"
+import { toast } from "sonner"
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar"
 import { Button } from "~/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs"
@@ -107,6 +109,27 @@ const contributors: ContributorItem[] = [
 ]
 
 const ToolCard: FC<{ tool: PageSoftwareResult["list"][number] }> = ({ tool }) => {
+  const { isSignedIn } = useAuth()
+  const { openSignIn } = useClerk()
+  const useUtils = api.useUtils()
+  const { mutate: starMutate } = api.software.fav.useMutation({
+    onSuccess: () => {
+      void useUtils.software.getSoftwaresByRankId.refetch()
+    },
+    onError: (error) => {
+      console.error(error)
+      toast.error("Failed to star the tool", { duration: 3000 })
+    }
+  })
+  const { mutate: likeMutate } = api.software.like.useMutation({
+    onSuccess: () => {
+      void useUtils.software.getSoftwaresByRankId.refetch()
+    },
+    onError: (error) => {
+      console.error(error)
+      toast.error("Failed to like the tool", { duration: 3000 })
+    }
+  })
   return (
     <div className="flex items-center justify-between border-b py-4">
       <div className="flex items-center gap-3">
@@ -121,9 +144,37 @@ const ToolCard: FC<{ tool: PageSoftwareResult["list"][number] }> = ({ tool }) =>
           <p className="text-sm text-gray-600 line-clamp-3">{tool.description}</p>
         </div>
       </div>
-      <div className="flex items-center gap-1 text-primary ml-4">
-        <Heart className="size-5" />
-        <span>{tool._count.likes > 1000 ? `${Math.floor(tool._count.likes / 1000)}K` : tool._count.likes}</span>
+      <div className="flex items-center gap-4 z-20">
+        <div className="flex items-center gap-1">
+          <Star
+            className={cn("cursor-pointer text-primary hover:scale-125 hover:fill-yellow-400 hover:text-yellow-400 transition", tool.isStared && "text-yellow-400 fill-yellow-400")}
+            onClick={(event) => {
+              if (!isSignedIn) {
+                void openSignIn()
+              } else {
+                starMutate({ softwareId: tool.id })
+              }
+              event.preventDefault()
+              event.stopPropagation()
+            }}
+          />
+          <span className="text-sm font-medium">{tool._count.likes ?? 0}</span>
+        </div>
+        <div className="flex items-center gap-1">
+          <Heart
+            className={cn(" cursor-pointer text-primary hover:scale-125 hover:fill-red-400 hover:text-red-400 transition", tool.isLiked && "text-red-400 fill-red-400")}
+            onClick={(event) => {
+              if (!isSignedIn) {
+                void openSignIn()
+              } else {
+                likeMutate({ softwareId: tool.id })
+              }
+              event.preventDefault()
+              event.stopPropagation()
+            }}
+          />
+          <span className="text-sm font-medium">{tool._count.stars ?? 0}</span>
+        </div>
       </div>
     </div>
   )

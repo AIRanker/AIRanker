@@ -22,30 +22,56 @@ const LogoBeam = ({ data }: { data: PageRankResult["list"][number] }) => {
   return (
     <div ref={containerRef} className={"aspect-square h-60 w-full rounded-t-lg object-cover relative justify-center flex items-center"}>
       <div className="flex size-full flex-col items-stretch justify-around gap-10">
-        <div className="flex flex-row justify-between items-center mx-10">
+        <div className="flex flex-row justify-around items-center w-full h-full">
+          <div className={"flex flex-col gap-4"}>
+            {data.softwares.slice(0, 7).map(
+              (software, index) =>
+                index % 2 === 0 && (
+                  <div
+                    key={software.software.id}
+                    ref={softwareRefs[index]}
+                    className="z-10 flex size-12 items-center justify-center rounded-full border-2 bg-white p-3 shadow-[0_0_20px_-12px_rgba(0,0,0,0.8)]"
+                  >
+                    <Avatar className="h-10 w-10">
+                      <AvatarImage src={software.software.image} />
+                      <AvatarFallback>{(software.software.name ?? "A").charAt(0)}</AvatarFallback>
+                    </Avatar>
+                  </div>
+                )
+            )}
+          </div>
           <div ref={rootRef} className="z-10 flex size-12 text-primary items-center justify-center rounded-full border-2 p-3 shadow-[0_0_20px_-12px_rgba(0,0,0,0.8)]">
             <PackageOpen />
           </div>
           <div className={"flex flex-col gap-4"}>
-            {data.softwares.map((software, index) => (
-              <div
-                key={software.software.id}
-                ref={softwareRefs[index]}
-                className="z-10 flex size-12 items-center justify-center rounded-full border-2 bg-white p-3 shadow-[0_0_20px_-12px_rgba(0,0,0,0.8)]"
-              >
-                <Avatar className="h-10 w-10">
-                  <AvatarImage src={software.software.image} />
-                  <AvatarFallback>{(software.software.name ?? "A").charAt(0)}</AvatarFallback>
-                </Avatar>
-              </div>
-            ))}
+            {data.softwares.slice(0, 8).map(
+              (software, index) =>
+                index % 2 !== 0 && (
+                  <div
+                    key={software.software.id}
+                    ref={softwareRefs[index]}
+                    className="z-10 flex size-12 items-center justify-center rounded-full border-2 bg-white p-3 shadow-[0_0_20px_-12px_rgba(0,0,0,0.8)]"
+                  >
+                    <Avatar className="h-10 w-10">
+                      <AvatarImage src={software.software.image} />
+                      <AvatarFallback>{(software.software.name ?? "A").charAt(0)}</AvatarFallback>
+                    </Avatar>
+                  </div>
+                )
+            )}
           </div>
         </div>
       </div>
       {softwareRefs.length > 0 &&
-        softwareRefs.map((toRef, index) => (
-          <AnimatedBeam key={`beam-${index}`} duration={3} pathColor={"black"} startXOffset={30} containerRef={containerRef} fromRef={rootRef} toRef={toRef} />
-        ))}
+        softwareRefs
+          .slice(0, 8)
+          .map((toRef, index) =>
+            index % 2 === 0 ? (
+              <AnimatedBeam key={`beam-${index}`} duration={3} pathColor={"black"} startXOffset={-30} containerRef={containerRef} fromRef={rootRef} toRef={toRef} />
+            ) : (
+              <AnimatedBeam key={`beam-${index}`} duration={3} pathColor={"black"} startXOffset={30} containerRef={containerRef} fromRef={containerRef} toRef={toRef} />
+            )
+          )}
     </div>
   )
 }
