@@ -34,7 +34,7 @@ jobs:
       - uses: pnpm/action-setup@v4
         name: Install pnpm
         with:
-          version: 9.14.2
+          version: 9.11.0
 
       - uses: actions/cache@v3
         name: Setup pnpm cache
