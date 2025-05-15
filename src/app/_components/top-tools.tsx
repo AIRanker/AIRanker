@@ -4,6 +4,7 @@ import { useAuth, useClerk } from "@clerk/nextjs"
 import { Heart, MessageCircle, Share2, Star } from "lucide-react"
 import { type FC, useEffect, useMemo, useState } from "react"
 import { toast } from "sonner"
+import { ToolDialog } from "~/app/_components/tool-dialog"
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar"
 import { Button } from "~/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs"
@@ -112,6 +113,7 @@ const ToolCard: FC<{ tool: PageSoftwareResult["list"][number] }> = ({ tool }) =>
   const { isSignedIn } = useAuth()
   const { openSignIn } = useClerk()
   const useUtils = api.useUtils()
+  const [dialogOpen, setDialogOpen] = useState(false)
   const { mutate: starMutate } = api.software.fav.useMutation({
     onSuccess: () => {
       void useUtils.software.getSoftwaresByRankId.refetch()
@@ -140,7 +142,9 @@ const ToolCard: FC<{ tool: PageSoftwareResult["list"][number] }> = ({ tool }) =>
           </Avatar>
         </div>
         <div className="flex-1">
-          <h3 className="font-bold">{tool.name}</h3>
+          <h3 className="font-bold cursor-pointer w-fit" onClick={() => setDialogOpen(true)}>
+            {tool.name}
+          </h3>
           <p className="text-sm text-gray-600 line-clamp-3">{tool.description}</p>
         </div>
       </div>
@@ -176,6 +180,7 @@ const ToolCard: FC<{ tool: PageSoftwareResult["list"][number] }> = ({ tool }) =>
           <span className="text-sm font-medium">{tool._count.stars ?? 0}</span>
         </div>
       </div>
+      <ToolDialog tool={tool} open={dialogOpen} onOpenChange={setDialogOpen} />
     </div>
   )
 }

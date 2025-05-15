@@ -5,8 +5,16 @@ import Link from "next/link"
 import { Avatar } from "~/components/ui/avatar"
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card"
 
+interface RankI {
+  id: string
+  title: string
+  date: string
+  views: string
+  likes: string
+}
+
 const LikeStar = () => {
-  const likedRanks = [
+  const likedRanks: RankI[] = [
     {
       id: "rank1",
       title: "Top AI Developer Tools",
@@ -44,7 +52,7 @@ const LikeStar = () => {
     }
   ]
 
-  const starRanks = [
+  const starRanks: RankI[] = [
     {
       id: "rank6",
       title: "Top AI Developer Tools",
@@ -68,7 +76,7 @@ const LikeStar = () => {
     }
   ]
 
-  const RankList = ({ ranks, icon }) => (
+  const RankList = ({ ranks, icon }: { ranks: RankI[]; icon: string }) => (
     <div className="divide-y">
       {ranks.map((rank) => (
         <div key={rank.id} className="py-6 first:pt-0 last:pb-0">
