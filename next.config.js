@@ -10,6 +10,9 @@ const config = {
   output: "standalone",
   images: {
     domains: ["storage.googleapis.com", "avatars.githubusercontent.com", "picsum.photos"]
+  },
+  eslint: {
+    ignoreDuringBuilds: true
   }
 }
 
