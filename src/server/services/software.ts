@@ -329,6 +329,83 @@ class SoftwareService {
       })
     }
   }
+  async similarTags(softwareId: string, userAddress?: string) {
+    const software = await db.software.findUnique({
+      where: { id: softwareId },
+      select: {
+        tags: {
+          select: {
+            tagId: true
+          }
+        }
+      }
+    })
+    if (!software) return []
+
+    const similarSoftwares = await db.software.findMany({
+      where: {
+        id: { not: softwareId },
+        tags: {
+          some: {
+            tagId: { in: software.tags.map((tag) => tag.tagId) }
+          }
+        }
+      },
+      select: generateSoftwareSelect(userAddress),
+      orderBy: {
+        likes: {
+          _count: "desc"
+        }
+      },
+      take: 10
+    })
+    return similarSoftwares.map((software) => ({
+      ...software,
+      tags: software.tags.map((tag) => tag.tag.name),
+      isLiked: userAddress ? software.likes?.length > 0 : false,
+      isStared: userAddress ? software.stars?.length > 0 : false,
+      likes: undefined,
+      stars: undefined
+    }))
+  }
+
+  async similarCategory(softwareId: string, userAddress?: string) {
+    // 1. 查找当前软件以获取其分类ID
+    const software = await db.software.findUnique({
+      where: { id: softwareId },
+      select: {
+        categoryId: true
+      }
+    });
+
+    if (!software || !software.categoryId) return [];
+
+    // 2. 查询同一分类的其他软件
+    const sameCategorySoftwares = await db.software.findMany({
+      where: {
+        id: { not: softwareId }, // 排除当前软件
+        categoryId: software.categoryId // 匹配相同分类
+      },
+      select: generateSoftwareSelect(userAddress),
+      orderBy: {
+        // 按点赞数排序，可以根据需求修改
+        likes: {
+          _count: 'desc'
+        }
+      },
+      take: 10 // 限制返回数量
+    });
+
+    // 3. 格式化返回结果
+    return sameCategorySoftwares.map((software) => ({
+      ...software,
+      tags: software.tags.map((tag) => tag.tag.name),
+      isLiked: userAddress ? software.likes?.length > 0 : false,
+      isStared: userAddress ? software.stars?.length > 0 : false,
+      likes: undefined,
+      stars: undefined
+    }));
+  }
 }
 
 const softwareService = new SoftwareService()
