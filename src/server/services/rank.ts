@@ -1,6 +1,6 @@
 import type { Prisma } from "@prisma/client"
 import { db } from "../db"
-import type { CreateRankParams, PageableData, RankSearchParams, UpdateRankParams } from "../schema"
+import type { CreateRankParams, Pageable, PageableData, RankSearchParams, UpdateRankParams } from "../schema"
 import { generateRankSelect } from "../select"
 import { createSoftware } from "./software"
 
@@ -436,6 +436,37 @@ class RankService {
       likes: undefined,
       stars: undefined
     }
+  }
+  async pageRanksBySoftwareId(softwareId: string, pageable: Pageable, userAddress?: string) {
+    const total = await db.softwareOnRank.count({ where: { softwareId } })
+    const pages = Math.ceil(total / pageable.size) || 1
+    const actualPage = Math.max(0, Math.min(pageable.page, pages - 1))
+    const ranks = await db.softwareOnRank.findMany({
+      where: {
+        softwareId
+      },
+      select: {
+        rank: {
+          select: generateRankSelect(userAddress)
+        }
+      },
+      skip: actualPage * pageable.size,
+      take: pageable.size
+    })
+    const list = ranks.map((rank) => ({
+      ...rank.rank,
+      tags: rank.rank.tags.map((tag) => tag.tag.name),
+      isLiked: userAddress ? rank.rank.likes.length > 0 : false,
+      isStared: userAddress ? rank.rank.stars.length > 0 : false,
+      likes: undefined,
+      stars: undefined
+    }))
+    return {
+      list,
+      pages,
+      total
+    } as PageableData<(typeof list)[number]>
+
   }
 }
 

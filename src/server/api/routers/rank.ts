@@ -1,6 +1,6 @@
 import { z } from "zod"
 import { createTRPCRouter, protectedProcedure, publicProcedure } from "~/server/api/trpc"
-import { createRankParamsSchema, rankSeachParamsSchema } from "~/server/schema"
+import { createRankParamsSchema, pageableSchema, rankSeachParamsSchema, searchParamsSchema } from "~/server/schema"
 import rankService from "~/server/services/rank"
 
 export const rankRouter = createTRPCRouter({
@@ -22,7 +22,10 @@ export const rankRouter = createTRPCRouter({
   }),
   detail: publicProcedure.input(z.object({ rankId: z.string() })).query(async ({ input, ctx }) => {
     return await rankService.detail(input.rankId, ctx.userAddress)
-  })
+  }),
+  pageRanksBySoftwareId: publicProcedure.input(pageableSchema.extend({ softwareId: z.string() })).query(async ({ input, ctx }) => {
+    return await rankService.pageRanksBySoftwareId(input.softwareId, { page: input.page, size: input.size }, ctx.userAddress)
+  }),
 })
 
 export default rankRouter

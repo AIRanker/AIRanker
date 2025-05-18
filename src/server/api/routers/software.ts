@@ -30,13 +30,9 @@ export const softwareRouter = createTRPCRouter({
         const userAddress = ctx.userAddress!
         return await softwareService.create(input, userAddress)
     }),
-    similarTags: publicProcedure.input(z.object({ softwareId: z.string() })).query(async ({ input, ctx }) => {
+    similarSoftwares: publicProcedure.input(z.object({ softwareId: z.string(), limit: z.number().int().default(10).optional() })).query(async ({ input, ctx }) => {
         const userAddress = ctx.userAddress
-        return await softwareService.similarTags(input.softwareId, userAddress)
-    }),
-    similarCategory: publicProcedure.input(z.object({ softwareId: z.string() })).query(async ({ input, ctx }) => {
-        const userAddress = ctx.userAddress
-        return await softwareService.similarCategory(input.softwareId, userAddress)
+        return await softwareService.similarSoftwares(input.softwareId, input.limit, userAddress)
     }),
     recentlySoftwares: publicProcedure.query(async () => {
         return await softwareService.recentlySoftwares()
