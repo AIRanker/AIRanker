@@ -47,8 +47,8 @@ export const createTRPCContext = async (opts: { headers: Headers, auth: AuthObje
   //       : undefined,
   //   ...opts
   // }
-  if (opts.auth) {
-    const currentUser = await userService.getUserByAddress(opts.auth.userId!)
+  if (opts.auth.userId) {
+    const currentUser = await userService.getUserByAddress(opts.auth.userId)
     if (!currentUser) {
       await userService.createUser(opts.auth.userId!, undefined)
     }
