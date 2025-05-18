@@ -40,6 +40,7 @@ export function generateRankSelect(userAddress?: string) {
     },
     _count: {
       select: {
+        comments: true,
         softwares: true,
         articles: true,
         likes: true,
@@ -100,7 +101,8 @@ export function generateSoftwareSelect(userAddress?: string) {
     _count: {
       select: {
         likes: true,
-        stars: true
+        stars: true,
+        comments: true
       }
     },
     ...(userAddress
