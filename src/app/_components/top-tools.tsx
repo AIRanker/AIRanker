@@ -2,6 +2,7 @@
 
 import { useAuth, useClerk } from "@clerk/nextjs"
 import { Heart, MessageCircle, Share2, Star } from "lucide-react"
+import Link from "next/link"
 import { type FC, useEffect, useMemo, useState } from "react"
 import { toast } from "sonner"
 import { ToolDialog } from "~/app/_components/tool-dialog"
@@ -142,9 +143,9 @@ const ToolCard: FC<{ tool: PageSoftwareResult["list"][number] }> = ({ tool }) =>
           </Avatar>
         </div>
         <div className="flex-1">
-          <h3 className="font-bold cursor-pointer w-fit" onClick={() => setDialogOpen(true)}>
+          <Link className="font-bold cursor-pointer w-fit" href={`/tool/${tool.id}`}>
             {tool.name}
-          </h3>
+          </Link>
           <p className="text-sm text-gray-600 line-clamp-3">{tool.description}</p>
         </div>
       </div>

@@ -266,7 +266,7 @@ class SoftwareService {
         },
         createdAt: true
       }
-    });
+    })
 
     // 查询最近的点赞记录
     const recentLikeSoftwares = await db.softwareLike.findMany({
@@ -287,7 +287,7 @@ class SoftwareService {
         },
         createdAt: true
       }
-    });
+    })
     return {
       star: recentStarSoftwares.map((item) => {
         const software = item.software
@@ -317,7 +317,7 @@ class SoftwareService {
             isLiked: userAddress ? software.likes?.length > 0 : false,
             isStared: userAddress ? software.stars?.length > 0 : false,
             likes: undefined,
-            stars: undefined,
+            stars: undefined
           },
           user: {
             address: item.user.address,
@@ -329,7 +329,7 @@ class SoftwareService {
       })
     }
   }
-  async similarSoftwares(softwareId: string, limit: number = 10, userAddress?: string) {
+  async similarSoftwares(softwareId: string, limit = 10, userAddress?: string) {
     const software = await db.software.findUnique({
       where: { id: softwareId },
       select: {
@@ -340,16 +340,16 @@ class SoftwareService {
         },
         categoryId: true
       }
-    });
+    })
 
-    if (!software) return [];
+    if (!software) return []
 
     // 构建 OR 条件: 匹配标签 OR 匹配分类
     const whereCondition: Prisma.SoftwareWhereInput = {
       id: { not: softwareId }
-    };
+    }
 
-    const orConditions: Prisma.SoftwareWhereInput[] = [];
+    const orConditions: Prisma.SoftwareWhereInput[] = []
 
     // 条件1: 相同标签
     orConditions.push({
@@ -358,17 +358,17 @@ class SoftwareService {
           tagId: { in: software.tags.map((tag) => tag.tagId) }
         }
       }
-    });
+    })
 
     // 条件2: 相同分类
     if (software.categoryId) {
       orConditions.push({
         categoryId: software.categoryId
-      });
+      })
     }
 
     if (orConditions.length > 0) {
-      whereCondition.OR = orConditions;
+      whereCondition.OR = orConditions
     }
 
     const similarSoftwares = await db.software.findMany({
@@ -380,7 +380,7 @@ class SoftwareService {
         }
       },
       take: limit
-    });
+    })
 
     return similarSoftwares.map((software) => ({
       ...software,
@@ -389,7 +389,28 @@ class SoftwareService {
       isStared: userAddress ? software.stars?.length > 0 : false,
       likes: undefined,
       stars: undefined
-    }));
+    }))
+  }
+  async detail(id: string, userAddress?: string) {
+    const software = await db.software.findUnique({
+      where: { id },
+      select: generateSoftwareSelect(userAddress)
+    })
+
+    if (!software) {
+      return null
+    }
+
+    // 处理返回数据，将标签列表转换为名称数组，处理点赞/收藏状态
+    return {
+      ...software,
+      tags: software.tags.map((tag) => tag.tag.name),
+      isLiked: userAddress ? software.likes?.length > 0 : false,
+      isStared: userAddress ? software.stars?.length > 0 : false,
+      // 移除原始关联数据，只保留处理后的状态
+      likes: undefined,
+      stars: undefined
+    }
   }
 }
 
@@ -398,3 +419,5 @@ export default softwareService
 export type PageSoftwareResult = Awaited<ReturnType<typeof softwareService.pageSoftwares>>
 export type SoftwareByRankIdResult = Awaited<ReturnType<typeof softwareService.getSoftwaresByRankId>>
 export type RecentlySoftwaresResult = Awaited<ReturnType<typeof softwareService.recentlySoftwares>>
+export type SoftwareDetailResult = Awaited<ReturnType<typeof softwareService.detail>>
+export type SimilarSoftwaresResult = Awaited<ReturnType<typeof softwareService.similarSoftwares>>

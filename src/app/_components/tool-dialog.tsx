@@ -2,10 +2,8 @@
 
 import { useAuth, useClerk } from "@clerk/nextjs"
 import { Heart, Share2, Star } from "lucide-react"
-import type { FC } from "react"
 import { toast } from "sonner"
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar"
-import { Button } from "~/components/ui/button"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "~/components/ui/dialog"
 import { cn } from "~/lib/utils"
 import type { PageSoftwareResult } from "~/server/services/software"
