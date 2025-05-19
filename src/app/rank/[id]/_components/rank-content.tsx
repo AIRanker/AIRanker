@@ -1,7 +1,7 @@
 "use client"
 import { motion } from "framer-motion"
 import Link from "next/link"
-import { SoftwareAction } from "~/app/_components/software-action"
+import SoftwareAction from "~/app/_components/software-action"
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar"
 import { Separator } from "~/components/ui/separator"
 import { cn } from "~/lib/utils"
