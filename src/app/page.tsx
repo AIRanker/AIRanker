@@ -49,8 +49,8 @@ export default async function Home() {
           )}
         />
       </div>
-      <TopTools />
       <CuratedCollection />
+      <TopTools />
     </>
   )
 }
