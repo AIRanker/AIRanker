@@ -2,20 +2,29 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import { ImagePlus, TrashIcon } from "lucide-react"
 import { useRouter } from "next/navigation"
-import React from "react"
+import React, { useEffect, useMemo, useState, useTransition } from "react"
 import { useForm } from "react-hook-form"
+import CreatableSelect from "react-select/creatable"
+import { toast } from "sonner"
 import { uploadFile } from "~/app/actions"
 import PictureSelectPopover from "~/components/picture-select-popover"
 import { Button } from "~/components/ui/button"
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "~/components/ui/form"
 import { Input } from "~/components/ui/input"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "~/components/ui/select"
 import { Separator } from "~/components/ui/separator"
 import { Textarea } from "~/components/ui/textarea"
 import { UPLOAD_PATH_POST } from "~/lib/const"
 import { cn } from "~/lib/utils"
 import { type SoftwareParams, softwareParamsSchema } from "~/server/schema"
+import type { SoftwareCategoryResult } from "~/server/services/software-category"
+import { api } from "~/trpc/react"
 
-const CreateForm = () => {
+interface CreateFormProps {
+  categoryList: SoftwareCategoryResult
+}
+
+const CreateForm = ({ categoryList }: CreateFormProps) => {
   const router = useRouter()
   const form = useForm<SoftwareParams>({
     resolver: zodResolver(softwareParamsSchema, { async: true }),
@@ -30,7 +39,32 @@ const CreateForm = () => {
     setValue,
     getValues
   } = form
-  const submit = async (data: SoftwareParams) => {}
+  const [tagSearch, setTagSearch] = useState("")
+  const { data: tagList, isPending: tagLoading } = api.tag.pageTags.useQuery({
+    search: tagSearch,
+    pageable: {
+      page: 0,
+      size: 10
+    }
+  })
+  const tagOptions = useMemo(() => {
+    if (tagList && (tagList?.list?.length ?? 0) >= 0) {
+      return tagList.list.map((item) => ({
+        value: item.id,
+        label: item.name
+      }))
+    }
+    return []
+  }, [tagList])
+  const { mutate: createMutate, isPending } = api.software.create.useMutation({
+    onSuccess: (tool) => {
+      router.push(`/tool/${tool.id}`)
+    },
+    onError: () => {
+      toast.error("Failed to create the tool", { duration: 3000 })
+    }
+  })
+  const submit = async (data: SoftwareParams) => createMutate(data)
   return (
     <Form {...form}>
       <form onSubmit={handleSubmit(submit)} className={"pt-6 flex flex-col gap-12"}>
@@ -105,6 +139,61 @@ const CreateForm = () => {
               )}
             />
             <FormField
+              name={"categoryId"}
+              control={control}
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Category</FormLabel>
+                  <FormControl>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Theme" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {categoryList.map((category) => (
+                          <SelectItem key={category.id} value={category.id}>
+                            {category.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </FormControl>
+                  <FormDescription>Description</FormDescription>
+                  <FormMessage>{errors.description?.message}</FormMessage>
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={control}
+              name="tags"
+              render={({ field }) => (
+                <FormItem className="w-full">
+                  <FormLabel>Invite people</FormLabel>
+                  <FormControl>
+                    <CreatableSelect<{ value: string; label: string }, true>
+                      inputValue={tagSearch}
+                      onInputChange={(v) => setTagSearch(v)}
+                      defaultValue={[]}
+                      isMulti={true}
+                      name="tags"
+                      options={tagOptions}
+                      className="basic-multi-select"
+                      classNamePrefix="select"
+                      isLoading={tagLoading}
+                      onChange={(selectedOptions) => {
+                        field.onChange(selectedOptions?.map((option) => option.value) || [])
+                      }}
+                      getNewOptionData={(inputValue) => {
+                        return { value: inputValue, label: `Create "${inputValue}"` }
+                      }}
+                    />
+                  </FormControl>
+                  <FormDescription>Select people to invite to this event</FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
               name={"url"}
               control={control}
               render={({ field }) => (
@@ -131,6 +220,18 @@ const CreateForm = () => {
                 </FormItem>
               )}
             />
+          </div>
+        </div>
+        <Separator />
+        <div className={"flex flex-row"}>
+          <div className={"flex flex-col w-80"}>
+            <div className={"text-xl font-bold"}>Actions</div>
+            <div className={"text-sm text-foreground/50"}>You can set base information</div>
+          </div>
+          <div className={"flex flex-row"}>
+            <Button type="submit" disabled={isPending}>
+              {isPending ? "Submitting..." : "Submit"}
+            </Button>
           </div>
         </div>
       </form>

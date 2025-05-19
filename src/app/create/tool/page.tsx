@@ -8,7 +8,7 @@ const ToolPage = async () => {
       <div className={"text-3xl font-bold"}>Create new tool</div>
       <div className={"text-foreground/50"}>You can create belong your tool</div>
       <Separator className={"mt-6"} />
-      <CreateForm />
+      <CreateForm categoryList={categoryList} />
     </div>
   )
 }

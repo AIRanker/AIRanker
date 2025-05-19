@@ -82,12 +82,12 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
                       </SignedIn>
                       <Link href={"/create/tool"}>
                         <Button variant={"outline"} className={"border-primary text-primary font-bold"}>
-                          New Tool
+                          Create Tool
                         </Button>
                       </Link>
                       <Link href={"/create"}>
                         <Button variant={"outline"} className={"border-primary text-primary font-bold"}>
-                          New Rank
+                          Create Collection
                         </Button>
                       </Link>
                     </div>
