@@ -2,26 +2,31 @@
 
 import { useAuth, useClerk, useSignIn } from "@clerk/nextjs"
 import { Heart, MessageCircle, Share2, Star } from "lucide-react"
+import { useRouter } from "next/navigation"
 import { toast } from "sonner"
 import { cn } from "~/lib/utils"
 import { api } from "~/trpc/react"
 
-const SoftwareAction = ({ item, className }: { item: { id: string; _count: { likes: number; stars: number; comments: number } }; className?: string }) => {
+const SoftwareAction = ({
+  item,
+  className
+}: { item: { id: string; isLiked: boolean; isStared: boolean; _count: { likes: number; stars: number; comments: number } }; className?: string }) => {
   const { isSignedIn } = useAuth()
   const { openSignIn } = useClerk()
+  const router = useRouter()
   const useUtils = api.useUtils()
-  const { mutate: starMutate } = api.software.fav.useMutation({
+  const { mutate: starMutate, isPending: starPending } = api.software.fav.useMutation({
     onSuccess: () => {
-      void useUtils.software.getSoftwaresByRankId.refetch()
+      router.refresh()
     },
     onError: (error) => {
       console.error(error)
       toast.error("Failed to star the rank", { duration: 3000 })
     }
   })
-  const { mutate: likeMutate } = api.software.like.useMutation({
+  const { mutate: likeMutate, isPending: likePending } = api.software.like.useMutation({
     onSuccess: () => {
-      void useUtils.software.getSoftwaresByRankId.refetch()
+      router.refresh()
     },
     onError: (error) => {
       console.error(error)
@@ -32,12 +37,20 @@ const SoftwareAction = ({ item, className }: { item: { id: string; _count: { lik
     <div className="flex items-center gap-4 z-20">
       <div className="flex items-center gap-1">
         <Star
-          className={cn("cursor-pointer text-primary hover:scale-125 hover:fill-yellow-400 hover:text-yellow-400 transition", className)}
+          className={cn(
+            "cursor-pointer text-primary hover:scale-125 hover:fill-yellow-400 hover:text-yellow-400 transition",
+            item.isLiked && "fill-yellow-400 text-yellow-400",
+            likePending && "opacity-25 cursor-not-allowed",
+            className
+          )}
           onClick={(event) => {
+            if (likePending) {
+              return
+            }
             if (!isSignedIn) {
               void openSignIn()
             } else {
-              starMutate({ softwareId: item.id })
+              likeMutate({ softwareId: item.id })
             }
             event.preventDefault()
             event.stopPropagation()
@@ -47,12 +60,20 @@ const SoftwareAction = ({ item, className }: { item: { id: string; _count: { lik
       </div>
       <div className="flex items-center gap-1">
         <Heart
-          className={cn(" cursor-pointer text-primary hover:scale-125 hover:fill-red-400 hover:text-red-400 transition", className)}
+          className={cn(
+            " cursor-pointer text-primary hover:scale-125 hover:fill-red-400 hover:text-red-400 transition",
+            item.isStared && "fill-red-400 text-red-400",
+            likePending && "opacity-25 cursor-not-allowed",
+            className
+          )}
           onClick={(event) => {
+            if (likePending) {
+              return
+            }
             if (!isSignedIn) {
               void openSignIn()
             } else {
-              likeMutate({ softwareId: item.id })
+              starMutate({ softwareId: item.id })
             }
             event.preventDefault()
             event.stopPropagation()
