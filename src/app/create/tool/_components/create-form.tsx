@@ -34,10 +34,7 @@ const CreateForm = ({ categoryList }: CreateFormProps) => {
   const {
     handleSubmit,
     control,
-    reset,
-    formState: { errors },
-    setValue,
-    getValues
+    formState: { errors }
   } = form
   const [tagSearch, setTagSearch] = useState("")
   const { data: tagList, isPending: tagLoading } = api.tag.pageTags.useQuery({
@@ -133,11 +130,12 @@ const CreateForm = ({ categoryList }: CreateFormProps) => {
                   <FormControl>
                     <Input placeholder="" {...field} />
                   </FormControl>
-                  <FormDescription>Tool</FormDescription>
+                  <FormDescription>Enter the name of your tool. Keep it concise and descriptive.</FormDescription>
                   <FormMessage>{errors.name?.message}</FormMessage>
                 </FormItem>
               )}
             />
+
             <FormField
               name={"categoryId"}
               control={control}
@@ -158,17 +156,18 @@ const CreateForm = ({ categoryList }: CreateFormProps) => {
                       </SelectContent>
                     </Select>
                   </FormControl>
-                  <FormDescription>Description</FormDescription>
+                  <FormDescription>Select the category that best describes your tool's functionality.</FormDescription>
                   <FormMessage>{errors.description?.message}</FormMessage>
                 </FormItem>
               )}
             />
+
             <FormField
               control={control}
               name="tags"
               render={({ field }) => (
                 <FormItem className="w-full">
-                  <FormLabel>Invite people</FormLabel>
+                  <FormLabel>Tags</FormLabel>
                   <FormControl>
                     <CreatableSelect<{ value: string; label: string }, true>
                       inputValue={tagSearch}
@@ -188,11 +187,12 @@ const CreateForm = ({ categoryList }: CreateFormProps) => {
                       }}
                     />
                   </FormControl>
-                  <FormDescription>Select people to invite to this event</FormDescription>
+                  <FormDescription>Add relevant tags to help users discover your tool. You can create new tags if needed.</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
             />
+
             <FormField
               name={"url"}
               control={control}
@@ -202,10 +202,12 @@ const CreateForm = ({ categoryList }: CreateFormProps) => {
                   <FormControl>
                     <Input placeholder="" {...field} />
                   </FormControl>
+                  <FormDescription>Enter the official website or landing page URL for your tool.</FormDescription>
                   <FormMessage>{errors.name?.message}</FormMessage>
                 </FormItem>
               )}
             />
+
             <FormField
               name={"description"}
               control={control}
@@ -213,9 +215,9 @@ const CreateForm = ({ categoryList }: CreateFormProps) => {
                 <FormItem>
                   <FormLabel>Description</FormLabel>
                   <FormControl>
-                    <Textarea rows={5} placeholder="Enter Rank description" {...field} />
+                    <Textarea rows={5} placeholder="Enter tool description" {...field} />
                   </FormControl>
-                  <FormDescription>Description</FormDescription>
+                  <FormDescription>Provide a detailed description of your tool, including its key features and benefits.</FormDescription>
                   <FormMessage>{errors.description?.message}</FormMessage>
                 </FormItem>
               )}
@@ -226,12 +228,14 @@ const CreateForm = ({ categoryList }: CreateFormProps) => {
         <div className={"flex flex-row"}>
           <div className={"flex flex-col w-80"}>
             <div className={"text-xl font-bold"}>Actions</div>
-            <div className={"text-sm text-foreground/50"}>You can set base information</div>
+            <div className={"text-sm text-destructive mt-4 font-bold"}>*Once submit, it cannot be modified or deleted</div>
           </div>
-          <div className={"flex flex-row"}>
-            <Button type="submit" disabled={isPending}>
-              {isPending ? "Submitting..." : "Submit"}
-            </Button>
+          <div className={"flex flex-col"}>
+            <div className={"flex flex-row"}>
+              <Button type="submit" disabled={isPending}>
+                {isPending ? "Submitting..." : "Submit"}
+              </Button>
+            </div>
           </div>
         </div>
       </form>
