@@ -94,7 +94,8 @@ const CuratedCollection = () => {
             <div className={"text-md flex-1"}>{item.description}</div>
             <div className={"flex flex-row gap-3 items-center"}>
               <Avatar className={"w-10 h-10"}>
-                <AvatarImage src={item.user?.avatar ?? ""} />
+                {/*TODO：缺少头像*/}
+                {/*<AvatarImage src={item.user?.avatar ?? ""} />*/}
                 <AvatarFallback>A</AvatarFallback>
               </Avatar>
               <div className={"flex flex-col justify-between"}>
