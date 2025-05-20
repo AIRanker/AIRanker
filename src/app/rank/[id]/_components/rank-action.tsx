@@ -1,8 +1,8 @@
 "use client"
 
+import { useAuth, useClerk, useSignIn } from "@clerk/nextjs"
 import { Heart, Share2, Star } from "lucide-react"
 import { toast } from "sonner"
-import { useAuth, useClerk, useSignIn } from "@clerk/nextjs"
 import { cn } from "~/lib/utils"
 import type { RankDetailsResult } from "~/server/services/rank"
 import { api } from "~/trpc/react"
@@ -50,10 +50,11 @@ const RankAction = ({ detail, id }: RankActionProps) => {
       <div className="container py-8 space-y-4">
         <h1 className="text-6xl font-bold mb-2 text-primary">{data?.name ?? "Unknown"}</h1>
         <div className="flex items-center mt-6 gap-4 text-primary font-bold">
-          <Link href={"/profile/"} className="hover:underline">
-            {data?.user.name?.startsWith("0x") ? shortenAddress(data.user.name) : `@${data?.user.name}`}
-          </Link>
-          <div>|</div>
+          {/*TODO 用户名你*/}
+          {/*<Link href={"/profile/"} className="hover:underline">*/}
+          {/*  {data?.user.name?.startsWith("0x") ? shortenAddress(data.user.name) : `@${data?.user.name}`}*/}
+          {/*</Link>*/}
+          {/*<div>|</div>*/}
           <div>{data && format(new Date(data.createdAt), "MMMM d, yyyy")}</div>
         </div>
         <p className="opacity-60">{data?.description}</p>
