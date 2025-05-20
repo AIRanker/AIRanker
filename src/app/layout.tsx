@@ -67,7 +67,6 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
                   <div className="hidden items-center gap-4 md:flex md:gap-4">
                     <SignedOut>
                       <SignInButton />
-                      <SignUpButton />
                     </SignedOut>
                     <SignedIn>
                       <UserButton />

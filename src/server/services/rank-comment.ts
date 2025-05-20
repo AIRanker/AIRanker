@@ -4,7 +4,7 @@ import { z } from "zod"
 import { CommonError, ErrorCode } from "~/lib/error"
 import { db } from "../db"
 import { getRedis } from "../redis"
-import { rankCommentSchema, type Pageable, type PageableData } from "../schema"
+import { type Pageable, type PageableData, rankCommentSchema } from "../schema"
 
 export const rankCommentWithRepliesSchema = rankCommentSchema.extend({
   replies: rankCommentSchema.array(),
@@ -423,4 +423,6 @@ class RankCommentService {
   }
 }
 
-export const rankCommentService = new RankCommentService()
+const rankCommentService = new RankCommentService()
+export { rankCommentService }
+export type CommentListResult = Awaited<ReturnType<typeof rankCommentService.getCommentList>>
