@@ -1,5 +1,6 @@
 "use client"
 import { ArrowUpRight, CircleFadingPlus, FileInput, FolderPlus, Heart, Search } from "lucide-react"
+import { useRouter } from "next/navigation"
 import * as React from "react"
 import { useState } from "react"
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar"
@@ -9,6 +10,7 @@ import { api } from "~/trpc/react"
 export const CommandSearch = () => {
   const [open, setOpen] = useState(false)
   const [search, setSearch] = useState("")
+  const router = useRouter()
   const { data: toolData, isPending: toolPending } = api.software.pageSoftwares.useQuery({
     pageable: {
       size: 5,
@@ -49,10 +51,25 @@ export const CommandSearch = () => {
       <CommandDialog open={open} onOpenChange={setOpen}>
         <CommandInput value={search} onValueChange={(e) => setSearch(e)} placeholder="Type a tool or collection..." />
         <CommandList>
-          <CommandEmpty>No results found.</CommandEmpty>
+          <CommandEmpty>
+            {toolPending || rankPending
+              ? Array(6)
+                  .fill(0)
+                  .map((_, index) => (
+                    <div key={`skeleton-tool-${index}`} className="flex flex-row items-center gap-2 w-full p-2 animate-pulse">
+                      <div className="w-4 h-4 rounded-full bg-gray-200 dark:bg-gray-700" />
+                      <div className="flex-1 h-4 bg-gray-200 dark:bg-gray-700 rounded" />
+                      <div className="flex flex-row items-center gap-1">
+                        <div className="w-3 h-3 bg-gray-200 dark:bg-gray-700 rounded" />
+                        <div className="w-4 h-3 bg-gray-200 dark:bg-gray-700 rounded" />
+                      </div>
+                    </div>
+                  ))
+              : "No results found."}
+          </CommandEmpty>
           <CommandGroup heading="Tools">
             {toolData?.list?.map((tool) => (
-              <CommandItem key={`tool-${tool.id}`} className={"flex flex-row"}>
+              <CommandItem key={`tool-${tool.id}`} className={"flex flex-row cursor-pointer"} onSelect={() => router.push(`/tool/${tool.id}`)}>
                 <Avatar className={"w-4 h-4"}>
                   <AvatarImage src={tool.image} />
                   <AvatarFallback>{tool.name.charAt(0)}</AvatarFallback>
@@ -68,7 +85,7 @@ export const CommandSearch = () => {
           <CommandSeparator />
           <CommandGroup heading="Collections">
             {rankData?.list?.map((tool) => (
-              <CommandItem key={`tool-${tool.id}`} className={"flex flex-row justify-between"}>
+              <CommandItem key={`tool-${tool.id}`} className={"flex flex-row justify-between cursor-pointer"} onSelect={() => router.push(`/rank/${tool.id}`)}>
                 <span>{tool.name}</span>
                 <div className={"flex flex-row items-center gap-1"}>
                   <Heart size={12} />
