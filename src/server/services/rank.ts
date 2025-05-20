@@ -3,24 +3,26 @@ import { db } from "../db"
 import type { CreateRankParams, Pageable, PageableData, RankSearchParams, UpdateRankParams } from "../schema"
 import { generateRankSelect } from "../select"
 import { createSoftware } from "./software"
+import { clerkClient, fetchUserMap } from "../clerk"
+import type { User } from "@clerk/nextjs/server"
 
 class RankService {
-  async topRanks(userAddress?: string) {
+  async topRanks(userId?: string) {
     const topRanks = await db.rank.findMany({
-      select: generateRankSelect(userAddress),
+      select: generateRankSelect(userId),
       orderBy: [{ likes: { _count: "desc" } }, { stars: { _count: "desc" } }],
       take: 10
     })
     return topRanks.map((rank) => ({
       ...rank,
       tags: rank.tags.map((tag) => tag.tag.name),
-      isLiked: userAddress ? rank.likes.length > 0 : false,
-      isStared: userAddress ? rank.stars.length > 0 : false,
+      isLiked: userId ? rank.likes.length > 0 : false,
+      isStared: userId ? rank.stars.length > 0 : false,
       likes: undefined,
       stars: undefined
     }))
   }
-  async pageRanks(params: RankSearchParams, userAddress?: string) {
+  async pageRanks(params: RankSearchParams, userId?: string) {
     const whereOptions: Prisma.RankWhereInput = {}
     if (params.tags) {
       whereOptions.tags = {
@@ -40,20 +42,20 @@ class RankService {
       }
     }
 
-    if (userAddress && params.isOwner) {
-      whereOptions.userAddress = userAddress
+    if (userId && params.isOwner) {
+      whereOptions.userId = userId
     }
     if (params.isLiked) {
       whereOptions.likes = {
         some: {
-          userAddress
+          userId
         }
       }
     }
     if (params.isStared) {
       whereOptions.stars = {
         some: {
-          userAddress
+          userId
         }
       }
     }
@@ -63,7 +65,7 @@ class RankService {
     const actualPage = Math.max(0, Math.min(params.pageable.page, pages - 1))
     const ranks = await db.rank.findMany({
       where: whereOptions,
-      select: generateRankSelect(userAddress),
+      select: generateRankSelect(userId),
       orderBy: {
         [params.sort]: {
           _count: params.order
@@ -72,12 +74,16 @@ class RankService {
       take: params.pageable.size,
       skip: actualPage * params.pageable.size
     })
-
+    const clerkUserMap = await fetchUserMap(ranks.map((rank) => rank.userId))
     const list = ranks.map((rank) => ({
       ...rank,
       tags: rank.tags.map((tag) => tag.tag.name),
-      isLiked: userAddress ? rank.likes.length > 0 : false,
-      isStared: userAddress ? rank.stars.length > 0 : false,
+      isLiked: userId ? rank.likes.length > 0 : false,
+      isStared: userId ? rank.stars.length > 0 : false,
+      user: {
+        ...rank.user,
+        username: clerkUserMap.get(rank.userId)?.username || "",
+      },
       likes: undefined,
       stars: undefined
     }))
@@ -88,19 +94,19 @@ class RankService {
     } as PageableData<(typeof list)[number]>
   }
 
-  async like(rankId: string, userAddress: string) {
+  async like(rankId: string, userId: string) {
     const rankLike = await db.rankLike.findFirst({
       where: {
         rankId: rankId,
-        userAddress
+        userId
       }
     })
     if (rankLike) {
       await db.rankLike.delete({
         where: {
-          rankId_userAddress: {
+          rankId_userId: {
             rankId: rankId,
-            userAddress
+            userId
           }
         }
       })
@@ -109,24 +115,24 @@ class RankService {
     await db.rankLike.create({
       data: {
         rankId: rankId,
-        userAddress
+        userId
       }
     })
     return true
   }
-  async star(rankId: string, userAddress: string) {
+  async star(rankId: string, userId: string) {
     const rankStar = await db.rankStar.findFirst({
       where: {
         rankId: rankId,
-        userAddress
+        userId
       }
     })
     if (rankStar) {
       await db.rankStar.delete({
         where: {
-          rankId_userAddress: {
+          rankId_userId: {
             rankId: rankId,
-            userAddress
+            userId
           }
         }
       })
@@ -135,19 +141,19 @@ class RankService {
     await db.rankStar.create({
       data: {
         rankId: rankId,
-        userAddress
+        userId
       }
     })
     return true
   }
-  async create(params: CreateRankParams, userAddress: string, metadataId: string) {
+  async create(params: CreateRankParams, userId: string, metadataId: string) {
     return await db.$transaction(async (tx) => {
       // 1. 创建 Rank
       const rank = await tx.rank.create({
         data: {
           name: params.name,
           description: params.description,
-          userAddress: userAddress
+          userId: userId
         },
         select: {
           id: true
@@ -239,7 +245,7 @@ class RankService {
                   tags: softwareItem.tags,
                   categoryId: softwareItem.categoryId
                 },
-                userAddress
+                userId
               )
               softwareId = newSoftware.id
             }
@@ -259,7 +265,7 @@ class RankService {
         where: {
           id: rank.id
         },
-        select: generateRankSelect(userAddress)
+        select: generateRankSelect(userId)
       })
     })
   }
@@ -267,10 +273,10 @@ class RankService {
    * 更新一个 Rank 及其相关数据
    * @param id Rank ID
    * @param params 要更新的参数
-   * @param userAddress 当前用户地址
+   * @param userId 当前用户地址
    * @returns 更新后的 Rank 对象
    */
-  async update(id: string, params: UpdateRankParams, userAddress: string) {
+  async update(id: string, params: UpdateRankParams, userId: string) {
     return await db
       .$transaction(async (tx) => {
         // 1. 查找 Rank 并验证所有者
@@ -278,7 +284,7 @@ class RankService {
           where: { id },
           select: {
             id: true,
-            userAddress: true
+            userId: true
           }
         })
 
@@ -286,7 +292,7 @@ class RankService {
           throw new Error(`Rank with ID ${id} not found`)
         }
 
-        if (rank.userAddress !== userAddress) {
+        if (rank.userId !== userId) {
           throw new Error("You don't have permission to update this rank")
         }
 
@@ -389,7 +395,7 @@ class RankService {
                     tags: softwareItem.tags,
                     categoryId: softwareItem.categoryId
                   },
-                  userAddress
+                  userId
                 )
                 softwareId = newSoftware.id
               }
@@ -409,7 +415,7 @@ class RankService {
         // 6. 返回更新后的 Rank
         return await tx.rank.findUnique({
           where: { id },
-          select: generateRankSelect(userAddress)
+          select: generateRankSelect(userId)
         })
       })
       .catch((error) => {
@@ -418,12 +424,12 @@ class RankService {
       })
   }
 
-  async detail(rankId: string, userAddress?: string) {
+  async detail(rankId: string, userId?: string) {
     const rank = await db.rank.findUnique({
       where: {
         id: rankId
       },
-      select: generateRankSelect(userAddress)
+      select: generateRankSelect(userId)
     })
     if (!rank) {
       throw new Error(`Rank with ID ${rankId} not found`)
@@ -431,13 +437,13 @@ class RankService {
     return {
       ...rank,
       tags: rank.tags.map((tag) => tag.tag.name),
-      isLiked: userAddress ? rank.likes.length > 0 : false,
-      isStared: userAddress ? rank.stars.length > 0 : false,
+      isLiked: userId ? rank.likes.length > 0 : false,
+      isStared: userId ? rank.stars.length > 0 : false,
       likes: undefined,
       stars: undefined
     }
   }
-  async pageRanksBySoftwareId(softwareId: string, pageable: Pageable, userAddress?: string) {
+  async pageRanksBySoftwareId(softwareId: string, pageable: Pageable, userId?: string) {
     const total = await db.softwareOnRank.count({ where: { softwareId } })
     const pages = Math.ceil(total / pageable.size) || 1
     const actualPage = Math.max(0, Math.min(pageable.page, pages - 1))
@@ -447,7 +453,7 @@ class RankService {
       },
       select: {
         rank: {
-          select: generateRankSelect(userAddress)
+          select: generateRankSelect(userId)
         }
       },
       skip: actualPage * pageable.size,
@@ -456,8 +462,8 @@ class RankService {
     const list = ranks.map((rank) => ({
       ...rank.rank,
       tags: rank.rank.tags.map((tag) => tag.tag.name),
-      isLiked: userAddress ? rank.rank.likes.length > 0 : false,
-      isStared: userAddress ? rank.rank.stars.length > 0 : false,
+      isLiked: userId ? rank.rank.likes.length > 0 : false,
+      isStared: userId ? rank.rank.stars.length > 0 : false,
       likes: undefined,
       stars: undefined
     }))

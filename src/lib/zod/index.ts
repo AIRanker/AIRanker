@@ -12,15 +12,15 @@ import type { Prisma } from '@prisma/client';
 
 export const TransactionIsolationLevelSchema = z.enum(['ReadUncommitted','ReadCommitted','RepeatableRead','Serializable']);
 
-export const UserPlatformScalarFieldEnumSchema = z.enum(['id','platform','platformId','platformName','platformAvatar','userAddress']);
+export const UserPlatformScalarFieldEnumSchema = z.enum(['id','platform','platformId','platformName','platformAvatar','userId']);
 
-export const ApiKeyScalarFieldEnumSchema = z.enum(['key','name','userAddress','createdAt','expiredAt']);
+export const ApiKeyScalarFieldEnumSchema = z.enum(['key','name','userId','createdAt','expiredAt']);
 
-export const UserScalarFieldEnumSchema = z.enum(['avatar','address','description','name','email','referralCode','x','website','telegram','github','instagram','createdAt','updatedAt','invitedBy']);
+export const UserScalarFieldEnumSchema = z.enum(['id','referralCode','createdAt','updatedAt','invitedBy']);
 
 export const TagScalarFieldEnumSchema = z.enum(['id','name','createdAt','updatedAt']);
 
-export const RankScalarFieldEnumSchema = z.enum(['id','userAddress','name','description','createdAt','updatedAt']);
+export const RankScalarFieldEnumSchema = z.enum(['id','userId','name','description','createdAt','updatedAt']);
 
 export const RankMetadataScalarFieldEnumSchema = z.enum(['id','rankId','createdAt','updatedAt']);
 
@@ -36,19 +36,19 @@ export const SoftwareOnRankScalarFieldEnumSchema = z.enum(['softwareId','descrip
 
 export const SoftwareOnArticleScalarFieldEnumSchema = z.enum(['softwareId','articleId','createdAt','updatedAt']);
 
-export const ArticleScalarFieldEnumSchema = z.enum(['id','title','description','image','content','rankId','createdAt','updatedAt','userAddress']);
+export const ArticleScalarFieldEnumSchema = z.enum(['id','title','description','image','content','rankId','createdAt','updatedAt','userId']);
 
-export const RankLikeScalarFieldEnumSchema = z.enum(['rankId','userAddress','createdAt']);
+export const RankLikeScalarFieldEnumSchema = z.enum(['rankId','userId','createdAt']);
 
-export const RankStarScalarFieldEnumSchema = z.enum(['rankId','userAddress','createdAt']);
+export const RankStarScalarFieldEnumSchema = z.enum(['rankId','userId','createdAt']);
 
-export const SoftwareLikeScalarFieldEnumSchema = z.enum(['softwareId','userAddress','createdAt']);
+export const SoftwareLikeScalarFieldEnumSchema = z.enum(['softwareId','userId','createdAt']);
 
-export const SoftwareStarScalarFieldEnumSchema = z.enum(['softwareId','userAddress','createdAt']);
+export const SoftwareStarScalarFieldEnumSchema = z.enum(['softwareId','userId','createdAt']);
 
-export const RankCommentScalarFieldEnumSchema = z.enum(['id','rankId','content','createdAt','userAddress','deletedAt','replyToComment','replyToUser','rootCommentId']);
+export const RankCommentScalarFieldEnumSchema = z.enum(['id','rankId','content','createdAt','userId','deletedAt','replyToComment','replyToUser','rootCommentId']);
 
-export const SoftwareCommentScalarFieldEnumSchema = z.enum(['id','softwareId','content','createdAt','userAddress','deletedAt','replyToComment','replyToUser','rootCommentId']);
+export const SoftwareCommentScalarFieldEnumSchema = z.enum(['id','softwareId','content','createdAt','userId','deletedAt','replyToComment','replyToUser','rootCommentId']);
 
 export const SortOrderSchema = z.enum(['asc','desc']);
 
@@ -74,7 +74,7 @@ export const UserPlatformSchema = z.object({
   platformId: z.string(),
   platformName: z.string(),
   platformAvatar: z.string(),
-  userAddress: z.string(),
+  userId: z.string(),
 })
 
 export type UserPlatform = z.infer<typeof UserPlatformSchema>
@@ -86,7 +86,7 @@ export type UserPlatform = z.infer<typeof UserPlatformSchema>
 export const ApiKeySchema = z.object({
   key: z.string(),
   name: z.string(),
-  userAddress: z.string().nullable(),
+  userId: z.string().nullable(),
   createdAt: z.coerce.date(),
   expiredAt: z.coerce.date().nullable(),
 })
@@ -98,17 +98,8 @@ export type ApiKey = z.infer<typeof ApiKeySchema>
 /////////////////////////////////////////
 
 export const UserSchema = z.object({
-  avatar: z.string().nullable(),
-  address: z.string(),
-  description: z.string().nullable(),
-  name: z.string().nullable(),
-  email: z.string().nullable(),
+  id: z.string(),
   referralCode: z.string(),
-  x: z.string().nullable(),
-  website: z.string().nullable(),
-  telegram: z.string().nullable(),
-  github: z.string().nullable(),
-  instagram: z.string().nullable(),
   createdAt: z.coerce.date(),
   updatedAt: z.coerce.date(),
   invitedBy: z.string().array(),
@@ -135,7 +126,7 @@ export type Tag = z.infer<typeof TagSchema>
 
 export const RankSchema = z.object({
   id: z.string(),
-  userAddress: z.string(),
+  userId: z.string(),
   name: z.string(),
   description: z.string().nullable(),
   createdAt: z.coerce.date(),
@@ -254,7 +245,7 @@ export const ArticleSchema = z.object({
   rankId: z.string(),
   createdAt: z.coerce.date(),
   updatedAt: z.coerce.date(),
-  userAddress: z.string(),
+  userId: z.string(),
 })
 
 export type Article = z.infer<typeof ArticleSchema>
@@ -265,7 +256,7 @@ export type Article = z.infer<typeof ArticleSchema>
 
 export const RankLikeSchema = z.object({
   rankId: z.string(),
-  userAddress: z.string(),
+  userId: z.string(),
   createdAt: z.coerce.date(),
 })
 
@@ -277,7 +268,7 @@ export type RankLike = z.infer<typeof RankLikeSchema>
 
 export const RankStarSchema = z.object({
   rankId: z.string(),
-  userAddress: z.string(),
+  userId: z.string(),
   createdAt: z.coerce.date(),
 })
 
@@ -289,7 +280,7 @@ export type RankStar = z.infer<typeof RankStarSchema>
 
 export const SoftwareLikeSchema = z.object({
   softwareId: z.string(),
-  userAddress: z.string(),
+  userId: z.string(),
   createdAt: z.coerce.date(),
 })
 
@@ -301,7 +292,7 @@ export type SoftwareLike = z.infer<typeof SoftwareLikeSchema>
 
 export const SoftwareStarSchema = z.object({
   softwareId: z.string(),
-  userAddress: z.string(),
+  userId: z.string(),
   createdAt: z.coerce.date(),
 })
 
@@ -316,7 +307,7 @@ export const RankCommentSchema = z.object({
   rankId: z.string(),
   content: z.string(),
   createdAt: z.coerce.date(),
-  userAddress: z.string(),
+  userId: z.string(),
   deletedAt: z.coerce.date().nullable(),
   replyToComment: z.string().nullable(),
   replyToUser: z.string().nullable(),
@@ -334,7 +325,7 @@ export const SoftwareCommentSchema = z.object({
   softwareId: z.string(),
   content: z.string(),
   createdAt: z.coerce.date(),
-  userAddress: z.string(),
+  userId: z.string(),
   deletedAt: z.coerce.date().nullable(),
   replyToComment: z.string().nullable(),
   replyToUser: z.string().nullable(),
@@ -365,7 +356,7 @@ export const UserPlatformSelectSchema: z.ZodType<Prisma.UserPlatformSelect> = z.
   platformId: z.boolean().optional(),
   platformName: z.boolean().optional(),
   platformAvatar: z.boolean().optional(),
-  userAddress: z.boolean().optional(),
+  userId: z.boolean().optional(),
   user: z.union([z.boolean(),z.lazy(() => UserArgsSchema)]).optional(),
 }).strict()
 
@@ -375,7 +366,7 @@ export const UserPlatformSelectSchema: z.ZodType<Prisma.UserPlatformSelect> = z.
 export const ApiKeySelectSchema: z.ZodType<Prisma.ApiKeySelect> = z.object({
   key: z.boolean().optional(),
   name: z.boolean().optional(),
-  userAddress: z.boolean().optional(),
+  userId: z.boolean().optional(),
   createdAt: z.boolean().optional(),
   expiredAt: z.boolean().optional(),
 }).strict()
@@ -418,17 +409,8 @@ export const UserCountOutputTypeSelectSchema: z.ZodType<Prisma.UserCountOutputTy
 }).strict();
 
 export const UserSelectSchema: z.ZodType<Prisma.UserSelect> = z.object({
-  avatar: z.boolean().optional(),
-  address: z.boolean().optional(),
-  description: z.boolean().optional(),
-  name: z.boolean().optional(),
-  email: z.boolean().optional(),
+  id: z.boolean().optional(),
   referralCode: z.boolean().optional(),
-  x: z.boolean().optional(),
-  website: z.boolean().optional(),
-  telegram: z.boolean().optional(),
-  github: z.boolean().optional(),
-  instagram: z.boolean().optional(),
   createdAt: z.boolean().optional(),
   updatedAt: z.boolean().optional(),
   invitedBy: z.boolean().optional(),
@@ -512,7 +494,7 @@ export const RankCountOutputTypeSelectSchema: z.ZodType<Prisma.RankCountOutputTy
 
 export const RankSelectSchema: z.ZodType<Prisma.RankSelect> = z.object({
   id: z.boolean().optional(),
-  userAddress: z.boolean().optional(),
+  userId: z.boolean().optional(),
   name: z.boolean().optional(),
   description: z.boolean().optional(),
   createdAt: z.boolean().optional(),
@@ -751,7 +733,7 @@ export const ArticleSelectSchema: z.ZodType<Prisma.ArticleSelect> = z.object({
   rankId: z.boolean().optional(),
   createdAt: z.boolean().optional(),
   updatedAt: z.boolean().optional(),
-  userAddress: z.boolean().optional(),
+  userId: z.boolean().optional(),
   rank: z.union([z.boolean(),z.lazy(() => RankArgsSchema)]).optional(),
   author: z.union([z.boolean(),z.lazy(() => UserArgsSchema)]).optional(),
   softwares: z.union([z.boolean(),z.lazy(() => SoftwareOnArticleFindManyArgsSchema)]).optional(),
@@ -773,7 +755,7 @@ export const RankLikeArgsSchema: z.ZodType<Prisma.RankLikeDefaultArgs> = z.objec
 
 export const RankLikeSelectSchema: z.ZodType<Prisma.RankLikeSelect> = z.object({
   rankId: z.boolean().optional(),
-  userAddress: z.boolean().optional(),
+  userId: z.boolean().optional(),
   createdAt: z.boolean().optional(),
   rank: z.union([z.boolean(),z.lazy(() => RankArgsSchema)]).optional(),
   user: z.union([z.boolean(),z.lazy(() => UserArgsSchema)]).optional(),
@@ -794,7 +776,7 @@ export const RankStarArgsSchema: z.ZodType<Prisma.RankStarDefaultArgs> = z.objec
 
 export const RankStarSelectSchema: z.ZodType<Prisma.RankStarSelect> = z.object({
   rankId: z.boolean().optional(),
-  userAddress: z.boolean().optional(),
+  userId: z.boolean().optional(),
   createdAt: z.boolean().optional(),
   rank: z.union([z.boolean(),z.lazy(() => RankArgsSchema)]).optional(),
   user: z.union([z.boolean(),z.lazy(() => UserArgsSchema)]).optional(),
@@ -815,7 +797,7 @@ export const SoftwareLikeArgsSchema: z.ZodType<Prisma.SoftwareLikeDefaultArgs> =
 
 export const SoftwareLikeSelectSchema: z.ZodType<Prisma.SoftwareLikeSelect> = z.object({
   softwareId: z.boolean().optional(),
-  userAddress: z.boolean().optional(),
+  userId: z.boolean().optional(),
   createdAt: z.boolean().optional(),
   software: z.union([z.boolean(),z.lazy(() => SoftwareArgsSchema)]).optional(),
   user: z.union([z.boolean(),z.lazy(() => UserArgsSchema)]).optional(),
@@ -836,7 +818,7 @@ export const SoftwareStarArgsSchema: z.ZodType<Prisma.SoftwareStarDefaultArgs> =
 
 export const SoftwareStarSelectSchema: z.ZodType<Prisma.SoftwareStarSelect> = z.object({
   softwareId: z.boolean().optional(),
-  userAddress: z.boolean().optional(),
+  userId: z.boolean().optional(),
   createdAt: z.boolean().optional(),
   software: z.union([z.boolean(),z.lazy(() => SoftwareArgsSchema)]).optional(),
   user: z.union([z.boolean(),z.lazy(() => UserArgsSchema)]).optional(),
@@ -860,7 +842,7 @@ export const RankCommentSelectSchema: z.ZodType<Prisma.RankCommentSelect> = z.ob
   rankId: z.boolean().optional(),
   content: z.boolean().optional(),
   createdAt: z.boolean().optional(),
-  userAddress: z.boolean().optional(),
+  userId: z.boolean().optional(),
   deletedAt: z.boolean().optional(),
   replyToComment: z.boolean().optional(),
   replyToUser: z.boolean().optional(),
@@ -887,7 +869,7 @@ export const SoftwareCommentSelectSchema: z.ZodType<Prisma.SoftwareCommentSelect
   softwareId: z.boolean().optional(),
   content: z.boolean().optional(),
   createdAt: z.boolean().optional(),
-  userAddress: z.boolean().optional(),
+  userId: z.boolean().optional(),
   deletedAt: z.boolean().optional(),
   replyToComment: z.boolean().optional(),
   replyToUser: z.boolean().optional(),
@@ -910,7 +892,7 @@ export const UserPlatformWhereInputSchema: z.ZodType<Prisma.UserPlatformWhereInp
   platformId: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   platformName: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   platformAvatar: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
-  userAddress: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
+  userId: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   user: z.union([ z.lazy(() => UserScalarRelationFilterSchema),z.lazy(() => UserWhereInputSchema) ]).optional(),
 }).strict();
 
@@ -920,25 +902,25 @@ export const UserPlatformOrderByWithRelationInputSchema: z.ZodType<Prisma.UserPl
   platformId: z.lazy(() => SortOrderSchema).optional(),
   platformName: z.lazy(() => SortOrderSchema).optional(),
   platformAvatar: z.lazy(() => SortOrderSchema).optional(),
-  userAddress: z.lazy(() => SortOrderSchema).optional(),
+  userId: z.lazy(() => SortOrderSchema).optional(),
   user: z.lazy(() => UserOrderByWithRelationInputSchema).optional()
 }).strict();
 
 export const UserPlatformWhereUniqueInputSchema: z.ZodType<Prisma.UserPlatformWhereUniqueInput> = z.union([
   z.object({
     id: z.string(),
-    userAddress_platform: z.lazy(() => UserPlatformUserAddressPlatformCompoundUniqueInputSchema)
+    userId_platform: z.lazy(() => UserPlatformUserIdPlatformCompoundUniqueInputSchema)
   }),
   z.object({
     id: z.string(),
   }),
   z.object({
-    userAddress_platform: z.lazy(() => UserPlatformUserAddressPlatformCompoundUniqueInputSchema),
+    userId_platform: z.lazy(() => UserPlatformUserIdPlatformCompoundUniqueInputSchema),
   }),
 ])
 .and(z.object({
   id: z.string().optional(),
-  userAddress_platform: z.lazy(() => UserPlatformUserAddressPlatformCompoundUniqueInputSchema).optional(),
+  userId_platform: z.lazy(() => UserPlatformUserIdPlatformCompoundUniqueInputSchema).optional(),
   AND: z.union([ z.lazy(() => UserPlatformWhereInputSchema),z.lazy(() => UserPlatformWhereInputSchema).array() ]).optional(),
   OR: z.lazy(() => UserPlatformWhereInputSchema).array().optional(),
   NOT: z.union([ z.lazy(() => UserPlatformWhereInputSchema),z.lazy(() => UserPlatformWhereInputSchema).array() ]).optional(),
@@ -946,7 +928,7 @@ export const UserPlatformWhereUniqueInputSchema: z.ZodType<Prisma.UserPlatformWh
   platformId: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   platformName: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   platformAvatar: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
-  userAddress: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
+  userId: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   user: z.union([ z.lazy(() => UserScalarRelationFilterSchema),z.lazy(() => UserWhereInputSchema) ]).optional(),
 }).strict());
 
@@ -956,7 +938,7 @@ export const UserPlatformOrderByWithAggregationInputSchema: z.ZodType<Prisma.Use
   platformId: z.lazy(() => SortOrderSchema).optional(),
   platformName: z.lazy(() => SortOrderSchema).optional(),
   platformAvatar: z.lazy(() => SortOrderSchema).optional(),
-  userAddress: z.lazy(() => SortOrderSchema).optional(),
+  userId: z.lazy(() => SortOrderSchema).optional(),
   _count: z.lazy(() => UserPlatformCountOrderByAggregateInputSchema).optional(),
   _max: z.lazy(() => UserPlatformMaxOrderByAggregateInputSchema).optional(),
   _min: z.lazy(() => UserPlatformMinOrderByAggregateInputSchema).optional()
@@ -971,7 +953,7 @@ export const UserPlatformScalarWhereWithAggregatesInputSchema: z.ZodType<Prisma.
   platformId: z.union([ z.lazy(() => StringWithAggregatesFilterSchema),z.string() ]).optional(),
   platformName: z.union([ z.lazy(() => StringWithAggregatesFilterSchema),z.string() ]).optional(),
   platformAvatar: z.union([ z.lazy(() => StringWithAggregatesFilterSchema),z.string() ]).optional(),
-  userAddress: z.union([ z.lazy(() => StringWithAggregatesFilterSchema),z.string() ]).optional(),
+  userId: z.union([ z.lazy(() => StringWithAggregatesFilterSchema),z.string() ]).optional(),
 }).strict();
 
 export const ApiKeyWhereInputSchema: z.ZodType<Prisma.ApiKeyWhereInput> = z.object({
@@ -980,7 +962,7 @@ export const ApiKeyWhereInputSchema: z.ZodType<Prisma.ApiKeyWhereInput> = z.obje
   NOT: z.union([ z.lazy(() => ApiKeyWhereInputSchema),z.lazy(() => ApiKeyWhereInputSchema).array() ]).optional(),
   key: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   name: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
-  userAddress: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
+  userId: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
   createdAt: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
   expiredAt: z.union([ z.lazy(() => DateTimeNullableFilterSchema),z.coerce.date() ]).optional().nullable(),
 }).strict();
@@ -988,7 +970,7 @@ export const ApiKeyWhereInputSchema: z.ZodType<Prisma.ApiKeyWhereInput> = z.obje
 export const ApiKeyOrderByWithRelationInputSchema: z.ZodType<Prisma.ApiKeyOrderByWithRelationInput> = z.object({
   key: z.lazy(() => SortOrderSchema).optional(),
   name: z.lazy(() => SortOrderSchema).optional(),
-  userAddress: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
+  userId: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
   createdAt: z.lazy(() => SortOrderSchema).optional(),
   expiredAt: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
 }).strict();
@@ -996,23 +978,23 @@ export const ApiKeyOrderByWithRelationInputSchema: z.ZodType<Prisma.ApiKeyOrderB
 export const ApiKeyWhereUniqueInputSchema: z.ZodType<Prisma.ApiKeyWhereUniqueInput> = z.union([
   z.object({
     key: z.string(),
-    name_userAddress: z.lazy(() => ApiKeyNameUserAddressCompoundUniqueInputSchema)
+    name_userId: z.lazy(() => ApiKeyNameUserIdCompoundUniqueInputSchema)
   }),
   z.object({
     key: z.string(),
   }),
   z.object({
-    name_userAddress: z.lazy(() => ApiKeyNameUserAddressCompoundUniqueInputSchema),
+    name_userId: z.lazy(() => ApiKeyNameUserIdCompoundUniqueInputSchema),
   }),
 ])
 .and(z.object({
   key: z.string().optional(),
-  name_userAddress: z.lazy(() => ApiKeyNameUserAddressCompoundUniqueInputSchema).optional(),
+  name_userId: z.lazy(() => ApiKeyNameUserIdCompoundUniqueInputSchema).optional(),
   AND: z.union([ z.lazy(() => ApiKeyWhereInputSchema),z.lazy(() => ApiKeyWhereInputSchema).array() ]).optional(),
   OR: z.lazy(() => ApiKeyWhereInputSchema).array().optional(),
   NOT: z.union([ z.lazy(() => ApiKeyWhereInputSchema),z.lazy(() => ApiKeyWhereInputSchema).array() ]).optional(),
   name: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
-  userAddress: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
+  userId: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
   createdAt: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
   expiredAt: z.union([ z.lazy(() => DateTimeNullableFilterSchema),z.coerce.date() ]).optional().nullable(),
 }).strict());
@@ -1020,7 +1002,7 @@ export const ApiKeyWhereUniqueInputSchema: z.ZodType<Prisma.ApiKeyWhereUniqueInp
 export const ApiKeyOrderByWithAggregationInputSchema: z.ZodType<Prisma.ApiKeyOrderByWithAggregationInput> = z.object({
   key: z.lazy(() => SortOrderSchema).optional(),
   name: z.lazy(() => SortOrderSchema).optional(),
-  userAddress: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
+  userId: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
   createdAt: z.lazy(() => SortOrderSchema).optional(),
   expiredAt: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
   _count: z.lazy(() => ApiKeyCountOrderByAggregateInputSchema).optional(),
@@ -1034,7 +1016,7 @@ export const ApiKeyScalarWhereWithAggregatesInputSchema: z.ZodType<Prisma.ApiKey
   NOT: z.union([ z.lazy(() => ApiKeyScalarWhereWithAggregatesInputSchema),z.lazy(() => ApiKeyScalarWhereWithAggregatesInputSchema).array() ]).optional(),
   key: z.union([ z.lazy(() => StringWithAggregatesFilterSchema),z.string() ]).optional(),
   name: z.union([ z.lazy(() => StringWithAggregatesFilterSchema),z.string() ]).optional(),
-  userAddress: z.union([ z.lazy(() => StringNullableWithAggregatesFilterSchema),z.string() ]).optional().nullable(),
+  userId: z.union([ z.lazy(() => StringNullableWithAggregatesFilterSchema),z.string() ]).optional().nullable(),
   createdAt: z.union([ z.lazy(() => DateTimeWithAggregatesFilterSchema),z.coerce.date() ]).optional(),
   expiredAt: z.union([ z.lazy(() => DateTimeNullableWithAggregatesFilterSchema),z.coerce.date() ]).optional().nullable(),
 }).strict();
@@ -1043,17 +1025,8 @@ export const UserWhereInputSchema: z.ZodType<Prisma.UserWhereInput> = z.object({
   AND: z.union([ z.lazy(() => UserWhereInputSchema),z.lazy(() => UserWhereInputSchema).array() ]).optional(),
   OR: z.lazy(() => UserWhereInputSchema).array().optional(),
   NOT: z.union([ z.lazy(() => UserWhereInputSchema),z.lazy(() => UserWhereInputSchema).array() ]).optional(),
-  avatar: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
-  address: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
-  description: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
-  name: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
-  email: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
+  id: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   referralCode: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
-  x: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
-  website: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
-  telegram: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
-  github: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
-  instagram: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
   createdAt: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
   updatedAt: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
   invitedBy: z.lazy(() => StringNullableListFilterSchema).optional(),
@@ -1069,17 +1042,8 @@ export const UserWhereInputSchema: z.ZodType<Prisma.UserWhereInput> = z.object({
 }).strict();
 
 export const UserOrderByWithRelationInputSchema: z.ZodType<Prisma.UserOrderByWithRelationInput> = z.object({
-  avatar: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
-  address: z.lazy(() => SortOrderSchema).optional(),
-  description: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
-  name: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
-  email: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
+  id: z.lazy(() => SortOrderSchema).optional(),
   referralCode: z.lazy(() => SortOrderSchema).optional(),
-  x: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
-  website: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
-  telegram: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
-  github: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
-  instagram: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
   createdAt: z.lazy(() => SortOrderSchema).optional(),
   updatedAt: z.lazy(() => SortOrderSchema).optional(),
   invitedBy: z.lazy(() => SortOrderSchema).optional(),
@@ -1096,47 +1060,22 @@ export const UserOrderByWithRelationInputSchema: z.ZodType<Prisma.UserOrderByWit
 
 export const UserWhereUniqueInputSchema: z.ZodType<Prisma.UserWhereUniqueInput> = z.union([
   z.object({
-    address: z.string(),
-    email: z.string(),
+    id: z.string(),
     referralCode: z.string()
   }),
   z.object({
-    address: z.string(),
-    email: z.string(),
-  }),
-  z.object({
-    address: z.string(),
-    referralCode: z.string(),
-  }),
-  z.object({
-    address: z.string(),
-  }),
-  z.object({
-    email: z.string(),
-    referralCode: z.string(),
-  }),
-  z.object({
-    email: z.string(),
+    id: z.string(),
   }),
   z.object({
     referralCode: z.string(),
   }),
 ])
 .and(z.object({
-  address: z.string().optional(),
-  email: z.string().optional(),
+  id: z.string().optional(),
   referralCode: z.string().optional(),
   AND: z.union([ z.lazy(() => UserWhereInputSchema),z.lazy(() => UserWhereInputSchema).array() ]).optional(),
   OR: z.lazy(() => UserWhereInputSchema).array().optional(),
   NOT: z.union([ z.lazy(() => UserWhereInputSchema),z.lazy(() => UserWhereInputSchema).array() ]).optional(),
-  avatar: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
-  description: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
-  name: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
-  x: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
-  website: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
-  telegram: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
-  github: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
-  instagram: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
   createdAt: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
   updatedAt: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
   invitedBy: z.lazy(() => StringNullableListFilterSchema).optional(),
@@ -1152,17 +1091,8 @@ export const UserWhereUniqueInputSchema: z.ZodType<Prisma.UserWhereUniqueInput> 
 }).strict());
 
 export const UserOrderByWithAggregationInputSchema: z.ZodType<Prisma.UserOrderByWithAggregationInput> = z.object({
-  avatar: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
-  address: z.lazy(() => SortOrderSchema).optional(),
-  description: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
-  name: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
-  email: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
+  id: z.lazy(() => SortOrderSchema).optional(),
   referralCode: z.lazy(() => SortOrderSchema).optional(),
-  x: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
-  website: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
-  telegram: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
-  github: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
-  instagram: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
   createdAt: z.lazy(() => SortOrderSchema).optional(),
   updatedAt: z.lazy(() => SortOrderSchema).optional(),
   invitedBy: z.lazy(() => SortOrderSchema).optional(),
@@ -1175,17 +1105,8 @@ export const UserScalarWhereWithAggregatesInputSchema: z.ZodType<Prisma.UserScal
   AND: z.union([ z.lazy(() => UserScalarWhereWithAggregatesInputSchema),z.lazy(() => UserScalarWhereWithAggregatesInputSchema).array() ]).optional(),
   OR: z.lazy(() => UserScalarWhereWithAggregatesInputSchema).array().optional(),
   NOT: z.union([ z.lazy(() => UserScalarWhereWithAggregatesInputSchema),z.lazy(() => UserScalarWhereWithAggregatesInputSchema).array() ]).optional(),
-  avatar: z.union([ z.lazy(() => StringNullableWithAggregatesFilterSchema),z.string() ]).optional().nullable(),
-  address: z.union([ z.lazy(() => StringWithAggregatesFilterSchema),z.string() ]).optional(),
-  description: z.union([ z.lazy(() => StringNullableWithAggregatesFilterSchema),z.string() ]).optional().nullable(),
-  name: z.union([ z.lazy(() => StringNullableWithAggregatesFilterSchema),z.string() ]).optional().nullable(),
-  email: z.union([ z.lazy(() => StringNullableWithAggregatesFilterSchema),z.string() ]).optional().nullable(),
+  id: z.union([ z.lazy(() => StringWithAggregatesFilterSchema),z.string() ]).optional(),
   referralCode: z.union([ z.lazy(() => StringWithAggregatesFilterSchema),z.string() ]).optional(),
-  x: z.union([ z.lazy(() => StringNullableWithAggregatesFilterSchema),z.string() ]).optional().nullable(),
-  website: z.union([ z.lazy(() => StringNullableWithAggregatesFilterSchema),z.string() ]).optional().nullable(),
-  telegram: z.union([ z.lazy(() => StringNullableWithAggregatesFilterSchema),z.string() ]).optional().nullable(),
-  github: z.union([ z.lazy(() => StringNullableWithAggregatesFilterSchema),z.string() ]).optional().nullable(),
-  instagram: z.union([ z.lazy(() => StringNullableWithAggregatesFilterSchema),z.string() ]).optional().nullable(),
   createdAt: z.union([ z.lazy(() => DateTimeWithAggregatesFilterSchema),z.coerce.date() ]).optional(),
   updatedAt: z.union([ z.lazy(() => DateTimeWithAggregatesFilterSchema),z.coerce.date() ]).optional(),
   invitedBy: z.lazy(() => StringNullableListFilterSchema).optional()
@@ -1252,7 +1173,7 @@ export const RankWhereInputSchema: z.ZodType<Prisma.RankWhereInput> = z.object({
   OR: z.lazy(() => RankWhereInputSchema).array().optional(),
   NOT: z.union([ z.lazy(() => RankWhereInputSchema),z.lazy(() => RankWhereInputSchema).array() ]).optional(),
   id: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
-  userAddress: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
+  userId: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   name: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   description: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
   createdAt: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
@@ -1269,7 +1190,7 @@ export const RankWhereInputSchema: z.ZodType<Prisma.RankWhereInput> = z.object({
 
 export const RankOrderByWithRelationInputSchema: z.ZodType<Prisma.RankOrderByWithRelationInput> = z.object({
   id: z.lazy(() => SortOrderSchema).optional(),
-  userAddress: z.lazy(() => SortOrderSchema).optional(),
+  userId: z.lazy(() => SortOrderSchema).optional(),
   name: z.lazy(() => SortOrderSchema).optional(),
   description: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
   createdAt: z.lazy(() => SortOrderSchema).optional(),
@@ -1292,7 +1213,7 @@ export const RankWhereUniqueInputSchema: z.ZodType<Prisma.RankWhereUniqueInput> 
   AND: z.union([ z.lazy(() => RankWhereInputSchema),z.lazy(() => RankWhereInputSchema).array() ]).optional(),
   OR: z.lazy(() => RankWhereInputSchema).array().optional(),
   NOT: z.union([ z.lazy(() => RankWhereInputSchema),z.lazy(() => RankWhereInputSchema).array() ]).optional(),
-  userAddress: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
+  userId: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   name: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   description: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
   createdAt: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
@@ -1309,7 +1230,7 @@ export const RankWhereUniqueInputSchema: z.ZodType<Prisma.RankWhereUniqueInput> 
 
 export const RankOrderByWithAggregationInputSchema: z.ZodType<Prisma.RankOrderByWithAggregationInput> = z.object({
   id: z.lazy(() => SortOrderSchema).optional(),
-  userAddress: z.lazy(() => SortOrderSchema).optional(),
+  userId: z.lazy(() => SortOrderSchema).optional(),
   name: z.lazy(() => SortOrderSchema).optional(),
   description: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
   createdAt: z.lazy(() => SortOrderSchema).optional(),
@@ -1324,7 +1245,7 @@ export const RankScalarWhereWithAggregatesInputSchema: z.ZodType<Prisma.RankScal
   OR: z.lazy(() => RankScalarWhereWithAggregatesInputSchema).array().optional(),
   NOT: z.union([ z.lazy(() => RankScalarWhereWithAggregatesInputSchema),z.lazy(() => RankScalarWhereWithAggregatesInputSchema).array() ]).optional(),
   id: z.union([ z.lazy(() => StringWithAggregatesFilterSchema),z.string() ]).optional(),
-  userAddress: z.union([ z.lazy(() => StringWithAggregatesFilterSchema),z.string() ]).optional(),
+  userId: z.union([ z.lazy(() => StringWithAggregatesFilterSchema),z.string() ]).optional(),
   name: z.union([ z.lazy(() => StringWithAggregatesFilterSchema),z.string() ]).optional(),
   description: z.union([ z.lazy(() => StringNullableWithAggregatesFilterSchema),z.string() ]).optional().nullable(),
   createdAt: z.union([ z.lazy(() => DateTimeWithAggregatesFilterSchema),z.coerce.date() ]).optional(),
@@ -1789,7 +1710,7 @@ export const ArticleWhereInputSchema: z.ZodType<Prisma.ArticleWhereInput> = z.ob
   rankId: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   createdAt: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
   updatedAt: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
-  userAddress: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
+  userId: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   rank: z.union([ z.lazy(() => RankScalarRelationFilterSchema),z.lazy(() => RankWhereInputSchema) ]).optional(),
   author: z.union([ z.lazy(() => UserScalarRelationFilterSchema),z.lazy(() => UserWhereInputSchema) ]).optional(),
   softwares: z.lazy(() => SoftwareOnArticleListRelationFilterSchema).optional()
@@ -1804,7 +1725,7 @@ export const ArticleOrderByWithRelationInputSchema: z.ZodType<Prisma.ArticleOrde
   rankId: z.lazy(() => SortOrderSchema).optional(),
   createdAt: z.lazy(() => SortOrderSchema).optional(),
   updatedAt: z.lazy(() => SortOrderSchema).optional(),
-  userAddress: z.lazy(() => SortOrderSchema).optional(),
+  userId: z.lazy(() => SortOrderSchema).optional(),
   rank: z.lazy(() => RankOrderByWithRelationInputSchema).optional(),
   author: z.lazy(() => UserOrderByWithRelationInputSchema).optional(),
   softwares: z.lazy(() => SoftwareOnArticleOrderByRelationAggregateInputSchema).optional()
@@ -1825,7 +1746,7 @@ export const ArticleWhereUniqueInputSchema: z.ZodType<Prisma.ArticleWhereUniqueI
   rankId: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   createdAt: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
   updatedAt: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
-  userAddress: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
+  userId: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   rank: z.union([ z.lazy(() => RankScalarRelationFilterSchema),z.lazy(() => RankWhereInputSchema) ]).optional(),
   author: z.union([ z.lazy(() => UserScalarRelationFilterSchema),z.lazy(() => UserWhereInputSchema) ]).optional(),
   softwares: z.lazy(() => SoftwareOnArticleListRelationFilterSchema).optional()
@@ -1840,7 +1761,7 @@ export const ArticleOrderByWithAggregationInputSchema: z.ZodType<Prisma.ArticleO
   rankId: z.lazy(() => SortOrderSchema).optional(),
   createdAt: z.lazy(() => SortOrderSchema).optional(),
   updatedAt: z.lazy(() => SortOrderSchema).optional(),
-  userAddress: z.lazy(() => SortOrderSchema).optional(),
+  userId: z.lazy(() => SortOrderSchema).optional(),
   _count: z.lazy(() => ArticleCountOrderByAggregateInputSchema).optional(),
   _max: z.lazy(() => ArticleMaxOrderByAggregateInputSchema).optional(),
   _min: z.lazy(() => ArticleMinOrderByAggregateInputSchema).optional()
@@ -1858,7 +1779,7 @@ export const ArticleScalarWhereWithAggregatesInputSchema: z.ZodType<Prisma.Artic
   rankId: z.union([ z.lazy(() => StringWithAggregatesFilterSchema),z.string() ]).optional(),
   createdAt: z.union([ z.lazy(() => DateTimeWithAggregatesFilterSchema),z.coerce.date() ]).optional(),
   updatedAt: z.union([ z.lazy(() => DateTimeWithAggregatesFilterSchema),z.coerce.date() ]).optional(),
-  userAddress: z.union([ z.lazy(() => StringWithAggregatesFilterSchema),z.string() ]).optional(),
+  userId: z.union([ z.lazy(() => StringWithAggregatesFilterSchema),z.string() ]).optional(),
 }).strict();
 
 export const RankLikeWhereInputSchema: z.ZodType<Prisma.RankLikeWhereInput> = z.object({
@@ -1866,7 +1787,7 @@ export const RankLikeWhereInputSchema: z.ZodType<Prisma.RankLikeWhereInput> = z.
   OR: z.lazy(() => RankLikeWhereInputSchema).array().optional(),
   NOT: z.union([ z.lazy(() => RankLikeWhereInputSchema),z.lazy(() => RankLikeWhereInputSchema).array() ]).optional(),
   rankId: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
-  userAddress: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
+  userId: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   createdAt: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
   rank: z.union([ z.lazy(() => RankScalarRelationFilterSchema),z.lazy(() => RankWhereInputSchema) ]).optional(),
   user: z.union([ z.lazy(() => UserScalarRelationFilterSchema),z.lazy(() => UserWhereInputSchema) ]).optional(),
@@ -1874,22 +1795,22 @@ export const RankLikeWhereInputSchema: z.ZodType<Prisma.RankLikeWhereInput> = z.
 
 export const RankLikeOrderByWithRelationInputSchema: z.ZodType<Prisma.RankLikeOrderByWithRelationInput> = z.object({
   rankId: z.lazy(() => SortOrderSchema).optional(),
-  userAddress: z.lazy(() => SortOrderSchema).optional(),
+  userId: z.lazy(() => SortOrderSchema).optional(),
   createdAt: z.lazy(() => SortOrderSchema).optional(),
   rank: z.lazy(() => RankOrderByWithRelationInputSchema).optional(),
   user: z.lazy(() => UserOrderByWithRelationInputSchema).optional()
 }).strict();
 
 export const RankLikeWhereUniqueInputSchema: z.ZodType<Prisma.RankLikeWhereUniqueInput> = z.object({
-  rankId_userAddress: z.lazy(() => RankLikeRankIdUserAddressCompoundUniqueInputSchema)
+  rankId_userId: z.lazy(() => RankLikeRankIdUserIdCompoundUniqueInputSchema)
 })
 .and(z.object({
-  rankId_userAddress: z.lazy(() => RankLikeRankIdUserAddressCompoundUniqueInputSchema).optional(),
+  rankId_userId: z.lazy(() => RankLikeRankIdUserIdCompoundUniqueInputSchema).optional(),
   AND: z.union([ z.lazy(() => RankLikeWhereInputSchema),z.lazy(() => RankLikeWhereInputSchema).array() ]).optional(),
   OR: z.lazy(() => RankLikeWhereInputSchema).array().optional(),
   NOT: z.union([ z.lazy(() => RankLikeWhereInputSchema),z.lazy(() => RankLikeWhereInputSchema).array() ]).optional(),
   rankId: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
-  userAddress: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
+  userId: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   createdAt: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
   rank: z.union([ z.lazy(() => RankScalarRelationFilterSchema),z.lazy(() => RankWhereInputSchema) ]).optional(),
   user: z.union([ z.lazy(() => UserScalarRelationFilterSchema),z.lazy(() => UserWhereInputSchema) ]).optional(),
@@ -1897,7 +1818,7 @@ export const RankLikeWhereUniqueInputSchema: z.ZodType<Prisma.RankLikeWhereUniqu
 
 export const RankLikeOrderByWithAggregationInputSchema: z.ZodType<Prisma.RankLikeOrderByWithAggregationInput> = z.object({
   rankId: z.lazy(() => SortOrderSchema).optional(),
-  userAddress: z.lazy(() => SortOrderSchema).optional(),
+  userId: z.lazy(() => SortOrderSchema).optional(),
   createdAt: z.lazy(() => SortOrderSchema).optional(),
   _count: z.lazy(() => RankLikeCountOrderByAggregateInputSchema).optional(),
   _max: z.lazy(() => RankLikeMaxOrderByAggregateInputSchema).optional(),
@@ -1909,7 +1830,7 @@ export const RankLikeScalarWhereWithAggregatesInputSchema: z.ZodType<Prisma.Rank
   OR: z.lazy(() => RankLikeScalarWhereWithAggregatesInputSchema).array().optional(),
   NOT: z.union([ z.lazy(() => RankLikeScalarWhereWithAggregatesInputSchema),z.lazy(() => RankLikeScalarWhereWithAggregatesInputSchema).array() ]).optional(),
   rankId: z.union([ z.lazy(() => StringWithAggregatesFilterSchema),z.string() ]).optional(),
-  userAddress: z.union([ z.lazy(() => StringWithAggregatesFilterSchema),z.string() ]).optional(),
+  userId: z.union([ z.lazy(() => StringWithAggregatesFilterSchema),z.string() ]).optional(),
   createdAt: z.union([ z.lazy(() => DateTimeWithAggregatesFilterSchema),z.coerce.date() ]).optional(),
 }).strict();
 
@@ -1918,7 +1839,7 @@ export const RankStarWhereInputSchema: z.ZodType<Prisma.RankStarWhereInput> = z.
   OR: z.lazy(() => RankStarWhereInputSchema).array().optional(),
   NOT: z.union([ z.lazy(() => RankStarWhereInputSchema),z.lazy(() => RankStarWhereInputSchema).array() ]).optional(),
   rankId: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
-  userAddress: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
+  userId: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   createdAt: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
   rank: z.union([ z.lazy(() => RankScalarRelationFilterSchema),z.lazy(() => RankWhereInputSchema) ]).optional(),
   user: z.union([ z.lazy(() => UserScalarRelationFilterSchema),z.lazy(() => UserWhereInputSchema) ]).optional(),
@@ -1926,22 +1847,22 @@ export const RankStarWhereInputSchema: z.ZodType<Prisma.RankStarWhereInput> = z.
 
 export const RankStarOrderByWithRelationInputSchema: z.ZodType<Prisma.RankStarOrderByWithRelationInput> = z.object({
   rankId: z.lazy(() => SortOrderSchema).optional(),
-  userAddress: z.lazy(() => SortOrderSchema).optional(),
+  userId: z.lazy(() => SortOrderSchema).optional(),
   createdAt: z.lazy(() => SortOrderSchema).optional(),
   rank: z.lazy(() => RankOrderByWithRelationInputSchema).optional(),
   user: z.lazy(() => UserOrderByWithRelationInputSchema).optional()
 }).strict();
 
 export const RankStarWhereUniqueInputSchema: z.ZodType<Prisma.RankStarWhereUniqueInput> = z.object({
-  rankId_userAddress: z.lazy(() => RankStarRankIdUserAddressCompoundUniqueInputSchema)
+  rankId_userId: z.lazy(() => RankStarRankIdUserIdCompoundUniqueInputSchema)
 })
 .and(z.object({
-  rankId_userAddress: z.lazy(() => RankStarRankIdUserAddressCompoundUniqueInputSchema).optional(),
+  rankId_userId: z.lazy(() => RankStarRankIdUserIdCompoundUniqueInputSchema).optional(),
   AND: z.union([ z.lazy(() => RankStarWhereInputSchema),z.lazy(() => RankStarWhereInputSchema).array() ]).optional(),
   OR: z.lazy(() => RankStarWhereInputSchema).array().optional(),
   NOT: z.union([ z.lazy(() => RankStarWhereInputSchema),z.lazy(() => RankStarWhereInputSchema).array() ]).optional(),
   rankId: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
-  userAddress: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
+  userId: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   createdAt: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
   rank: z.union([ z.lazy(() => RankScalarRelationFilterSchema),z.lazy(() => RankWhereInputSchema) ]).optional(),
   user: z.union([ z.lazy(() => UserScalarRelationFilterSchema),z.lazy(() => UserWhereInputSchema) ]).optional(),
@@ -1949,7 +1870,7 @@ export const RankStarWhereUniqueInputSchema: z.ZodType<Prisma.RankStarWhereUniqu
 
 export const RankStarOrderByWithAggregationInputSchema: z.ZodType<Prisma.RankStarOrderByWithAggregationInput> = z.object({
   rankId: z.lazy(() => SortOrderSchema).optional(),
-  userAddress: z.lazy(() => SortOrderSchema).optional(),
+  userId: z.lazy(() => SortOrderSchema).optional(),
   createdAt: z.lazy(() => SortOrderSchema).optional(),
   _count: z.lazy(() => RankStarCountOrderByAggregateInputSchema).optional(),
   _max: z.lazy(() => RankStarMaxOrderByAggregateInputSchema).optional(),
@@ -1961,7 +1882,7 @@ export const RankStarScalarWhereWithAggregatesInputSchema: z.ZodType<Prisma.Rank
   OR: z.lazy(() => RankStarScalarWhereWithAggregatesInputSchema).array().optional(),
   NOT: z.union([ z.lazy(() => RankStarScalarWhereWithAggregatesInputSchema),z.lazy(() => RankStarScalarWhereWithAggregatesInputSchema).array() ]).optional(),
   rankId: z.union([ z.lazy(() => StringWithAggregatesFilterSchema),z.string() ]).optional(),
-  userAddress: z.union([ z.lazy(() => StringWithAggregatesFilterSchema),z.string() ]).optional(),
+  userId: z.union([ z.lazy(() => StringWithAggregatesFilterSchema),z.string() ]).optional(),
   createdAt: z.union([ z.lazy(() => DateTimeWithAggregatesFilterSchema),z.coerce.date() ]).optional(),
 }).strict();
 
@@ -1970,7 +1891,7 @@ export const SoftwareLikeWhereInputSchema: z.ZodType<Prisma.SoftwareLikeWhereInp
   OR: z.lazy(() => SoftwareLikeWhereInputSchema).array().optional(),
   NOT: z.union([ z.lazy(() => SoftwareLikeWhereInputSchema),z.lazy(() => SoftwareLikeWhereInputSchema).array() ]).optional(),
   softwareId: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
-  userAddress: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
+  userId: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   createdAt: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
   software: z.union([ z.lazy(() => SoftwareScalarRelationFilterSchema),z.lazy(() => SoftwareWhereInputSchema) ]).optional(),
   user: z.union([ z.lazy(() => UserScalarRelationFilterSchema),z.lazy(() => UserWhereInputSchema) ]).optional(),
@@ -1978,22 +1899,22 @@ export const SoftwareLikeWhereInputSchema: z.ZodType<Prisma.SoftwareLikeWhereInp
 
 export const SoftwareLikeOrderByWithRelationInputSchema: z.ZodType<Prisma.SoftwareLikeOrderByWithRelationInput> = z.object({
   softwareId: z.lazy(() => SortOrderSchema).optional(),
-  userAddress: z.lazy(() => SortOrderSchema).optional(),
+  userId: z.lazy(() => SortOrderSchema).optional(),
   createdAt: z.lazy(() => SortOrderSchema).optional(),
   software: z.lazy(() => SoftwareOrderByWithRelationInputSchema).optional(),
   user: z.lazy(() => UserOrderByWithRelationInputSchema).optional()
 }).strict();
 
 export const SoftwareLikeWhereUniqueInputSchema: z.ZodType<Prisma.SoftwareLikeWhereUniqueInput> = z.object({
-  softwareId_userAddress: z.lazy(() => SoftwareLikeSoftwareIdUserAddressCompoundUniqueInputSchema)
+  softwareId_userId: z.lazy(() => SoftwareLikeSoftwareIdUserIdCompoundUniqueInputSchema)
 })
 .and(z.object({
-  softwareId_userAddress: z.lazy(() => SoftwareLikeSoftwareIdUserAddressCompoundUniqueInputSchema).optional(),
+  softwareId_userId: z.lazy(() => SoftwareLikeSoftwareIdUserIdCompoundUniqueInputSchema).optional(),
   AND: z.union([ z.lazy(() => SoftwareLikeWhereInputSchema),z.lazy(() => SoftwareLikeWhereInputSchema).array() ]).optional(),
   OR: z.lazy(() => SoftwareLikeWhereInputSchema).array().optional(),
   NOT: z.union([ z.lazy(() => SoftwareLikeWhereInputSchema),z.lazy(() => SoftwareLikeWhereInputSchema).array() ]).optional(),
   softwareId: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
-  userAddress: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
+  userId: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   createdAt: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
   software: z.union([ z.lazy(() => SoftwareScalarRelationFilterSchema),z.lazy(() => SoftwareWhereInputSchema) ]).optional(),
   user: z.union([ z.lazy(() => UserScalarRelationFilterSchema),z.lazy(() => UserWhereInputSchema) ]).optional(),
@@ -2001,7 +1922,7 @@ export const SoftwareLikeWhereUniqueInputSchema: z.ZodType<Prisma.SoftwareLikeWh
 
 export const SoftwareLikeOrderByWithAggregationInputSchema: z.ZodType<Prisma.SoftwareLikeOrderByWithAggregationInput> = z.object({
   softwareId: z.lazy(() => SortOrderSchema).optional(),
-  userAddress: z.lazy(() => SortOrderSchema).optional(),
+  userId: z.lazy(() => SortOrderSchema).optional(),
   createdAt: z.lazy(() => SortOrderSchema).optional(),
   _count: z.lazy(() => SoftwareLikeCountOrderByAggregateInputSchema).optional(),
   _max: z.lazy(() => SoftwareLikeMaxOrderByAggregateInputSchema).optional(),
@@ -2013,7 +1934,7 @@ export const SoftwareLikeScalarWhereWithAggregatesInputSchema: z.ZodType<Prisma.
   OR: z.lazy(() => SoftwareLikeScalarWhereWithAggregatesInputSchema).array().optional(),
   NOT: z.union([ z.lazy(() => SoftwareLikeScalarWhereWithAggregatesInputSchema),z.lazy(() => SoftwareLikeScalarWhereWithAggregatesInputSchema).array() ]).optional(),
   softwareId: z.union([ z.lazy(() => StringWithAggregatesFilterSchema),z.string() ]).optional(),
-  userAddress: z.union([ z.lazy(() => StringWithAggregatesFilterSchema),z.string() ]).optional(),
+  userId: z.union([ z.lazy(() => StringWithAggregatesFilterSchema),z.string() ]).optional(),
   createdAt: z.union([ z.lazy(() => DateTimeWithAggregatesFilterSchema),z.coerce.date() ]).optional(),
 }).strict();
 
@@ -2022,7 +1943,7 @@ export const SoftwareStarWhereInputSchema: z.ZodType<Prisma.SoftwareStarWhereInp
   OR: z.lazy(() => SoftwareStarWhereInputSchema).array().optional(),
   NOT: z.union([ z.lazy(() => SoftwareStarWhereInputSchema),z.lazy(() => SoftwareStarWhereInputSchema).array() ]).optional(),
   softwareId: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
-  userAddress: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
+  userId: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   createdAt: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
   software: z.union([ z.lazy(() => SoftwareScalarRelationFilterSchema),z.lazy(() => SoftwareWhereInputSchema) ]).optional(),
   user: z.union([ z.lazy(() => UserScalarRelationFilterSchema),z.lazy(() => UserWhereInputSchema) ]).optional(),
@@ -2030,22 +1951,22 @@ export const SoftwareStarWhereInputSchema: z.ZodType<Prisma.SoftwareStarWhereInp
 
 export const SoftwareStarOrderByWithRelationInputSchema: z.ZodType<Prisma.SoftwareStarOrderByWithRelationInput> = z.object({
   softwareId: z.lazy(() => SortOrderSchema).optional(),
-  userAddress: z.lazy(() => SortOrderSchema).optional(),
+  userId: z.lazy(() => SortOrderSchema).optional(),
   createdAt: z.lazy(() => SortOrderSchema).optional(),
   software: z.lazy(() => SoftwareOrderByWithRelationInputSchema).optional(),
   user: z.lazy(() => UserOrderByWithRelationInputSchema).optional()
 }).strict();
 
 export const SoftwareStarWhereUniqueInputSchema: z.ZodType<Prisma.SoftwareStarWhereUniqueInput> = z.object({
-  softwareId_userAddress: z.lazy(() => SoftwareStarSoftwareIdUserAddressCompoundUniqueInputSchema)
+  softwareId_userId: z.lazy(() => SoftwareStarSoftwareIdUserIdCompoundUniqueInputSchema)
 })
 .and(z.object({
-  softwareId_userAddress: z.lazy(() => SoftwareStarSoftwareIdUserAddressCompoundUniqueInputSchema).optional(),
+  softwareId_userId: z.lazy(() => SoftwareStarSoftwareIdUserIdCompoundUniqueInputSchema).optional(),
   AND: z.union([ z.lazy(() => SoftwareStarWhereInputSchema),z.lazy(() => SoftwareStarWhereInputSchema).array() ]).optional(),
   OR: z.lazy(() => SoftwareStarWhereInputSchema).array().optional(),
   NOT: z.union([ z.lazy(() => SoftwareStarWhereInputSchema),z.lazy(() => SoftwareStarWhereInputSchema).array() ]).optional(),
   softwareId: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
-  userAddress: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
+  userId: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   createdAt: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
   software: z.union([ z.lazy(() => SoftwareScalarRelationFilterSchema),z.lazy(() => SoftwareWhereInputSchema) ]).optional(),
   user: z.union([ z.lazy(() => UserScalarRelationFilterSchema),z.lazy(() => UserWhereInputSchema) ]).optional(),
@@ -2053,7 +1974,7 @@ export const SoftwareStarWhereUniqueInputSchema: z.ZodType<Prisma.SoftwareStarWh
 
 export const SoftwareStarOrderByWithAggregationInputSchema: z.ZodType<Prisma.SoftwareStarOrderByWithAggregationInput> = z.object({
   softwareId: z.lazy(() => SortOrderSchema).optional(),
-  userAddress: z.lazy(() => SortOrderSchema).optional(),
+  userId: z.lazy(() => SortOrderSchema).optional(),
   createdAt: z.lazy(() => SortOrderSchema).optional(),
   _count: z.lazy(() => SoftwareStarCountOrderByAggregateInputSchema).optional(),
   _max: z.lazy(() => SoftwareStarMaxOrderByAggregateInputSchema).optional(),
@@ -2065,7 +1986,7 @@ export const SoftwareStarScalarWhereWithAggregatesInputSchema: z.ZodType<Prisma.
   OR: z.lazy(() => SoftwareStarScalarWhereWithAggregatesInputSchema).array().optional(),
   NOT: z.union([ z.lazy(() => SoftwareStarScalarWhereWithAggregatesInputSchema),z.lazy(() => SoftwareStarScalarWhereWithAggregatesInputSchema).array() ]).optional(),
   softwareId: z.union([ z.lazy(() => StringWithAggregatesFilterSchema),z.string() ]).optional(),
-  userAddress: z.union([ z.lazy(() => StringWithAggregatesFilterSchema),z.string() ]).optional(),
+  userId: z.union([ z.lazy(() => StringWithAggregatesFilterSchema),z.string() ]).optional(),
   createdAt: z.union([ z.lazy(() => DateTimeWithAggregatesFilterSchema),z.coerce.date() ]).optional(),
 }).strict();
 
@@ -2077,7 +1998,7 @@ export const RankCommentWhereInputSchema: z.ZodType<Prisma.RankCommentWhereInput
   rankId: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   content: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   createdAt: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
-  userAddress: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
+  userId: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   deletedAt: z.union([ z.lazy(() => DateTimeNullableFilterSchema),z.coerce.date() ]).optional().nullable(),
   replyToComment: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
   replyToUser: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
@@ -2091,7 +2012,7 @@ export const RankCommentOrderByWithRelationInputSchema: z.ZodType<Prisma.RankCom
   rankId: z.lazy(() => SortOrderSchema).optional(),
   content: z.lazy(() => SortOrderSchema).optional(),
   createdAt: z.lazy(() => SortOrderSchema).optional(),
-  userAddress: z.lazy(() => SortOrderSchema).optional(),
+  userId: z.lazy(() => SortOrderSchema).optional(),
   deletedAt: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
   replyToComment: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
   replyToUser: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
@@ -2111,7 +2032,7 @@ export const RankCommentWhereUniqueInputSchema: z.ZodType<Prisma.RankCommentWher
   rankId: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   content: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   createdAt: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
-  userAddress: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
+  userId: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   deletedAt: z.union([ z.lazy(() => DateTimeNullableFilterSchema),z.coerce.date() ]).optional().nullable(),
   replyToComment: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
   replyToUser: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
@@ -2125,7 +2046,7 @@ export const RankCommentOrderByWithAggregationInputSchema: z.ZodType<Prisma.Rank
   rankId: z.lazy(() => SortOrderSchema).optional(),
   content: z.lazy(() => SortOrderSchema).optional(),
   createdAt: z.lazy(() => SortOrderSchema).optional(),
-  userAddress: z.lazy(() => SortOrderSchema).optional(),
+  userId: z.lazy(() => SortOrderSchema).optional(),
   deletedAt: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
   replyToComment: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
   replyToUser: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
@@ -2143,7 +2064,7 @@ export const RankCommentScalarWhereWithAggregatesInputSchema: z.ZodType<Prisma.R
   rankId: z.union([ z.lazy(() => StringWithAggregatesFilterSchema),z.string() ]).optional(),
   content: z.union([ z.lazy(() => StringWithAggregatesFilterSchema),z.string() ]).optional(),
   createdAt: z.union([ z.lazy(() => DateTimeWithAggregatesFilterSchema),z.coerce.date() ]).optional(),
-  userAddress: z.union([ z.lazy(() => StringWithAggregatesFilterSchema),z.string() ]).optional(),
+  userId: z.union([ z.lazy(() => StringWithAggregatesFilterSchema),z.string() ]).optional(),
   deletedAt: z.union([ z.lazy(() => DateTimeNullableWithAggregatesFilterSchema),z.coerce.date() ]).optional().nullable(),
   replyToComment: z.union([ z.lazy(() => StringNullableWithAggregatesFilterSchema),z.string() ]).optional().nullable(),
   replyToUser: z.union([ z.lazy(() => StringNullableWithAggregatesFilterSchema),z.string() ]).optional().nullable(),
@@ -2158,7 +2079,7 @@ export const SoftwareCommentWhereInputSchema: z.ZodType<Prisma.SoftwareCommentWh
   softwareId: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   content: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   createdAt: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
-  userAddress: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
+  userId: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   deletedAt: z.union([ z.lazy(() => DateTimeNullableFilterSchema),z.coerce.date() ]).optional().nullable(),
   replyToComment: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
   replyToUser: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
@@ -2172,7 +2093,7 @@ export const SoftwareCommentOrderByWithRelationInputSchema: z.ZodType<Prisma.Sof
   softwareId: z.lazy(() => SortOrderSchema).optional(),
   content: z.lazy(() => SortOrderSchema).optional(),
   createdAt: z.lazy(() => SortOrderSchema).optional(),
-  userAddress: z.lazy(() => SortOrderSchema).optional(),
+  userId: z.lazy(() => SortOrderSchema).optional(),
   deletedAt: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
   replyToComment: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
   replyToUser: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
@@ -2192,7 +2113,7 @@ export const SoftwareCommentWhereUniqueInputSchema: z.ZodType<Prisma.SoftwareCom
   softwareId: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   content: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   createdAt: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
-  userAddress: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
+  userId: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   deletedAt: z.union([ z.lazy(() => DateTimeNullableFilterSchema),z.coerce.date() ]).optional().nullable(),
   replyToComment: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
   replyToUser: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
@@ -2206,7 +2127,7 @@ export const SoftwareCommentOrderByWithAggregationInputSchema: z.ZodType<Prisma.
   softwareId: z.lazy(() => SortOrderSchema).optional(),
   content: z.lazy(() => SortOrderSchema).optional(),
   createdAt: z.lazy(() => SortOrderSchema).optional(),
-  userAddress: z.lazy(() => SortOrderSchema).optional(),
+  userId: z.lazy(() => SortOrderSchema).optional(),
   deletedAt: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
   replyToComment: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
   replyToUser: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
@@ -2224,7 +2145,7 @@ export const SoftwareCommentScalarWhereWithAggregatesInputSchema: z.ZodType<Pris
   softwareId: z.union([ z.lazy(() => StringWithAggregatesFilterSchema),z.string() ]).optional(),
   content: z.union([ z.lazy(() => StringWithAggregatesFilterSchema),z.string() ]).optional(),
   createdAt: z.union([ z.lazy(() => DateTimeWithAggregatesFilterSchema),z.coerce.date() ]).optional(),
-  userAddress: z.union([ z.lazy(() => StringWithAggregatesFilterSchema),z.string() ]).optional(),
+  userId: z.union([ z.lazy(() => StringWithAggregatesFilterSchema),z.string() ]).optional(),
   deletedAt: z.union([ z.lazy(() => DateTimeNullableWithAggregatesFilterSchema),z.coerce.date() ]).optional().nullable(),
   replyToComment: z.union([ z.lazy(() => StringNullableWithAggregatesFilterSchema),z.string() ]).optional().nullable(),
   replyToUser: z.union([ z.lazy(() => StringNullableWithAggregatesFilterSchema),z.string() ]).optional().nullable(),
@@ -2246,7 +2167,7 @@ export const UserPlatformUncheckedCreateInputSchema: z.ZodType<Prisma.UserPlatfo
   platformId: z.string(),
   platformName: z.string(),
   platformAvatar: z.string(),
-  userAddress: z.string()
+  userId: z.string()
 }).strict();
 
 export const UserPlatformUpdateInputSchema: z.ZodType<Prisma.UserPlatformUpdateInput> = z.object({
@@ -2264,7 +2185,7 @@ export const UserPlatformUncheckedUpdateInputSchema: z.ZodType<Prisma.UserPlatfo
   platformId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   platformName: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   platformAvatar: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  userAddress: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  userId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
 
 export const UserPlatformCreateManyInputSchema: z.ZodType<Prisma.UserPlatformCreateManyInput> = z.object({
@@ -2273,7 +2194,7 @@ export const UserPlatformCreateManyInputSchema: z.ZodType<Prisma.UserPlatformCre
   platformId: z.string(),
   platformName: z.string(),
   platformAvatar: z.string(),
-  userAddress: z.string()
+  userId: z.string()
 }).strict();
 
 export const UserPlatformUpdateManyMutationInputSchema: z.ZodType<Prisma.UserPlatformUpdateManyMutationInput> = z.object({
@@ -2290,13 +2211,13 @@ export const UserPlatformUncheckedUpdateManyInputSchema: z.ZodType<Prisma.UserPl
   platformId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   platformName: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   platformAvatar: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  userAddress: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  userId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
 
 export const ApiKeyCreateInputSchema: z.ZodType<Prisma.ApiKeyCreateInput> = z.object({
   key: z.string(),
   name: z.string(),
-  userAddress: z.string().optional().nullable(),
+  userId: z.string().optional().nullable(),
   createdAt: z.coerce.date().optional(),
   expiredAt: z.coerce.date().optional().nullable()
 }).strict();
@@ -2304,7 +2225,7 @@ export const ApiKeyCreateInputSchema: z.ZodType<Prisma.ApiKeyCreateInput> = z.ob
 export const ApiKeyUncheckedCreateInputSchema: z.ZodType<Prisma.ApiKeyUncheckedCreateInput> = z.object({
   key: z.string(),
   name: z.string(),
-  userAddress: z.string().optional().nullable(),
+  userId: z.string().optional().nullable(),
   createdAt: z.coerce.date().optional(),
   expiredAt: z.coerce.date().optional().nullable()
 }).strict();
@@ -2312,7 +2233,7 @@ export const ApiKeyUncheckedCreateInputSchema: z.ZodType<Prisma.ApiKeyUncheckedC
 export const ApiKeyUpdateInputSchema: z.ZodType<Prisma.ApiKeyUpdateInput> = z.object({
   key: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  userAddress: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  userId: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   expiredAt: z.union([ z.coerce.date(),z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
 }).strict();
@@ -2320,7 +2241,7 @@ export const ApiKeyUpdateInputSchema: z.ZodType<Prisma.ApiKeyUpdateInput> = z.ob
 export const ApiKeyUncheckedUpdateInputSchema: z.ZodType<Prisma.ApiKeyUncheckedUpdateInput> = z.object({
   key: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  userAddress: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  userId: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   expiredAt: z.union([ z.coerce.date(),z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
 }).strict();
@@ -2328,7 +2249,7 @@ export const ApiKeyUncheckedUpdateInputSchema: z.ZodType<Prisma.ApiKeyUncheckedU
 export const ApiKeyCreateManyInputSchema: z.ZodType<Prisma.ApiKeyCreateManyInput> = z.object({
   key: z.string(),
   name: z.string(),
-  userAddress: z.string().optional().nullable(),
+  userId: z.string().optional().nullable(),
   createdAt: z.coerce.date().optional(),
   expiredAt: z.coerce.date().optional().nullable()
 }).strict();
@@ -2336,7 +2257,7 @@ export const ApiKeyCreateManyInputSchema: z.ZodType<Prisma.ApiKeyCreateManyInput
 export const ApiKeyUpdateManyMutationInputSchema: z.ZodType<Prisma.ApiKeyUpdateManyMutationInput> = z.object({
   key: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  userAddress: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  userId: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   expiredAt: z.union([ z.coerce.date(),z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
 }).strict();
@@ -2344,23 +2265,14 @@ export const ApiKeyUpdateManyMutationInputSchema: z.ZodType<Prisma.ApiKeyUpdateM
 export const ApiKeyUncheckedUpdateManyInputSchema: z.ZodType<Prisma.ApiKeyUncheckedUpdateManyInput> = z.object({
   key: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  userAddress: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  userId: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   expiredAt: z.union([ z.coerce.date(),z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
 }).strict();
 
 export const UserCreateInputSchema: z.ZodType<Prisma.UserCreateInput> = z.object({
-  avatar: z.string().optional().nullable(),
-  address: z.string(),
-  description: z.string().optional().nullable(),
-  name: z.string().optional().nullable(),
-  email: z.string().optional().nullable(),
+  id: z.string(),
   referralCode: z.string(),
-  x: z.string().optional().nullable(),
-  website: z.string().optional().nullable(),
-  telegram: z.string().optional().nullable(),
-  github: z.string().optional().nullable(),
-  instagram: z.string().optional().nullable(),
   createdAt: z.coerce.date().optional(),
   updatedAt: z.coerce.date().optional(),
   invitedBy: z.union([ z.lazy(() => UserCreateinvitedByInputSchema),z.string().array() ]).optional(),
@@ -2376,17 +2288,8 @@ export const UserCreateInputSchema: z.ZodType<Prisma.UserCreateInput> = z.object
 }).strict();
 
 export const UserUncheckedCreateInputSchema: z.ZodType<Prisma.UserUncheckedCreateInput> = z.object({
-  avatar: z.string().optional().nullable(),
-  address: z.string(),
-  description: z.string().optional().nullable(),
-  name: z.string().optional().nullable(),
-  email: z.string().optional().nullable(),
+  id: z.string(),
   referralCode: z.string(),
-  x: z.string().optional().nullable(),
-  website: z.string().optional().nullable(),
-  telegram: z.string().optional().nullable(),
-  github: z.string().optional().nullable(),
-  instagram: z.string().optional().nullable(),
   createdAt: z.coerce.date().optional(),
   updatedAt: z.coerce.date().optional(),
   invitedBy: z.union([ z.lazy(() => UserCreateinvitedByInputSchema),z.string().array() ]).optional(),
@@ -2402,17 +2305,8 @@ export const UserUncheckedCreateInputSchema: z.ZodType<Prisma.UserUncheckedCreat
 }).strict();
 
 export const UserUpdateInputSchema: z.ZodType<Prisma.UserUpdateInput> = z.object({
-  avatar: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  address: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  description: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  name: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  email: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   referralCode: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  x: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  website: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  telegram: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  github: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  instagram: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   invitedBy: z.union([ z.lazy(() => UserUpdateinvitedByInputSchema),z.string().array() ]).optional(),
@@ -2428,17 +2322,8 @@ export const UserUpdateInputSchema: z.ZodType<Prisma.UserUpdateInput> = z.object
 }).strict();
 
 export const UserUncheckedUpdateInputSchema: z.ZodType<Prisma.UserUncheckedUpdateInput> = z.object({
-  avatar: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  address: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  description: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  name: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  email: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   referralCode: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  x: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  website: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  telegram: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  github: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  instagram: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   invitedBy: z.union([ z.lazy(() => UserUpdateinvitedByInputSchema),z.string().array() ]).optional(),
@@ -2454,51 +2339,24 @@ export const UserUncheckedUpdateInputSchema: z.ZodType<Prisma.UserUncheckedUpdat
 }).strict();
 
 export const UserCreateManyInputSchema: z.ZodType<Prisma.UserCreateManyInput> = z.object({
-  avatar: z.string().optional().nullable(),
-  address: z.string(),
-  description: z.string().optional().nullable(),
-  name: z.string().optional().nullable(),
-  email: z.string().optional().nullable(),
+  id: z.string(),
   referralCode: z.string(),
-  x: z.string().optional().nullable(),
-  website: z.string().optional().nullable(),
-  telegram: z.string().optional().nullable(),
-  github: z.string().optional().nullable(),
-  instagram: z.string().optional().nullable(),
   createdAt: z.coerce.date().optional(),
   updatedAt: z.coerce.date().optional(),
   invitedBy: z.union([ z.lazy(() => UserCreateinvitedByInputSchema),z.string().array() ]).optional(),
 }).strict();
 
 export const UserUpdateManyMutationInputSchema: z.ZodType<Prisma.UserUpdateManyMutationInput> = z.object({
-  avatar: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  address: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  description: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  name: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  email: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   referralCode: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  x: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  website: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  telegram: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  github: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  instagram: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   invitedBy: z.union([ z.lazy(() => UserUpdateinvitedByInputSchema),z.string().array() ]).optional(),
 }).strict();
 
 export const UserUncheckedUpdateManyInputSchema: z.ZodType<Prisma.UserUncheckedUpdateManyInput> = z.object({
-  avatar: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  address: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  description: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  name: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  email: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   referralCode: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  x: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  website: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  telegram: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  github: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  instagram: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   invitedBy: z.union([ z.lazy(() => UserUpdateinvitedByInputSchema),z.string().array() ]).optional(),
@@ -2579,7 +2437,7 @@ export const RankCreateInputSchema: z.ZodType<Prisma.RankCreateInput> = z.object
 
 export const RankUncheckedCreateInputSchema: z.ZodType<Prisma.RankUncheckedCreateInput> = z.object({
   id: z.string().optional(),
-  userAddress: z.string(),
+  userId: z.string(),
   name: z.string(),
   description: z.string().optional().nullable(),
   createdAt: z.coerce.date().optional(),
@@ -2611,7 +2469,7 @@ export const RankUpdateInputSchema: z.ZodType<Prisma.RankUpdateInput> = z.object
 
 export const RankUncheckedUpdateInputSchema: z.ZodType<Prisma.RankUncheckedUpdateInput> = z.object({
   id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  userAddress: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  userId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   description: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
@@ -2627,7 +2485,7 @@ export const RankUncheckedUpdateInputSchema: z.ZodType<Prisma.RankUncheckedUpdat
 
 export const RankCreateManyInputSchema: z.ZodType<Prisma.RankCreateManyInput> = z.object({
   id: z.string().optional(),
-  userAddress: z.string(),
+  userId: z.string(),
   name: z.string(),
   description: z.string().optional().nullable(),
   createdAt: z.coerce.date().optional(),
@@ -2644,7 +2502,7 @@ export const RankUpdateManyMutationInputSchema: z.ZodType<Prisma.RankUpdateManyM
 
 export const RankUncheckedUpdateManyInputSchema: z.ZodType<Prisma.RankUncheckedUpdateManyInput> = z.object({
   id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  userAddress: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  userId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   description: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
@@ -3076,7 +2934,7 @@ export const ArticleUncheckedCreateInputSchema: z.ZodType<Prisma.ArticleUnchecke
   rankId: z.string(),
   createdAt: z.coerce.date().optional(),
   updatedAt: z.coerce.date().optional(),
-  userAddress: z.string(),
+  userId: z.string(),
   softwares: z.lazy(() => SoftwareOnArticleUncheckedCreateNestedManyWithoutArticleInputSchema).optional()
 }).strict();
 
@@ -3102,7 +2960,7 @@ export const ArticleUncheckedUpdateInputSchema: z.ZodType<Prisma.ArticleUnchecke
   rankId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
-  userAddress: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  userId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   softwares: z.lazy(() => SoftwareOnArticleUncheckedUpdateManyWithoutArticleNestedInputSchema).optional()
 }).strict();
 
@@ -3115,7 +2973,7 @@ export const ArticleCreateManyInputSchema: z.ZodType<Prisma.ArticleCreateManyInp
   rankId: z.string(),
   createdAt: z.coerce.date().optional(),
   updatedAt: z.coerce.date().optional(),
-  userAddress: z.string()
+  userId: z.string()
 }).strict();
 
 export const ArticleUpdateManyMutationInputSchema: z.ZodType<Prisma.ArticleUpdateManyMutationInput> = z.object({
@@ -3137,7 +2995,7 @@ export const ArticleUncheckedUpdateManyInputSchema: z.ZodType<Prisma.ArticleUnch
   rankId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
-  userAddress: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  userId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
 
 export const RankLikeCreateInputSchema: z.ZodType<Prisma.RankLikeCreateInput> = z.object({
@@ -3148,7 +3006,7 @@ export const RankLikeCreateInputSchema: z.ZodType<Prisma.RankLikeCreateInput> = 
 
 export const RankLikeUncheckedCreateInputSchema: z.ZodType<Prisma.RankLikeUncheckedCreateInput> = z.object({
   rankId: z.string(),
-  userAddress: z.string(),
+  userId: z.string(),
   createdAt: z.coerce.date().optional()
 }).strict();
 
@@ -3160,13 +3018,13 @@ export const RankLikeUpdateInputSchema: z.ZodType<Prisma.RankLikeUpdateInput> = 
 
 export const RankLikeUncheckedUpdateInputSchema: z.ZodType<Prisma.RankLikeUncheckedUpdateInput> = z.object({
   rankId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  userAddress: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  userId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
 
 export const RankLikeCreateManyInputSchema: z.ZodType<Prisma.RankLikeCreateManyInput> = z.object({
   rankId: z.string(),
-  userAddress: z.string(),
+  userId: z.string(),
   createdAt: z.coerce.date().optional()
 }).strict();
 
@@ -3176,7 +3034,7 @@ export const RankLikeUpdateManyMutationInputSchema: z.ZodType<Prisma.RankLikeUpd
 
 export const RankLikeUncheckedUpdateManyInputSchema: z.ZodType<Prisma.RankLikeUncheckedUpdateManyInput> = z.object({
   rankId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  userAddress: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  userId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
 
@@ -3188,7 +3046,7 @@ export const RankStarCreateInputSchema: z.ZodType<Prisma.RankStarCreateInput> = 
 
 export const RankStarUncheckedCreateInputSchema: z.ZodType<Prisma.RankStarUncheckedCreateInput> = z.object({
   rankId: z.string(),
-  userAddress: z.string(),
+  userId: z.string(),
   createdAt: z.coerce.date().optional()
 }).strict();
 
@@ -3200,13 +3058,13 @@ export const RankStarUpdateInputSchema: z.ZodType<Prisma.RankStarUpdateInput> = 
 
 export const RankStarUncheckedUpdateInputSchema: z.ZodType<Prisma.RankStarUncheckedUpdateInput> = z.object({
   rankId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  userAddress: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  userId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
 
 export const RankStarCreateManyInputSchema: z.ZodType<Prisma.RankStarCreateManyInput> = z.object({
   rankId: z.string(),
-  userAddress: z.string(),
+  userId: z.string(),
   createdAt: z.coerce.date().optional()
 }).strict();
 
@@ -3216,7 +3074,7 @@ export const RankStarUpdateManyMutationInputSchema: z.ZodType<Prisma.RankStarUpd
 
 export const RankStarUncheckedUpdateManyInputSchema: z.ZodType<Prisma.RankStarUncheckedUpdateManyInput> = z.object({
   rankId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  userAddress: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  userId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
 
@@ -3228,7 +3086,7 @@ export const SoftwareLikeCreateInputSchema: z.ZodType<Prisma.SoftwareLikeCreateI
 
 export const SoftwareLikeUncheckedCreateInputSchema: z.ZodType<Prisma.SoftwareLikeUncheckedCreateInput> = z.object({
   softwareId: z.string(),
-  userAddress: z.string(),
+  userId: z.string(),
   createdAt: z.coerce.date().optional()
 }).strict();
 
@@ -3240,13 +3098,13 @@ export const SoftwareLikeUpdateInputSchema: z.ZodType<Prisma.SoftwareLikeUpdateI
 
 export const SoftwareLikeUncheckedUpdateInputSchema: z.ZodType<Prisma.SoftwareLikeUncheckedUpdateInput> = z.object({
   softwareId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  userAddress: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  userId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
 
 export const SoftwareLikeCreateManyInputSchema: z.ZodType<Prisma.SoftwareLikeCreateManyInput> = z.object({
   softwareId: z.string(),
-  userAddress: z.string(),
+  userId: z.string(),
   createdAt: z.coerce.date().optional()
 }).strict();
 
@@ -3256,7 +3114,7 @@ export const SoftwareLikeUpdateManyMutationInputSchema: z.ZodType<Prisma.Softwar
 
 export const SoftwareLikeUncheckedUpdateManyInputSchema: z.ZodType<Prisma.SoftwareLikeUncheckedUpdateManyInput> = z.object({
   softwareId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  userAddress: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  userId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
 
@@ -3268,7 +3126,7 @@ export const SoftwareStarCreateInputSchema: z.ZodType<Prisma.SoftwareStarCreateI
 
 export const SoftwareStarUncheckedCreateInputSchema: z.ZodType<Prisma.SoftwareStarUncheckedCreateInput> = z.object({
   softwareId: z.string(),
-  userAddress: z.string(),
+  userId: z.string(),
   createdAt: z.coerce.date().optional()
 }).strict();
 
@@ -3280,13 +3138,13 @@ export const SoftwareStarUpdateInputSchema: z.ZodType<Prisma.SoftwareStarUpdateI
 
 export const SoftwareStarUncheckedUpdateInputSchema: z.ZodType<Prisma.SoftwareStarUncheckedUpdateInput> = z.object({
   softwareId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  userAddress: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  userId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
 
 export const SoftwareStarCreateManyInputSchema: z.ZodType<Prisma.SoftwareStarCreateManyInput> = z.object({
   softwareId: z.string(),
-  userAddress: z.string(),
+  userId: z.string(),
   createdAt: z.coerce.date().optional()
 }).strict();
 
@@ -3296,7 +3154,7 @@ export const SoftwareStarUpdateManyMutationInputSchema: z.ZodType<Prisma.Softwar
 
 export const SoftwareStarUncheckedUpdateManyInputSchema: z.ZodType<Prisma.SoftwareStarUncheckedUpdateManyInput> = z.object({
   softwareId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  userAddress: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  userId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
 
@@ -3317,7 +3175,7 @@ export const RankCommentUncheckedCreateInputSchema: z.ZodType<Prisma.RankComment
   rankId: z.string(),
   content: z.string(),
   createdAt: z.coerce.date().optional(),
-  userAddress: z.string(),
+  userId: z.string(),
   deletedAt: z.coerce.date().optional().nullable(),
   replyToComment: z.string().optional().nullable(),
   replyToUser: z.string().optional().nullable(),
@@ -3341,7 +3199,7 @@ export const RankCommentUncheckedUpdateInputSchema: z.ZodType<Prisma.RankComment
   rankId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   content: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
-  userAddress: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  userId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   deletedAt: z.union([ z.coerce.date(),z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   replyToComment: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   replyToUser: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
@@ -3353,7 +3211,7 @@ export const RankCommentCreateManyInputSchema: z.ZodType<Prisma.RankCommentCreat
   rankId: z.string(),
   content: z.string(),
   createdAt: z.coerce.date().optional(),
-  userAddress: z.string(),
+  userId: z.string(),
   deletedAt: z.coerce.date().optional().nullable(),
   replyToComment: z.string().optional().nullable(),
   replyToUser: z.string().optional().nullable(),
@@ -3375,7 +3233,7 @@ export const RankCommentUncheckedUpdateManyInputSchema: z.ZodType<Prisma.RankCom
   rankId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   content: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
-  userAddress: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  userId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   deletedAt: z.union([ z.coerce.date(),z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   replyToComment: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   replyToUser: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
@@ -3399,7 +3257,7 @@ export const SoftwareCommentUncheckedCreateInputSchema: z.ZodType<Prisma.Softwar
   softwareId: z.string(),
   content: z.string(),
   createdAt: z.coerce.date().optional(),
-  userAddress: z.string(),
+  userId: z.string(),
   deletedAt: z.coerce.date().optional().nullable(),
   replyToComment: z.string().optional().nullable(),
   replyToUser: z.string().optional().nullable(),
@@ -3423,7 +3281,7 @@ export const SoftwareCommentUncheckedUpdateInputSchema: z.ZodType<Prisma.Softwar
   softwareId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   content: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
-  userAddress: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  userId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   deletedAt: z.union([ z.coerce.date(),z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   replyToComment: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   replyToUser: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
@@ -3435,7 +3293,7 @@ export const SoftwareCommentCreateManyInputSchema: z.ZodType<Prisma.SoftwareComm
   softwareId: z.string(),
   content: z.string(),
   createdAt: z.coerce.date().optional(),
-  userAddress: z.string(),
+  userId: z.string(),
   deletedAt: z.coerce.date().optional().nullable(),
   replyToComment: z.string().optional().nullable(),
   replyToUser: z.string().optional().nullable(),
@@ -3457,7 +3315,7 @@ export const SoftwareCommentUncheckedUpdateManyInputSchema: z.ZodType<Prisma.Sof
   softwareId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   content: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
-  userAddress: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  userId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   deletedAt: z.union([ z.coerce.date(),z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   replyToComment: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   replyToUser: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
@@ -3491,8 +3349,8 @@ export const UserScalarRelationFilterSchema: z.ZodType<Prisma.UserScalarRelation
   isNot: z.lazy(() => UserWhereInputSchema).optional()
 }).strict();
 
-export const UserPlatformUserAddressPlatformCompoundUniqueInputSchema: z.ZodType<Prisma.UserPlatformUserAddressPlatformCompoundUniqueInput> = z.object({
-  userAddress: z.string(),
+export const UserPlatformUserIdPlatformCompoundUniqueInputSchema: z.ZodType<Prisma.UserPlatformUserIdPlatformCompoundUniqueInput> = z.object({
+  userId: z.string(),
   platform: z.lazy(() => PlatformSchema)
 }).strict();
 
@@ -3502,7 +3360,7 @@ export const UserPlatformCountOrderByAggregateInputSchema: z.ZodType<Prisma.User
   platformId: z.lazy(() => SortOrderSchema).optional(),
   platformName: z.lazy(() => SortOrderSchema).optional(),
   platformAvatar: z.lazy(() => SortOrderSchema).optional(),
-  userAddress: z.lazy(() => SortOrderSchema).optional()
+  userId: z.lazy(() => SortOrderSchema).optional()
 }).strict();
 
 export const UserPlatformMaxOrderByAggregateInputSchema: z.ZodType<Prisma.UserPlatformMaxOrderByAggregateInput> = z.object({
@@ -3511,7 +3369,7 @@ export const UserPlatformMaxOrderByAggregateInputSchema: z.ZodType<Prisma.UserPl
   platformId: z.lazy(() => SortOrderSchema).optional(),
   platformName: z.lazy(() => SortOrderSchema).optional(),
   platformAvatar: z.lazy(() => SortOrderSchema).optional(),
-  userAddress: z.lazy(() => SortOrderSchema).optional()
+  userId: z.lazy(() => SortOrderSchema).optional()
 }).strict();
 
 export const UserPlatformMinOrderByAggregateInputSchema: z.ZodType<Prisma.UserPlatformMinOrderByAggregateInput> = z.object({
@@ -3520,7 +3378,7 @@ export const UserPlatformMinOrderByAggregateInputSchema: z.ZodType<Prisma.UserPl
   platformId: z.lazy(() => SortOrderSchema).optional(),
   platformName: z.lazy(() => SortOrderSchema).optional(),
   platformAvatar: z.lazy(() => SortOrderSchema).optional(),
-  userAddress: z.lazy(() => SortOrderSchema).optional()
+  userId: z.lazy(() => SortOrderSchema).optional()
 }).strict();
 
 export const StringWithAggregatesFilterSchema: z.ZodType<Prisma.StringWithAggregatesFilter> = z.object({
@@ -3593,15 +3451,15 @@ export const SortOrderInputSchema: z.ZodType<Prisma.SortOrderInput> = z.object({
   nulls: z.lazy(() => NullsOrderSchema).optional()
 }).strict();
 
-export const ApiKeyNameUserAddressCompoundUniqueInputSchema: z.ZodType<Prisma.ApiKeyNameUserAddressCompoundUniqueInput> = z.object({
+export const ApiKeyNameUserIdCompoundUniqueInputSchema: z.ZodType<Prisma.ApiKeyNameUserIdCompoundUniqueInput> = z.object({
   name: z.string(),
-  userAddress: z.string()
+  userId: z.string()
 }).strict();
 
 export const ApiKeyCountOrderByAggregateInputSchema: z.ZodType<Prisma.ApiKeyCountOrderByAggregateInput> = z.object({
   key: z.lazy(() => SortOrderSchema).optional(),
   name: z.lazy(() => SortOrderSchema).optional(),
-  userAddress: z.lazy(() => SortOrderSchema).optional(),
+  userId: z.lazy(() => SortOrderSchema).optional(),
   createdAt: z.lazy(() => SortOrderSchema).optional(),
   expiredAt: z.lazy(() => SortOrderSchema).optional()
 }).strict();
@@ -3609,7 +3467,7 @@ export const ApiKeyCountOrderByAggregateInputSchema: z.ZodType<Prisma.ApiKeyCoun
 export const ApiKeyMaxOrderByAggregateInputSchema: z.ZodType<Prisma.ApiKeyMaxOrderByAggregateInput> = z.object({
   key: z.lazy(() => SortOrderSchema).optional(),
   name: z.lazy(() => SortOrderSchema).optional(),
-  userAddress: z.lazy(() => SortOrderSchema).optional(),
+  userId: z.lazy(() => SortOrderSchema).optional(),
   createdAt: z.lazy(() => SortOrderSchema).optional(),
   expiredAt: z.lazy(() => SortOrderSchema).optional()
 }).strict();
@@ -3617,7 +3475,7 @@ export const ApiKeyMaxOrderByAggregateInputSchema: z.ZodType<Prisma.ApiKeyMaxOrd
 export const ApiKeyMinOrderByAggregateInputSchema: z.ZodType<Prisma.ApiKeyMinOrderByAggregateInput> = z.object({
   key: z.lazy(() => SortOrderSchema).optional(),
   name: z.lazy(() => SortOrderSchema).optional(),
-  userAddress: z.lazy(() => SortOrderSchema).optional(),
+  userId: z.lazy(() => SortOrderSchema).optional(),
   createdAt: z.lazy(() => SortOrderSchema).optional(),
   expiredAt: z.lazy(() => SortOrderSchema).optional()
 }).strict();
@@ -3767,50 +3625,23 @@ export const SoftwareCommentOrderByRelationAggregateInputSchema: z.ZodType<Prism
 }).strict();
 
 export const UserCountOrderByAggregateInputSchema: z.ZodType<Prisma.UserCountOrderByAggregateInput> = z.object({
-  avatar: z.lazy(() => SortOrderSchema).optional(),
-  address: z.lazy(() => SortOrderSchema).optional(),
-  description: z.lazy(() => SortOrderSchema).optional(),
-  name: z.lazy(() => SortOrderSchema).optional(),
-  email: z.lazy(() => SortOrderSchema).optional(),
+  id: z.lazy(() => SortOrderSchema).optional(),
   referralCode: z.lazy(() => SortOrderSchema).optional(),
-  x: z.lazy(() => SortOrderSchema).optional(),
-  website: z.lazy(() => SortOrderSchema).optional(),
-  telegram: z.lazy(() => SortOrderSchema).optional(),
-  github: z.lazy(() => SortOrderSchema).optional(),
-  instagram: z.lazy(() => SortOrderSchema).optional(),
   createdAt: z.lazy(() => SortOrderSchema).optional(),
   updatedAt: z.lazy(() => SortOrderSchema).optional(),
   invitedBy: z.lazy(() => SortOrderSchema).optional()
 }).strict();
 
 export const UserMaxOrderByAggregateInputSchema: z.ZodType<Prisma.UserMaxOrderByAggregateInput> = z.object({
-  avatar: z.lazy(() => SortOrderSchema).optional(),
-  address: z.lazy(() => SortOrderSchema).optional(),
-  description: z.lazy(() => SortOrderSchema).optional(),
-  name: z.lazy(() => SortOrderSchema).optional(),
-  email: z.lazy(() => SortOrderSchema).optional(),
+  id: z.lazy(() => SortOrderSchema).optional(),
   referralCode: z.lazy(() => SortOrderSchema).optional(),
-  x: z.lazy(() => SortOrderSchema).optional(),
-  website: z.lazy(() => SortOrderSchema).optional(),
-  telegram: z.lazy(() => SortOrderSchema).optional(),
-  github: z.lazy(() => SortOrderSchema).optional(),
-  instagram: z.lazy(() => SortOrderSchema).optional(),
   createdAt: z.lazy(() => SortOrderSchema).optional(),
   updatedAt: z.lazy(() => SortOrderSchema).optional()
 }).strict();
 
 export const UserMinOrderByAggregateInputSchema: z.ZodType<Prisma.UserMinOrderByAggregateInput> = z.object({
-  avatar: z.lazy(() => SortOrderSchema).optional(),
-  address: z.lazy(() => SortOrderSchema).optional(),
-  description: z.lazy(() => SortOrderSchema).optional(),
-  name: z.lazy(() => SortOrderSchema).optional(),
-  email: z.lazy(() => SortOrderSchema).optional(),
+  id: z.lazy(() => SortOrderSchema).optional(),
   referralCode: z.lazy(() => SortOrderSchema).optional(),
-  x: z.lazy(() => SortOrderSchema).optional(),
-  website: z.lazy(() => SortOrderSchema).optional(),
-  telegram: z.lazy(() => SortOrderSchema).optional(),
-  github: z.lazy(() => SortOrderSchema).optional(),
-  instagram: z.lazy(() => SortOrderSchema).optional(),
   createdAt: z.lazy(() => SortOrderSchema).optional(),
   updatedAt: z.lazy(() => SortOrderSchema).optional()
 }).strict();
@@ -3873,7 +3704,7 @@ export const SoftwareOnRankOrderByRelationAggregateInputSchema: z.ZodType<Prisma
 
 export const RankCountOrderByAggregateInputSchema: z.ZodType<Prisma.RankCountOrderByAggregateInput> = z.object({
   id: z.lazy(() => SortOrderSchema).optional(),
-  userAddress: z.lazy(() => SortOrderSchema).optional(),
+  userId: z.lazy(() => SortOrderSchema).optional(),
   name: z.lazy(() => SortOrderSchema).optional(),
   description: z.lazy(() => SortOrderSchema).optional(),
   createdAt: z.lazy(() => SortOrderSchema).optional(),
@@ -3882,7 +3713,7 @@ export const RankCountOrderByAggregateInputSchema: z.ZodType<Prisma.RankCountOrd
 
 export const RankMaxOrderByAggregateInputSchema: z.ZodType<Prisma.RankMaxOrderByAggregateInput> = z.object({
   id: z.lazy(() => SortOrderSchema).optional(),
-  userAddress: z.lazy(() => SortOrderSchema).optional(),
+  userId: z.lazy(() => SortOrderSchema).optional(),
   name: z.lazy(() => SortOrderSchema).optional(),
   description: z.lazy(() => SortOrderSchema).optional(),
   createdAt: z.lazy(() => SortOrderSchema).optional(),
@@ -3891,7 +3722,7 @@ export const RankMaxOrderByAggregateInputSchema: z.ZodType<Prisma.RankMaxOrderBy
 
 export const RankMinOrderByAggregateInputSchema: z.ZodType<Prisma.RankMinOrderByAggregateInput> = z.object({
   id: z.lazy(() => SortOrderSchema).optional(),
-  userAddress: z.lazy(() => SortOrderSchema).optional(),
+  userId: z.lazy(() => SortOrderSchema).optional(),
   name: z.lazy(() => SortOrderSchema).optional(),
   description: z.lazy(() => SortOrderSchema).optional(),
   createdAt: z.lazy(() => SortOrderSchema).optional(),
@@ -4172,7 +4003,7 @@ export const ArticleCountOrderByAggregateInputSchema: z.ZodType<Prisma.ArticleCo
   rankId: z.lazy(() => SortOrderSchema).optional(),
   createdAt: z.lazy(() => SortOrderSchema).optional(),
   updatedAt: z.lazy(() => SortOrderSchema).optional(),
-  userAddress: z.lazy(() => SortOrderSchema).optional()
+  userId: z.lazy(() => SortOrderSchema).optional()
 }).strict();
 
 export const ArticleMaxOrderByAggregateInputSchema: z.ZodType<Prisma.ArticleMaxOrderByAggregateInput> = z.object({
@@ -4184,7 +4015,7 @@ export const ArticleMaxOrderByAggregateInputSchema: z.ZodType<Prisma.ArticleMaxO
   rankId: z.lazy(() => SortOrderSchema).optional(),
   createdAt: z.lazy(() => SortOrderSchema).optional(),
   updatedAt: z.lazy(() => SortOrderSchema).optional(),
-  userAddress: z.lazy(() => SortOrderSchema).optional()
+  userId: z.lazy(() => SortOrderSchema).optional()
 }).strict();
 
 export const ArticleMinOrderByAggregateInputSchema: z.ZodType<Prisma.ArticleMinOrderByAggregateInput> = z.object({
@@ -4196,98 +4027,98 @@ export const ArticleMinOrderByAggregateInputSchema: z.ZodType<Prisma.ArticleMinO
   rankId: z.lazy(() => SortOrderSchema).optional(),
   createdAt: z.lazy(() => SortOrderSchema).optional(),
   updatedAt: z.lazy(() => SortOrderSchema).optional(),
-  userAddress: z.lazy(() => SortOrderSchema).optional()
+  userId: z.lazy(() => SortOrderSchema).optional()
 }).strict();
 
-export const RankLikeRankIdUserAddressCompoundUniqueInputSchema: z.ZodType<Prisma.RankLikeRankIdUserAddressCompoundUniqueInput> = z.object({
+export const RankLikeRankIdUserIdCompoundUniqueInputSchema: z.ZodType<Prisma.RankLikeRankIdUserIdCompoundUniqueInput> = z.object({
   rankId: z.string(),
-  userAddress: z.string()
+  userId: z.string()
 }).strict();
 
 export const RankLikeCountOrderByAggregateInputSchema: z.ZodType<Prisma.RankLikeCountOrderByAggregateInput> = z.object({
   rankId: z.lazy(() => SortOrderSchema).optional(),
-  userAddress: z.lazy(() => SortOrderSchema).optional(),
+  userId: z.lazy(() => SortOrderSchema).optional(),
   createdAt: z.lazy(() => SortOrderSchema).optional()
 }).strict();
 
 export const RankLikeMaxOrderByAggregateInputSchema: z.ZodType<Prisma.RankLikeMaxOrderByAggregateInput> = z.object({
   rankId: z.lazy(() => SortOrderSchema).optional(),
-  userAddress: z.lazy(() => SortOrderSchema).optional(),
+  userId: z.lazy(() => SortOrderSchema).optional(),
   createdAt: z.lazy(() => SortOrderSchema).optional()
 }).strict();
 
 export const RankLikeMinOrderByAggregateInputSchema: z.ZodType<Prisma.RankLikeMinOrderByAggregateInput> = z.object({
   rankId: z.lazy(() => SortOrderSchema).optional(),
-  userAddress: z.lazy(() => SortOrderSchema).optional(),
+  userId: z.lazy(() => SortOrderSchema).optional(),
   createdAt: z.lazy(() => SortOrderSchema).optional()
 }).strict();
 
-export const RankStarRankIdUserAddressCompoundUniqueInputSchema: z.ZodType<Prisma.RankStarRankIdUserAddressCompoundUniqueInput> = z.object({
+export const RankStarRankIdUserIdCompoundUniqueInputSchema: z.ZodType<Prisma.RankStarRankIdUserIdCompoundUniqueInput> = z.object({
   rankId: z.string(),
-  userAddress: z.string()
+  userId: z.string()
 }).strict();
 
 export const RankStarCountOrderByAggregateInputSchema: z.ZodType<Prisma.RankStarCountOrderByAggregateInput> = z.object({
   rankId: z.lazy(() => SortOrderSchema).optional(),
-  userAddress: z.lazy(() => SortOrderSchema).optional(),
+  userId: z.lazy(() => SortOrderSchema).optional(),
   createdAt: z.lazy(() => SortOrderSchema).optional()
 }).strict();
 
 export const RankStarMaxOrderByAggregateInputSchema: z.ZodType<Prisma.RankStarMaxOrderByAggregateInput> = z.object({
   rankId: z.lazy(() => SortOrderSchema).optional(),
-  userAddress: z.lazy(() => SortOrderSchema).optional(),
+  userId: z.lazy(() => SortOrderSchema).optional(),
   createdAt: z.lazy(() => SortOrderSchema).optional()
 }).strict();
 
 export const RankStarMinOrderByAggregateInputSchema: z.ZodType<Prisma.RankStarMinOrderByAggregateInput> = z.object({
   rankId: z.lazy(() => SortOrderSchema).optional(),
-  userAddress: z.lazy(() => SortOrderSchema).optional(),
+  userId: z.lazy(() => SortOrderSchema).optional(),
   createdAt: z.lazy(() => SortOrderSchema).optional()
 }).strict();
 
-export const SoftwareLikeSoftwareIdUserAddressCompoundUniqueInputSchema: z.ZodType<Prisma.SoftwareLikeSoftwareIdUserAddressCompoundUniqueInput> = z.object({
+export const SoftwareLikeSoftwareIdUserIdCompoundUniqueInputSchema: z.ZodType<Prisma.SoftwareLikeSoftwareIdUserIdCompoundUniqueInput> = z.object({
   softwareId: z.string(),
-  userAddress: z.string()
+  userId: z.string()
 }).strict();
 
 export const SoftwareLikeCountOrderByAggregateInputSchema: z.ZodType<Prisma.SoftwareLikeCountOrderByAggregateInput> = z.object({
   softwareId: z.lazy(() => SortOrderSchema).optional(),
-  userAddress: z.lazy(() => SortOrderSchema).optional(),
+  userId: z.lazy(() => SortOrderSchema).optional(),
   createdAt: z.lazy(() => SortOrderSchema).optional()
 }).strict();
 
 export const SoftwareLikeMaxOrderByAggregateInputSchema: z.ZodType<Prisma.SoftwareLikeMaxOrderByAggregateInput> = z.object({
   softwareId: z.lazy(() => SortOrderSchema).optional(),
-  userAddress: z.lazy(() => SortOrderSchema).optional(),
+  userId: z.lazy(() => SortOrderSchema).optional(),
   createdAt: z.lazy(() => SortOrderSchema).optional()
 }).strict();
 
 export const SoftwareLikeMinOrderByAggregateInputSchema: z.ZodType<Prisma.SoftwareLikeMinOrderByAggregateInput> = z.object({
   softwareId: z.lazy(() => SortOrderSchema).optional(),
-  userAddress: z.lazy(() => SortOrderSchema).optional(),
+  userId: z.lazy(() => SortOrderSchema).optional(),
   createdAt: z.lazy(() => SortOrderSchema).optional()
 }).strict();
 
-export const SoftwareStarSoftwareIdUserAddressCompoundUniqueInputSchema: z.ZodType<Prisma.SoftwareStarSoftwareIdUserAddressCompoundUniqueInput> = z.object({
+export const SoftwareStarSoftwareIdUserIdCompoundUniqueInputSchema: z.ZodType<Prisma.SoftwareStarSoftwareIdUserIdCompoundUniqueInput> = z.object({
   softwareId: z.string(),
-  userAddress: z.string()
+  userId: z.string()
 }).strict();
 
 export const SoftwareStarCountOrderByAggregateInputSchema: z.ZodType<Prisma.SoftwareStarCountOrderByAggregateInput> = z.object({
   softwareId: z.lazy(() => SortOrderSchema).optional(),
-  userAddress: z.lazy(() => SortOrderSchema).optional(),
+  userId: z.lazy(() => SortOrderSchema).optional(),
   createdAt: z.lazy(() => SortOrderSchema).optional()
 }).strict();
 
 export const SoftwareStarMaxOrderByAggregateInputSchema: z.ZodType<Prisma.SoftwareStarMaxOrderByAggregateInput> = z.object({
   softwareId: z.lazy(() => SortOrderSchema).optional(),
-  userAddress: z.lazy(() => SortOrderSchema).optional(),
+  userId: z.lazy(() => SortOrderSchema).optional(),
   createdAt: z.lazy(() => SortOrderSchema).optional()
 }).strict();
 
 export const SoftwareStarMinOrderByAggregateInputSchema: z.ZodType<Prisma.SoftwareStarMinOrderByAggregateInput> = z.object({
   softwareId: z.lazy(() => SortOrderSchema).optional(),
-  userAddress: z.lazy(() => SortOrderSchema).optional(),
+  userId: z.lazy(() => SortOrderSchema).optional(),
   createdAt: z.lazy(() => SortOrderSchema).optional()
 }).strict();
 
@@ -4296,7 +4127,7 @@ export const RankCommentCountOrderByAggregateInputSchema: z.ZodType<Prisma.RankC
   rankId: z.lazy(() => SortOrderSchema).optional(),
   content: z.lazy(() => SortOrderSchema).optional(),
   createdAt: z.lazy(() => SortOrderSchema).optional(),
-  userAddress: z.lazy(() => SortOrderSchema).optional(),
+  userId: z.lazy(() => SortOrderSchema).optional(),
   deletedAt: z.lazy(() => SortOrderSchema).optional(),
   replyToComment: z.lazy(() => SortOrderSchema).optional(),
   replyToUser: z.lazy(() => SortOrderSchema).optional(),
@@ -4308,7 +4139,7 @@ export const RankCommentMaxOrderByAggregateInputSchema: z.ZodType<Prisma.RankCom
   rankId: z.lazy(() => SortOrderSchema).optional(),
   content: z.lazy(() => SortOrderSchema).optional(),
   createdAt: z.lazy(() => SortOrderSchema).optional(),
-  userAddress: z.lazy(() => SortOrderSchema).optional(),
+  userId: z.lazy(() => SortOrderSchema).optional(),
   deletedAt: z.lazy(() => SortOrderSchema).optional(),
   replyToComment: z.lazy(() => SortOrderSchema).optional(),
   replyToUser: z.lazy(() => SortOrderSchema).optional(),
@@ -4320,7 +4151,7 @@ export const RankCommentMinOrderByAggregateInputSchema: z.ZodType<Prisma.RankCom
   rankId: z.lazy(() => SortOrderSchema).optional(),
   content: z.lazy(() => SortOrderSchema).optional(),
   createdAt: z.lazy(() => SortOrderSchema).optional(),
-  userAddress: z.lazy(() => SortOrderSchema).optional(),
+  userId: z.lazy(() => SortOrderSchema).optional(),
   deletedAt: z.lazy(() => SortOrderSchema).optional(),
   replyToComment: z.lazy(() => SortOrderSchema).optional(),
   replyToUser: z.lazy(() => SortOrderSchema).optional(),
@@ -4332,7 +4163,7 @@ export const SoftwareCommentCountOrderByAggregateInputSchema: z.ZodType<Prisma.S
   softwareId: z.lazy(() => SortOrderSchema).optional(),
   content: z.lazy(() => SortOrderSchema).optional(),
   createdAt: z.lazy(() => SortOrderSchema).optional(),
-  userAddress: z.lazy(() => SortOrderSchema).optional(),
+  userId: z.lazy(() => SortOrderSchema).optional(),
   deletedAt: z.lazy(() => SortOrderSchema).optional(),
   replyToComment: z.lazy(() => SortOrderSchema).optional(),
   replyToUser: z.lazy(() => SortOrderSchema).optional(),
@@ -4344,7 +4175,7 @@ export const SoftwareCommentMaxOrderByAggregateInputSchema: z.ZodType<Prisma.Sof
   softwareId: z.lazy(() => SortOrderSchema).optional(),
   content: z.lazy(() => SortOrderSchema).optional(),
   createdAt: z.lazy(() => SortOrderSchema).optional(),
-  userAddress: z.lazy(() => SortOrderSchema).optional(),
+  userId: z.lazy(() => SortOrderSchema).optional(),
   deletedAt: z.lazy(() => SortOrderSchema).optional(),
   replyToComment: z.lazy(() => SortOrderSchema).optional(),
   replyToUser: z.lazy(() => SortOrderSchema).optional(),
@@ -4356,7 +4187,7 @@ export const SoftwareCommentMinOrderByAggregateInputSchema: z.ZodType<Prisma.Sof
   softwareId: z.lazy(() => SortOrderSchema).optional(),
   content: z.lazy(() => SortOrderSchema).optional(),
   createdAt: z.lazy(() => SortOrderSchema).optional(),
-  userAddress: z.lazy(() => SortOrderSchema).optional(),
+  userId: z.lazy(() => SortOrderSchema).optional(),
   deletedAt: z.lazy(() => SortOrderSchema).optional(),
   replyToComment: z.lazy(() => SortOrderSchema).optional(),
   replyToUser: z.lazy(() => SortOrderSchema).optional(),
@@ -6025,17 +5856,8 @@ export const NestedFloatFilterSchema: z.ZodType<Prisma.NestedFloatFilter> = z.ob
 }).strict();
 
 export const UserCreateWithoutPlatformsInputSchema: z.ZodType<Prisma.UserCreateWithoutPlatformsInput> = z.object({
-  avatar: z.string().optional().nullable(),
-  address: z.string(),
-  description: z.string().optional().nullable(),
-  name: z.string().optional().nullable(),
-  email: z.string().optional().nullable(),
+  id: z.string(),
   referralCode: z.string(),
-  x: z.string().optional().nullable(),
-  website: z.string().optional().nullable(),
-  telegram: z.string().optional().nullable(),
-  github: z.string().optional().nullable(),
-  instagram: z.string().optional().nullable(),
   createdAt: z.coerce.date().optional(),
   updatedAt: z.coerce.date().optional(),
   invitedBy: z.union([ z.lazy(() => UserCreateinvitedByInputSchema),z.string().array() ]).optional(),
@@ -6050,17 +5872,8 @@ export const UserCreateWithoutPlatformsInputSchema: z.ZodType<Prisma.UserCreateW
 }).strict();
 
 export const UserUncheckedCreateWithoutPlatformsInputSchema: z.ZodType<Prisma.UserUncheckedCreateWithoutPlatformsInput> = z.object({
-  avatar: z.string().optional().nullable(),
-  address: z.string(),
-  description: z.string().optional().nullable(),
-  name: z.string().optional().nullable(),
-  email: z.string().optional().nullable(),
+  id: z.string(),
   referralCode: z.string(),
-  x: z.string().optional().nullable(),
-  website: z.string().optional().nullable(),
-  telegram: z.string().optional().nullable(),
-  github: z.string().optional().nullable(),
-  instagram: z.string().optional().nullable(),
   createdAt: z.coerce.date().optional(),
   updatedAt: z.coerce.date().optional(),
   invitedBy: z.union([ z.lazy(() => UserCreateinvitedByInputSchema),z.string().array() ]).optional(),
@@ -6091,17 +5904,8 @@ export const UserUpdateToOneWithWhereWithoutPlatformsInputSchema: z.ZodType<Pris
 }).strict();
 
 export const UserUpdateWithoutPlatformsInputSchema: z.ZodType<Prisma.UserUpdateWithoutPlatformsInput> = z.object({
-  avatar: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  address: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  description: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  name: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  email: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   referralCode: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  x: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  website: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  telegram: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  github: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  instagram: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   invitedBy: z.union([ z.lazy(() => UserUpdateinvitedByInputSchema),z.string().array() ]).optional(),
@@ -6116,17 +5920,8 @@ export const UserUpdateWithoutPlatformsInputSchema: z.ZodType<Prisma.UserUpdateW
 }).strict();
 
 export const UserUncheckedUpdateWithoutPlatformsInputSchema: z.ZodType<Prisma.UserUncheckedUpdateWithoutPlatformsInput> = z.object({
-  avatar: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  address: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  description: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  name: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  email: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   referralCode: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  x: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  website: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  telegram: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  github: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  instagram: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   invitedBy: z.union([ z.lazy(() => UserUpdateinvitedByInputSchema),z.string().array() ]).optional(),
@@ -6405,7 +6200,7 @@ export const RankScalarWhereInputSchema: z.ZodType<Prisma.RankScalarWhereInput> 
   OR: z.lazy(() => RankScalarWhereInputSchema).array().optional(),
   NOT: z.union([ z.lazy(() => RankScalarWhereInputSchema),z.lazy(() => RankScalarWhereInputSchema).array() ]).optional(),
   id: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
-  userAddress: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
+  userId: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   name: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   description: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
   createdAt: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
@@ -6437,7 +6232,7 @@ export const UserPlatformScalarWhereInputSchema: z.ZodType<Prisma.UserPlatformSc
   platformId: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   platformName: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   platformAvatar: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
-  userAddress: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
+  userId: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
 }).strict();
 
 export const ArticleUpsertWithWhereUniqueWithoutAuthorInputSchema: z.ZodType<Prisma.ArticleUpsertWithWhereUniqueWithoutAuthorInput> = z.object({
@@ -6468,7 +6263,7 @@ export const ArticleScalarWhereInputSchema: z.ZodType<Prisma.ArticleScalarWhereI
   rankId: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   createdAt: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
   updatedAt: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
-  userAddress: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
+  userId: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
 }).strict();
 
 export const RankLikeUpsertWithWhereUniqueWithoutUserInputSchema: z.ZodType<Prisma.RankLikeUpsertWithWhereUniqueWithoutUserInput> = z.object({
@@ -6492,7 +6287,7 @@ export const RankLikeScalarWhereInputSchema: z.ZodType<Prisma.RankLikeScalarWher
   OR: z.lazy(() => RankLikeScalarWhereInputSchema).array().optional(),
   NOT: z.union([ z.lazy(() => RankLikeScalarWhereInputSchema),z.lazy(() => RankLikeScalarWhereInputSchema).array() ]).optional(),
   rankId: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
-  userAddress: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
+  userId: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   createdAt: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
 }).strict();
 
@@ -6517,7 +6312,7 @@ export const RankStarScalarWhereInputSchema: z.ZodType<Prisma.RankStarScalarWher
   OR: z.lazy(() => RankStarScalarWhereInputSchema).array().optional(),
   NOT: z.union([ z.lazy(() => RankStarScalarWhereInputSchema),z.lazy(() => RankStarScalarWhereInputSchema).array() ]).optional(),
   rankId: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
-  userAddress: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
+  userId: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   createdAt: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
 }).strict();
 
@@ -6542,7 +6337,7 @@ export const SoftwareLikeScalarWhereInputSchema: z.ZodType<Prisma.SoftwareLikeSc
   OR: z.lazy(() => SoftwareLikeScalarWhereInputSchema).array().optional(),
   NOT: z.union([ z.lazy(() => SoftwareLikeScalarWhereInputSchema),z.lazy(() => SoftwareLikeScalarWhereInputSchema).array() ]).optional(),
   softwareId: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
-  userAddress: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
+  userId: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   createdAt: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
 }).strict();
 
@@ -6567,7 +6362,7 @@ export const SoftwareStarScalarWhereInputSchema: z.ZodType<Prisma.SoftwareStarSc
   OR: z.lazy(() => SoftwareStarScalarWhereInputSchema).array().optional(),
   NOT: z.union([ z.lazy(() => SoftwareStarScalarWhereInputSchema),z.lazy(() => SoftwareStarScalarWhereInputSchema).array() ]).optional(),
   softwareId: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
-  userAddress: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
+  userId: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   createdAt: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
 }).strict();
 
@@ -6595,7 +6390,7 @@ export const RankCommentScalarWhereInputSchema: z.ZodType<Prisma.RankCommentScal
   rankId: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   content: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   createdAt: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
-  userAddress: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
+  userId: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   deletedAt: z.union([ z.lazy(() => DateTimeNullableFilterSchema),z.coerce.date() ]).optional().nullable(),
   replyToComment: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
   replyToUser: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
@@ -6626,7 +6421,7 @@ export const SoftwareCommentScalarWhereInputSchema: z.ZodType<Prisma.SoftwareCom
   softwareId: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   content: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   createdAt: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
-  userAddress: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
+  userId: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   deletedAt: z.union([ z.lazy(() => DateTimeNullableFilterSchema),z.coerce.date() ]).optional().nullable(),
   replyToComment: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
   replyToUser: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
@@ -6730,17 +6525,8 @@ export const SoftwareTagScalarWhereInputSchema: z.ZodType<Prisma.SoftwareTagScal
 }).strict();
 
 export const UserCreateWithoutRanksInputSchema: z.ZodType<Prisma.UserCreateWithoutRanksInput> = z.object({
-  avatar: z.string().optional().nullable(),
-  address: z.string(),
-  description: z.string().optional().nullable(),
-  name: z.string().optional().nullable(),
-  email: z.string().optional().nullable(),
+  id: z.string(),
   referralCode: z.string(),
-  x: z.string().optional().nullable(),
-  website: z.string().optional().nullable(),
-  telegram: z.string().optional().nullable(),
-  github: z.string().optional().nullable(),
-  instagram: z.string().optional().nullable(),
   createdAt: z.coerce.date().optional(),
   updatedAt: z.coerce.date().optional(),
   invitedBy: z.union([ z.lazy(() => UserCreateinvitedByInputSchema),z.string().array() ]).optional(),
@@ -6755,17 +6541,8 @@ export const UserCreateWithoutRanksInputSchema: z.ZodType<Prisma.UserCreateWitho
 }).strict();
 
 export const UserUncheckedCreateWithoutRanksInputSchema: z.ZodType<Prisma.UserUncheckedCreateWithoutRanksInput> = z.object({
-  avatar: z.string().optional().nullable(),
-  address: z.string(),
-  description: z.string().optional().nullable(),
-  name: z.string().optional().nullable(),
-  email: z.string().optional().nullable(),
+  id: z.string(),
   referralCode: z.string(),
-  x: z.string().optional().nullable(),
-  website: z.string().optional().nullable(),
-  telegram: z.string().optional().nullable(),
-  github: z.string().optional().nullable(),
-  instagram: z.string().optional().nullable(),
   createdAt: z.coerce.date().optional(),
   updatedAt: z.coerce.date().optional(),
   invitedBy: z.union([ z.lazy(() => UserCreateinvitedByInputSchema),z.string().array() ]).optional(),
@@ -6852,7 +6629,7 @@ export const ArticleUncheckedCreateWithoutRankInputSchema: z.ZodType<Prisma.Arti
   content: z.string(),
   createdAt: z.coerce.date().optional(),
   updatedAt: z.coerce.date().optional(),
-  userAddress: z.string(),
+  userId: z.string(),
   softwares: z.lazy(() => SoftwareOnArticleUncheckedCreateNestedManyWithoutArticleInputSchema).optional()
 }).strict();
 
@@ -6872,7 +6649,7 @@ export const RankLikeCreateWithoutRankInputSchema: z.ZodType<Prisma.RankLikeCrea
 }).strict();
 
 export const RankLikeUncheckedCreateWithoutRankInputSchema: z.ZodType<Prisma.RankLikeUncheckedCreateWithoutRankInput> = z.object({
-  userAddress: z.string(),
+  userId: z.string(),
   createdAt: z.coerce.date().optional()
 }).strict();
 
@@ -6892,7 +6669,7 @@ export const RankStarCreateWithoutRankInputSchema: z.ZodType<Prisma.RankStarCrea
 }).strict();
 
 export const RankStarUncheckedCreateWithoutRankInputSchema: z.ZodType<Prisma.RankStarUncheckedCreateWithoutRankInput> = z.object({
-  userAddress: z.string(),
+  userId: z.string(),
   createdAt: z.coerce.date().optional()
 }).strict();
 
@@ -6921,7 +6698,7 @@ export const RankCommentUncheckedCreateWithoutRankInputSchema: z.ZodType<Prisma.
   id: z.string().optional(),
   content: z.string(),
   createdAt: z.coerce.date().optional(),
-  userAddress: z.string(),
+  userId: z.string(),
   deletedAt: z.coerce.date().optional().nullable(),
   replyToComment: z.string().optional().nullable(),
   replyToUser: z.string().optional().nullable(),
@@ -6967,17 +6744,8 @@ export const UserUpdateToOneWithWhereWithoutRanksInputSchema: z.ZodType<Prisma.U
 }).strict();
 
 export const UserUpdateWithoutRanksInputSchema: z.ZodType<Prisma.UserUpdateWithoutRanksInput> = z.object({
-  avatar: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  address: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  description: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  name: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  email: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   referralCode: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  x: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  website: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  telegram: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  github: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  instagram: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   invitedBy: z.union([ z.lazy(() => UserUpdateinvitedByInputSchema),z.string().array() ]).optional(),
@@ -6992,17 +6760,8 @@ export const UserUpdateWithoutRanksInputSchema: z.ZodType<Prisma.UserUpdateWitho
 }).strict();
 
 export const UserUncheckedUpdateWithoutRanksInputSchema: z.ZodType<Prisma.UserUncheckedUpdateWithoutRanksInput> = z.object({
-  avatar: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  address: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  description: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  name: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  email: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   referralCode: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  x: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  website: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  telegram: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  github: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  instagram: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   invitedBy: z.union([ z.lazy(() => UserUpdateinvitedByInputSchema),z.string().array() ]).optional(),
@@ -7164,7 +6923,7 @@ export const RankCreateWithoutMetadataInputSchema: z.ZodType<Prisma.RankCreateWi
 
 export const RankUncheckedCreateWithoutMetadataInputSchema: z.ZodType<Prisma.RankUncheckedCreateWithoutMetadataInput> = z.object({
   id: z.string().optional(),
-  userAddress: z.string(),
+  userId: z.string(),
   name: z.string(),
   description: z.string().optional().nullable(),
   createdAt: z.coerce.date().optional(),
@@ -7210,7 +6969,7 @@ export const RankUpdateWithoutMetadataInputSchema: z.ZodType<Prisma.RankUpdateWi
 
 export const RankUncheckedUpdateWithoutMetadataInputSchema: z.ZodType<Prisma.RankUncheckedUpdateWithoutMetadataInput> = z.object({
   id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  userAddress: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  userId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   description: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
@@ -7261,7 +7020,7 @@ export const RankCreateWithoutTagsInputSchema: z.ZodType<Prisma.RankCreateWithou
 
 export const RankUncheckedCreateWithoutTagsInputSchema: z.ZodType<Prisma.RankUncheckedCreateWithoutTagsInput> = z.object({
   id: z.string().optional(),
-  userAddress: z.string(),
+  userId: z.string(),
   name: z.string(),
   description: z.string().optional().nullable(),
   createdAt: z.coerce.date().optional(),
@@ -7334,7 +7093,7 @@ export const RankUpdateWithoutTagsInputSchema: z.ZodType<Prisma.RankUpdateWithou
 
 export const RankUncheckedUpdateWithoutTagsInputSchema: z.ZodType<Prisma.RankUncheckedUpdateWithoutTagsInput> = z.object({
   id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  userAddress: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  userId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   description: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
@@ -7473,7 +7232,7 @@ export const SoftwareLikeCreateWithoutSoftwareInputSchema: z.ZodType<Prisma.Soft
 }).strict();
 
 export const SoftwareLikeUncheckedCreateWithoutSoftwareInputSchema: z.ZodType<Prisma.SoftwareLikeUncheckedCreateWithoutSoftwareInput> = z.object({
-  userAddress: z.string(),
+  userId: z.string(),
   createdAt: z.coerce.date().optional()
 }).strict();
 
@@ -7493,7 +7252,7 @@ export const SoftwareStarCreateWithoutSoftwareInputSchema: z.ZodType<Prisma.Soft
 }).strict();
 
 export const SoftwareStarUncheckedCreateWithoutSoftwareInputSchema: z.ZodType<Prisma.SoftwareStarUncheckedCreateWithoutSoftwareInput> = z.object({
-  userAddress: z.string(),
+  userId: z.string(),
   createdAt: z.coerce.date().optional()
 }).strict();
 
@@ -7544,7 +7303,7 @@ export const SoftwareCommentUncheckedCreateWithoutSoftwareInputSchema: z.ZodType
   id: z.string().optional(),
   content: z.string(),
   createdAt: z.coerce.date().optional(),
-  userAddress: z.string(),
+  userId: z.string(),
   deletedAt: z.coerce.date().optional().nullable(),
   replyToComment: z.string().optional().nullable(),
   replyToUser: z.string().optional().nullable(),
@@ -7893,7 +7652,7 @@ export const RankCreateWithoutSoftwaresInputSchema: z.ZodType<Prisma.RankCreateW
 
 export const RankUncheckedCreateWithoutSoftwaresInputSchema: z.ZodType<Prisma.RankUncheckedCreateWithoutSoftwaresInput> = z.object({
   id: z.string().optional(),
-  userAddress: z.string(),
+  userId: z.string(),
   name: z.string(),
   description: z.string().optional().nullable(),
   createdAt: z.coerce.date().optional(),
@@ -7982,7 +7741,7 @@ export const RankUpdateWithoutSoftwaresInputSchema: z.ZodType<Prisma.RankUpdateW
 
 export const RankUncheckedUpdateWithoutSoftwaresInputSchema: z.ZodType<Prisma.RankUncheckedUpdateWithoutSoftwaresInput> = z.object({
   id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  userAddress: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  userId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   description: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
@@ -8053,7 +7812,7 @@ export const ArticleUncheckedCreateWithoutSoftwaresInputSchema: z.ZodType<Prisma
   rankId: z.string(),
   createdAt: z.coerce.date().optional(),
   updatedAt: z.coerce.date().optional(),
-  userAddress: z.string()
+  userId: z.string()
 }).strict();
 
 export const ArticleCreateOrConnectWithoutSoftwaresInputSchema: z.ZodType<Prisma.ArticleCreateOrConnectWithoutSoftwaresInput> = z.object({
@@ -8136,7 +7895,7 @@ export const ArticleUncheckedUpdateWithoutSoftwaresInputSchema: z.ZodType<Prisma
   rankId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
-  userAddress: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  userId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
 
 export const RankCreateWithoutArticlesInputSchema: z.ZodType<Prisma.RankCreateWithoutArticlesInput> = z.object({
@@ -8156,7 +7915,7 @@ export const RankCreateWithoutArticlesInputSchema: z.ZodType<Prisma.RankCreateWi
 
 export const RankUncheckedCreateWithoutArticlesInputSchema: z.ZodType<Prisma.RankUncheckedCreateWithoutArticlesInput> = z.object({
   id: z.string().optional(),
-  userAddress: z.string(),
+  userId: z.string(),
   name: z.string(),
   description: z.string().optional().nullable(),
   createdAt: z.coerce.date().optional(),
@@ -8175,17 +7934,8 @@ export const RankCreateOrConnectWithoutArticlesInputSchema: z.ZodType<Prisma.Ran
 }).strict();
 
 export const UserCreateWithoutArticlesInputSchema: z.ZodType<Prisma.UserCreateWithoutArticlesInput> = z.object({
-  avatar: z.string().optional().nullable(),
-  address: z.string(),
-  description: z.string().optional().nullable(),
-  name: z.string().optional().nullable(),
-  email: z.string().optional().nullable(),
+  id: z.string(),
   referralCode: z.string(),
-  x: z.string().optional().nullable(),
-  website: z.string().optional().nullable(),
-  telegram: z.string().optional().nullable(),
-  github: z.string().optional().nullable(),
-  instagram: z.string().optional().nullable(),
   createdAt: z.coerce.date().optional(),
   updatedAt: z.coerce.date().optional(),
   invitedBy: z.union([ z.lazy(() => UserCreateinvitedByInputSchema),z.string().array() ]).optional(),
@@ -8200,17 +7950,8 @@ export const UserCreateWithoutArticlesInputSchema: z.ZodType<Prisma.UserCreateWi
 }).strict();
 
 export const UserUncheckedCreateWithoutArticlesInputSchema: z.ZodType<Prisma.UserUncheckedCreateWithoutArticlesInput> = z.object({
-  avatar: z.string().optional().nullable(),
-  address: z.string(),
-  description: z.string().optional().nullable(),
-  name: z.string().optional().nullable(),
-  email: z.string().optional().nullable(),
+  id: z.string(),
   referralCode: z.string(),
-  x: z.string().optional().nullable(),
-  website: z.string().optional().nullable(),
-  telegram: z.string().optional().nullable(),
-  github: z.string().optional().nullable(),
-  instagram: z.string().optional().nullable(),
   createdAt: z.coerce.date().optional(),
   updatedAt: z.coerce.date().optional(),
   invitedBy: z.union([ z.lazy(() => UserCreateinvitedByInputSchema),z.string().array() ]).optional(),
@@ -8279,7 +8020,7 @@ export const RankUpdateWithoutArticlesInputSchema: z.ZodType<Prisma.RankUpdateWi
 
 export const RankUncheckedUpdateWithoutArticlesInputSchema: z.ZodType<Prisma.RankUncheckedUpdateWithoutArticlesInput> = z.object({
   id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  userAddress: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  userId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   description: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
@@ -8304,17 +8045,8 @@ export const UserUpdateToOneWithWhereWithoutArticlesInputSchema: z.ZodType<Prism
 }).strict();
 
 export const UserUpdateWithoutArticlesInputSchema: z.ZodType<Prisma.UserUpdateWithoutArticlesInput> = z.object({
-  avatar: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  address: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  description: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  name: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  email: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   referralCode: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  x: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  website: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  telegram: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  github: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  instagram: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   invitedBy: z.union([ z.lazy(() => UserUpdateinvitedByInputSchema),z.string().array() ]).optional(),
@@ -8329,17 +8061,8 @@ export const UserUpdateWithoutArticlesInputSchema: z.ZodType<Prisma.UserUpdateWi
 }).strict();
 
 export const UserUncheckedUpdateWithoutArticlesInputSchema: z.ZodType<Prisma.UserUncheckedUpdateWithoutArticlesInput> = z.object({
-  avatar: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  address: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  description: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  name: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  email: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   referralCode: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  x: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  website: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  telegram: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  github: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  instagram: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   invitedBy: z.union([ z.lazy(() => UserUpdateinvitedByInputSchema),z.string().array() ]).optional(),
@@ -8386,7 +8109,7 @@ export const RankCreateWithoutLikesInputSchema: z.ZodType<Prisma.RankCreateWitho
 
 export const RankUncheckedCreateWithoutLikesInputSchema: z.ZodType<Prisma.RankUncheckedCreateWithoutLikesInput> = z.object({
   id: z.string().optional(),
-  userAddress: z.string(),
+  userId: z.string(),
   name: z.string(),
   description: z.string().optional().nullable(),
   createdAt: z.coerce.date().optional(),
@@ -8405,17 +8128,8 @@ export const RankCreateOrConnectWithoutLikesInputSchema: z.ZodType<Prisma.RankCr
 }).strict();
 
 export const UserCreateWithoutRankLikesInputSchema: z.ZodType<Prisma.UserCreateWithoutRankLikesInput> = z.object({
-  avatar: z.string().optional().nullable(),
-  address: z.string(),
-  description: z.string().optional().nullable(),
-  name: z.string().optional().nullable(),
-  email: z.string().optional().nullable(),
+  id: z.string(),
   referralCode: z.string(),
-  x: z.string().optional().nullable(),
-  website: z.string().optional().nullable(),
-  telegram: z.string().optional().nullable(),
-  github: z.string().optional().nullable(),
-  instagram: z.string().optional().nullable(),
   createdAt: z.coerce.date().optional(),
   updatedAt: z.coerce.date().optional(),
   invitedBy: z.union([ z.lazy(() => UserCreateinvitedByInputSchema),z.string().array() ]).optional(),
@@ -8430,17 +8144,8 @@ export const UserCreateWithoutRankLikesInputSchema: z.ZodType<Prisma.UserCreateW
 }).strict();
 
 export const UserUncheckedCreateWithoutRankLikesInputSchema: z.ZodType<Prisma.UserUncheckedCreateWithoutRankLikesInput> = z.object({
-  avatar: z.string().optional().nullable(),
-  address: z.string(),
-  description: z.string().optional().nullable(),
-  name: z.string().optional().nullable(),
-  email: z.string().optional().nullable(),
+  id: z.string(),
   referralCode: z.string(),
-  x: z.string().optional().nullable(),
-  website: z.string().optional().nullable(),
-  telegram: z.string().optional().nullable(),
-  github: z.string().optional().nullable(),
-  instagram: z.string().optional().nullable(),
   createdAt: z.coerce.date().optional(),
   updatedAt: z.coerce.date().optional(),
   invitedBy: z.union([ z.lazy(() => UserCreateinvitedByInputSchema),z.string().array() ]).optional(),
@@ -8487,7 +8192,7 @@ export const RankUpdateWithoutLikesInputSchema: z.ZodType<Prisma.RankUpdateWitho
 
 export const RankUncheckedUpdateWithoutLikesInputSchema: z.ZodType<Prisma.RankUncheckedUpdateWithoutLikesInput> = z.object({
   id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  userAddress: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  userId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   description: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
@@ -8512,17 +8217,8 @@ export const UserUpdateToOneWithWhereWithoutRankLikesInputSchema: z.ZodType<Pris
 }).strict();
 
 export const UserUpdateWithoutRankLikesInputSchema: z.ZodType<Prisma.UserUpdateWithoutRankLikesInput> = z.object({
-  avatar: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  address: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  description: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  name: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  email: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   referralCode: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  x: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  website: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  telegram: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  github: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  instagram: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   invitedBy: z.union([ z.lazy(() => UserUpdateinvitedByInputSchema),z.string().array() ]).optional(),
@@ -8537,17 +8233,8 @@ export const UserUpdateWithoutRankLikesInputSchema: z.ZodType<Prisma.UserUpdateW
 }).strict();
 
 export const UserUncheckedUpdateWithoutRankLikesInputSchema: z.ZodType<Prisma.UserUncheckedUpdateWithoutRankLikesInput> = z.object({
-  avatar: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  address: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  description: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  name: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  email: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   referralCode: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  x: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  website: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  telegram: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  github: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  instagram: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   invitedBy: z.union([ z.lazy(() => UserUpdateinvitedByInputSchema),z.string().array() ]).optional(),
@@ -8578,7 +8265,7 @@ export const RankCreateWithoutStarsInputSchema: z.ZodType<Prisma.RankCreateWitho
 
 export const RankUncheckedCreateWithoutStarsInputSchema: z.ZodType<Prisma.RankUncheckedCreateWithoutStarsInput> = z.object({
   id: z.string().optional(),
-  userAddress: z.string(),
+  userId: z.string(),
   name: z.string(),
   description: z.string().optional().nullable(),
   createdAt: z.coerce.date().optional(),
@@ -8597,17 +8284,8 @@ export const RankCreateOrConnectWithoutStarsInputSchema: z.ZodType<Prisma.RankCr
 }).strict();
 
 export const UserCreateWithoutRankStarsInputSchema: z.ZodType<Prisma.UserCreateWithoutRankStarsInput> = z.object({
-  avatar: z.string().optional().nullable(),
-  address: z.string(),
-  description: z.string().optional().nullable(),
-  name: z.string().optional().nullable(),
-  email: z.string().optional().nullable(),
+  id: z.string(),
   referralCode: z.string(),
-  x: z.string().optional().nullable(),
-  website: z.string().optional().nullable(),
-  telegram: z.string().optional().nullable(),
-  github: z.string().optional().nullable(),
-  instagram: z.string().optional().nullable(),
   createdAt: z.coerce.date().optional(),
   updatedAt: z.coerce.date().optional(),
   invitedBy: z.union([ z.lazy(() => UserCreateinvitedByInputSchema),z.string().array() ]).optional(),
@@ -8622,17 +8300,8 @@ export const UserCreateWithoutRankStarsInputSchema: z.ZodType<Prisma.UserCreateW
 }).strict();
 
 export const UserUncheckedCreateWithoutRankStarsInputSchema: z.ZodType<Prisma.UserUncheckedCreateWithoutRankStarsInput> = z.object({
-  avatar: z.string().optional().nullable(),
-  address: z.string(),
-  description: z.string().optional().nullable(),
-  name: z.string().optional().nullable(),
-  email: z.string().optional().nullable(),
+  id: z.string(),
   referralCode: z.string(),
-  x: z.string().optional().nullable(),
-  website: z.string().optional().nullable(),
-  telegram: z.string().optional().nullable(),
-  github: z.string().optional().nullable(),
-  instagram: z.string().optional().nullable(),
   createdAt: z.coerce.date().optional(),
   updatedAt: z.coerce.date().optional(),
   invitedBy: z.union([ z.lazy(() => UserCreateinvitedByInputSchema),z.string().array() ]).optional(),
@@ -8679,7 +8348,7 @@ export const RankUpdateWithoutStarsInputSchema: z.ZodType<Prisma.RankUpdateWitho
 
 export const RankUncheckedUpdateWithoutStarsInputSchema: z.ZodType<Prisma.RankUncheckedUpdateWithoutStarsInput> = z.object({
   id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  userAddress: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  userId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   description: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
@@ -8704,17 +8373,8 @@ export const UserUpdateToOneWithWhereWithoutRankStarsInputSchema: z.ZodType<Pris
 }).strict();
 
 export const UserUpdateWithoutRankStarsInputSchema: z.ZodType<Prisma.UserUpdateWithoutRankStarsInput> = z.object({
-  avatar: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  address: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  description: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  name: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  email: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   referralCode: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  x: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  website: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  telegram: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  github: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  instagram: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   invitedBy: z.union([ z.lazy(() => UserUpdateinvitedByInputSchema),z.string().array() ]).optional(),
@@ -8729,17 +8389,8 @@ export const UserUpdateWithoutRankStarsInputSchema: z.ZodType<Prisma.UserUpdateW
 }).strict();
 
 export const UserUncheckedUpdateWithoutRankStarsInputSchema: z.ZodType<Prisma.UserUncheckedUpdateWithoutRankStarsInput> = z.object({
-  avatar: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  address: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  description: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  name: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  email: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   referralCode: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  x: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  website: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  telegram: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  github: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  instagram: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   invitedBy: z.union([ z.lazy(() => UserUpdateinvitedByInputSchema),z.string().array() ]).optional(),
@@ -8791,17 +8442,8 @@ export const SoftwareCreateOrConnectWithoutLikesInputSchema: z.ZodType<Prisma.So
 }).strict();
 
 export const UserCreateWithoutSoftwareLikesInputSchema: z.ZodType<Prisma.UserCreateWithoutSoftwareLikesInput> = z.object({
-  avatar: z.string().optional().nullable(),
-  address: z.string(),
-  description: z.string().optional().nullable(),
-  name: z.string().optional().nullable(),
-  email: z.string().optional().nullable(),
+  id: z.string(),
   referralCode: z.string(),
-  x: z.string().optional().nullable(),
-  website: z.string().optional().nullable(),
-  telegram: z.string().optional().nullable(),
-  github: z.string().optional().nullable(),
-  instagram: z.string().optional().nullable(),
   createdAt: z.coerce.date().optional(),
   updatedAt: z.coerce.date().optional(),
   invitedBy: z.union([ z.lazy(() => UserCreateinvitedByInputSchema),z.string().array() ]).optional(),
@@ -8816,17 +8458,8 @@ export const UserCreateWithoutSoftwareLikesInputSchema: z.ZodType<Prisma.UserCre
 }).strict();
 
 export const UserUncheckedCreateWithoutSoftwareLikesInputSchema: z.ZodType<Prisma.UserUncheckedCreateWithoutSoftwareLikesInput> = z.object({
-  avatar: z.string().optional().nullable(),
-  address: z.string(),
-  description: z.string().optional().nullable(),
-  name: z.string().optional().nullable(),
-  email: z.string().optional().nullable(),
+  id: z.string(),
   referralCode: z.string(),
-  x: z.string().optional().nullable(),
-  website: z.string().optional().nullable(),
-  telegram: z.string().optional().nullable(),
-  github: z.string().optional().nullable(),
-  instagram: z.string().optional().nullable(),
   createdAt: z.coerce.date().optional(),
   updatedAt: z.coerce.date().optional(),
   invitedBy: z.union([ z.lazy(() => UserCreateinvitedByInputSchema),z.string().array() ]).optional(),
@@ -8900,17 +8533,8 @@ export const UserUpdateToOneWithWhereWithoutSoftwareLikesInputSchema: z.ZodType<
 }).strict();
 
 export const UserUpdateWithoutSoftwareLikesInputSchema: z.ZodType<Prisma.UserUpdateWithoutSoftwareLikesInput> = z.object({
-  avatar: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  address: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  description: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  name: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  email: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   referralCode: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  x: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  website: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  telegram: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  github: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  instagram: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   invitedBy: z.union([ z.lazy(() => UserUpdateinvitedByInputSchema),z.string().array() ]).optional(),
@@ -8925,17 +8549,8 @@ export const UserUpdateWithoutSoftwareLikesInputSchema: z.ZodType<Prisma.UserUpd
 }).strict();
 
 export const UserUncheckedUpdateWithoutSoftwareLikesInputSchema: z.ZodType<Prisma.UserUncheckedUpdateWithoutSoftwareLikesInput> = z.object({
-  avatar: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  address: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  description: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  name: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  email: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   referralCode: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  x: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  website: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  telegram: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  github: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  instagram: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   invitedBy: z.union([ z.lazy(() => UserUpdateinvitedByInputSchema),z.string().array() ]).optional(),
@@ -8987,17 +8602,8 @@ export const SoftwareCreateOrConnectWithoutStarsInputSchema: z.ZodType<Prisma.So
 }).strict();
 
 export const UserCreateWithoutSoftwareStarsInputSchema: z.ZodType<Prisma.UserCreateWithoutSoftwareStarsInput> = z.object({
-  avatar: z.string().optional().nullable(),
-  address: z.string(),
-  description: z.string().optional().nullable(),
-  name: z.string().optional().nullable(),
-  email: z.string().optional().nullable(),
+  id: z.string(),
   referralCode: z.string(),
-  x: z.string().optional().nullable(),
-  website: z.string().optional().nullable(),
-  telegram: z.string().optional().nullable(),
-  github: z.string().optional().nullable(),
-  instagram: z.string().optional().nullable(),
   createdAt: z.coerce.date().optional(),
   updatedAt: z.coerce.date().optional(),
   invitedBy: z.union([ z.lazy(() => UserCreateinvitedByInputSchema),z.string().array() ]).optional(),
@@ -9012,17 +8618,8 @@ export const UserCreateWithoutSoftwareStarsInputSchema: z.ZodType<Prisma.UserCre
 }).strict();
 
 export const UserUncheckedCreateWithoutSoftwareStarsInputSchema: z.ZodType<Prisma.UserUncheckedCreateWithoutSoftwareStarsInput> = z.object({
-  avatar: z.string().optional().nullable(),
-  address: z.string(),
-  description: z.string().optional().nullable(),
-  name: z.string().optional().nullable(),
-  email: z.string().optional().nullable(),
+  id: z.string(),
   referralCode: z.string(),
-  x: z.string().optional().nullable(),
-  website: z.string().optional().nullable(),
-  telegram: z.string().optional().nullable(),
-  github: z.string().optional().nullable(),
-  instagram: z.string().optional().nullable(),
   createdAt: z.coerce.date().optional(),
   updatedAt: z.coerce.date().optional(),
   invitedBy: z.union([ z.lazy(() => UserCreateinvitedByInputSchema),z.string().array() ]).optional(),
@@ -9096,17 +8693,8 @@ export const UserUpdateToOneWithWhereWithoutSoftwareStarsInputSchema: z.ZodType<
 }).strict();
 
 export const UserUpdateWithoutSoftwareStarsInputSchema: z.ZodType<Prisma.UserUpdateWithoutSoftwareStarsInput> = z.object({
-  avatar: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  address: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  description: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  name: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  email: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   referralCode: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  x: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  website: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  telegram: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  github: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  instagram: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   invitedBy: z.union([ z.lazy(() => UserUpdateinvitedByInputSchema),z.string().array() ]).optional(),
@@ -9121,17 +8709,8 @@ export const UserUpdateWithoutSoftwareStarsInputSchema: z.ZodType<Prisma.UserUpd
 }).strict();
 
 export const UserUncheckedUpdateWithoutSoftwareStarsInputSchema: z.ZodType<Prisma.UserUncheckedUpdateWithoutSoftwareStarsInput> = z.object({
-  avatar: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  address: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  description: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  name: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  email: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   referralCode: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  x: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  website: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  telegram: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  github: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  instagram: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   invitedBy: z.union([ z.lazy(() => UserUpdateinvitedByInputSchema),z.string().array() ]).optional(),
@@ -9162,7 +8741,7 @@ export const RankCreateWithoutCommentsInputSchema: z.ZodType<Prisma.RankCreateWi
 
 export const RankUncheckedCreateWithoutCommentsInputSchema: z.ZodType<Prisma.RankUncheckedCreateWithoutCommentsInput> = z.object({
   id: z.string().optional(),
-  userAddress: z.string(),
+  userId: z.string(),
   name: z.string(),
   description: z.string().optional().nullable(),
   createdAt: z.coerce.date().optional(),
@@ -9181,17 +8760,8 @@ export const RankCreateOrConnectWithoutCommentsInputSchema: z.ZodType<Prisma.Ran
 }).strict();
 
 export const UserCreateWithoutRankCommentsInputSchema: z.ZodType<Prisma.UserCreateWithoutRankCommentsInput> = z.object({
-  avatar: z.string().optional().nullable(),
-  address: z.string(),
-  description: z.string().optional().nullable(),
-  name: z.string().optional().nullable(),
-  email: z.string().optional().nullable(),
+  id: z.string(),
   referralCode: z.string(),
-  x: z.string().optional().nullable(),
-  website: z.string().optional().nullable(),
-  telegram: z.string().optional().nullable(),
-  github: z.string().optional().nullable(),
-  instagram: z.string().optional().nullable(),
   createdAt: z.coerce.date().optional(),
   updatedAt: z.coerce.date().optional(),
   invitedBy: z.union([ z.lazy(() => UserCreateinvitedByInputSchema),z.string().array() ]).optional(),
@@ -9206,17 +8776,8 @@ export const UserCreateWithoutRankCommentsInputSchema: z.ZodType<Prisma.UserCrea
 }).strict();
 
 export const UserUncheckedCreateWithoutRankCommentsInputSchema: z.ZodType<Prisma.UserUncheckedCreateWithoutRankCommentsInput> = z.object({
-  avatar: z.string().optional().nullable(),
-  address: z.string(),
-  description: z.string().optional().nullable(),
-  name: z.string().optional().nullable(),
-  email: z.string().optional().nullable(),
+  id: z.string(),
   referralCode: z.string(),
-  x: z.string().optional().nullable(),
-  website: z.string().optional().nullable(),
-  telegram: z.string().optional().nullable(),
-  github: z.string().optional().nullable(),
-  instagram: z.string().optional().nullable(),
   createdAt: z.coerce.date().optional(),
   updatedAt: z.coerce.date().optional(),
   invitedBy: z.union([ z.lazy(() => UserCreateinvitedByInputSchema),z.string().array() ]).optional(),
@@ -9263,7 +8824,7 @@ export const RankUpdateWithoutCommentsInputSchema: z.ZodType<Prisma.RankUpdateWi
 
 export const RankUncheckedUpdateWithoutCommentsInputSchema: z.ZodType<Prisma.RankUncheckedUpdateWithoutCommentsInput> = z.object({
   id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  userAddress: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  userId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   description: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
@@ -9288,17 +8849,8 @@ export const UserUpdateToOneWithWhereWithoutRankCommentsInputSchema: z.ZodType<P
 }).strict();
 
 export const UserUpdateWithoutRankCommentsInputSchema: z.ZodType<Prisma.UserUpdateWithoutRankCommentsInput> = z.object({
-  avatar: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  address: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  description: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  name: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  email: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   referralCode: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  x: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  website: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  telegram: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  github: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  instagram: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   invitedBy: z.union([ z.lazy(() => UserUpdateinvitedByInputSchema),z.string().array() ]).optional(),
@@ -9313,17 +8865,8 @@ export const UserUpdateWithoutRankCommentsInputSchema: z.ZodType<Prisma.UserUpda
 }).strict();
 
 export const UserUncheckedUpdateWithoutRankCommentsInputSchema: z.ZodType<Prisma.UserUncheckedUpdateWithoutRankCommentsInput> = z.object({
-  avatar: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  address: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  description: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  name: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  email: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   referralCode: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  x: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  website: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  telegram: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  github: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  instagram: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   invitedBy: z.union([ z.lazy(() => UserUpdateinvitedByInputSchema),z.string().array() ]).optional(),
@@ -9375,17 +8918,8 @@ export const SoftwareCreateOrConnectWithoutCommentsInputSchema: z.ZodType<Prisma
 }).strict();
 
 export const UserCreateWithoutSoftwareCommentsInputSchema: z.ZodType<Prisma.UserCreateWithoutSoftwareCommentsInput> = z.object({
-  avatar: z.string().optional().nullable(),
-  address: z.string(),
-  description: z.string().optional().nullable(),
-  name: z.string().optional().nullable(),
-  email: z.string().optional().nullable(),
+  id: z.string(),
   referralCode: z.string(),
-  x: z.string().optional().nullable(),
-  website: z.string().optional().nullable(),
-  telegram: z.string().optional().nullable(),
-  github: z.string().optional().nullable(),
-  instagram: z.string().optional().nullable(),
   createdAt: z.coerce.date().optional(),
   updatedAt: z.coerce.date().optional(),
   invitedBy: z.union([ z.lazy(() => UserCreateinvitedByInputSchema),z.string().array() ]).optional(),
@@ -9400,17 +8934,8 @@ export const UserCreateWithoutSoftwareCommentsInputSchema: z.ZodType<Prisma.User
 }).strict();
 
 export const UserUncheckedCreateWithoutSoftwareCommentsInputSchema: z.ZodType<Prisma.UserUncheckedCreateWithoutSoftwareCommentsInput> = z.object({
-  avatar: z.string().optional().nullable(),
-  address: z.string(),
-  description: z.string().optional().nullable(),
-  name: z.string().optional().nullable(),
-  email: z.string().optional().nullable(),
+  id: z.string(),
   referralCode: z.string(),
-  x: z.string().optional().nullable(),
-  website: z.string().optional().nullable(),
-  telegram: z.string().optional().nullable(),
-  github: z.string().optional().nullable(),
-  instagram: z.string().optional().nullable(),
   createdAt: z.coerce.date().optional(),
   updatedAt: z.coerce.date().optional(),
   invitedBy: z.union([ z.lazy(() => UserCreateinvitedByInputSchema),z.string().array() ]).optional(),
@@ -9484,17 +9009,8 @@ export const UserUpdateToOneWithWhereWithoutSoftwareCommentsInputSchema: z.ZodTy
 }).strict();
 
 export const UserUpdateWithoutSoftwareCommentsInputSchema: z.ZodType<Prisma.UserUpdateWithoutSoftwareCommentsInput> = z.object({
-  avatar: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  address: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  description: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  name: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  email: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   referralCode: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  x: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  website: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  telegram: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  github: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  instagram: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   invitedBy: z.union([ z.lazy(() => UserUpdateinvitedByInputSchema),z.string().array() ]).optional(),
@@ -9509,17 +9025,8 @@ export const UserUpdateWithoutSoftwareCommentsInputSchema: z.ZodType<Prisma.User
 }).strict();
 
 export const UserUncheckedUpdateWithoutSoftwareCommentsInputSchema: z.ZodType<Prisma.UserUncheckedUpdateWithoutSoftwareCommentsInput> = z.object({
-  avatar: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  address: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  description: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  name: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  email: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   referralCode: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  x: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  website: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  telegram: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  github: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  instagram: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   invitedBy: z.union([ z.lazy(() => UserUpdateinvitedByInputSchema),z.string().array() ]).optional(),
@@ -9895,16 +9402,16 @@ export const ArticleCreateManyRankInputSchema: z.ZodType<Prisma.ArticleCreateMan
   content: z.string(),
   createdAt: z.coerce.date().optional(),
   updatedAt: z.coerce.date().optional(),
-  userAddress: z.string()
+  userId: z.string()
 }).strict();
 
 export const RankLikeCreateManyRankInputSchema: z.ZodType<Prisma.RankLikeCreateManyRankInput> = z.object({
-  userAddress: z.string(),
+  userId: z.string(),
   createdAt: z.coerce.date().optional()
 }).strict();
 
 export const RankStarCreateManyRankInputSchema: z.ZodType<Prisma.RankStarCreateManyRankInput> = z.object({
-  userAddress: z.string(),
+  userId: z.string(),
   createdAt: z.coerce.date().optional()
 }).strict();
 
@@ -9912,7 +9419,7 @@ export const RankCommentCreateManyRankInputSchema: z.ZodType<Prisma.RankCommentC
   id: z.string().optional(),
   content: z.string(),
   createdAt: z.coerce.date().optional(),
-  userAddress: z.string(),
+  userId: z.string(),
   deletedAt: z.coerce.date().optional().nullable(),
   replyToComment: z.string().optional().nullable(),
   replyToUser: z.string().optional().nullable(),
@@ -9981,7 +9488,7 @@ export const ArticleUncheckedUpdateWithoutRankInputSchema: z.ZodType<Prisma.Arti
   content: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
-  userAddress: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  userId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   softwares: z.lazy(() => SoftwareOnArticleUncheckedUpdateManyWithoutArticleNestedInputSchema).optional()
 }).strict();
 
@@ -9993,7 +9500,7 @@ export const ArticleUncheckedUpdateManyWithoutRankInputSchema: z.ZodType<Prisma.
   content: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
-  userAddress: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  userId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
 
 export const RankLikeUpdateWithoutRankInputSchema: z.ZodType<Prisma.RankLikeUpdateWithoutRankInput> = z.object({
@@ -10002,12 +9509,12 @@ export const RankLikeUpdateWithoutRankInputSchema: z.ZodType<Prisma.RankLikeUpda
 }).strict();
 
 export const RankLikeUncheckedUpdateWithoutRankInputSchema: z.ZodType<Prisma.RankLikeUncheckedUpdateWithoutRankInput> = z.object({
-  userAddress: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  userId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
 
 export const RankLikeUncheckedUpdateManyWithoutRankInputSchema: z.ZodType<Prisma.RankLikeUncheckedUpdateManyWithoutRankInput> = z.object({
-  userAddress: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  userId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
 
@@ -10017,12 +9524,12 @@ export const RankStarUpdateWithoutRankInputSchema: z.ZodType<Prisma.RankStarUpda
 }).strict();
 
 export const RankStarUncheckedUpdateWithoutRankInputSchema: z.ZodType<Prisma.RankStarUncheckedUpdateWithoutRankInput> = z.object({
-  userAddress: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  userId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
 
 export const RankStarUncheckedUpdateManyWithoutRankInputSchema: z.ZodType<Prisma.RankStarUncheckedUpdateManyWithoutRankInput> = z.object({
-  userAddress: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  userId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
 
@@ -10041,7 +9548,7 @@ export const RankCommentUncheckedUpdateWithoutRankInputSchema: z.ZodType<Prisma.
   id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   content: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
-  userAddress: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  userId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   deletedAt: z.union([ z.coerce.date(),z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   replyToComment: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   replyToUser: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
@@ -10052,7 +9559,7 @@ export const RankCommentUncheckedUpdateManyWithoutRankInputSchema: z.ZodType<Pri
   id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   content: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
-  userAddress: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  userId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   deletedAt: z.union([ z.coerce.date(),z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   replyToComment: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   replyToUser: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
@@ -10126,12 +9633,12 @@ export const SoftwareOnRankCreateManySoftwareInputSchema: z.ZodType<Prisma.Softw
 }).strict();
 
 export const SoftwareLikeCreateManySoftwareInputSchema: z.ZodType<Prisma.SoftwareLikeCreateManySoftwareInput> = z.object({
-  userAddress: z.string(),
+  userId: z.string(),
   createdAt: z.coerce.date().optional()
 }).strict();
 
 export const SoftwareStarCreateManySoftwareInputSchema: z.ZodType<Prisma.SoftwareStarCreateManySoftwareInput> = z.object({
-  userAddress: z.string(),
+  userId: z.string(),
   createdAt: z.coerce.date().optional()
 }).strict();
 
@@ -10145,7 +9652,7 @@ export const SoftwareCommentCreateManySoftwareInputSchema: z.ZodType<Prisma.Soft
   id: z.string().optional(),
   content: z.string(),
   createdAt: z.coerce.date().optional(),
-  userAddress: z.string(),
+  userId: z.string(),
   deletedAt: z.coerce.date().optional().nullable(),
   replyToComment: z.string().optional().nullable(),
   replyToUser: z.string().optional().nullable(),
@@ -10200,12 +9707,12 @@ export const SoftwareLikeUpdateWithoutSoftwareInputSchema: z.ZodType<Prisma.Soft
 }).strict();
 
 export const SoftwareLikeUncheckedUpdateWithoutSoftwareInputSchema: z.ZodType<Prisma.SoftwareLikeUncheckedUpdateWithoutSoftwareInput> = z.object({
-  userAddress: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  userId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
 
 export const SoftwareLikeUncheckedUpdateManyWithoutSoftwareInputSchema: z.ZodType<Prisma.SoftwareLikeUncheckedUpdateManyWithoutSoftwareInput> = z.object({
-  userAddress: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  userId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
 
@@ -10215,12 +9722,12 @@ export const SoftwareStarUpdateWithoutSoftwareInputSchema: z.ZodType<Prisma.Soft
 }).strict();
 
 export const SoftwareStarUncheckedUpdateWithoutSoftwareInputSchema: z.ZodType<Prisma.SoftwareStarUncheckedUpdateWithoutSoftwareInput> = z.object({
-  userAddress: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  userId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
 
 export const SoftwareStarUncheckedUpdateManyWithoutSoftwareInputSchema: z.ZodType<Prisma.SoftwareStarUncheckedUpdateManyWithoutSoftwareInput> = z.object({
-  userAddress: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  userId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
 
@@ -10257,7 +9764,7 @@ export const SoftwareCommentUncheckedUpdateWithoutSoftwareInputSchema: z.ZodType
   id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   content: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
-  userAddress: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  userId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   deletedAt: z.union([ z.coerce.date(),z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   replyToComment: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   replyToUser: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
@@ -10268,7 +9775,7 @@ export const SoftwareCommentUncheckedUpdateManyWithoutSoftwareInputSchema: z.Zod
   id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   content: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
-  userAddress: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  userId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   deletedAt: z.union([ z.coerce.date(),z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   replyToComment: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   replyToUser: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),

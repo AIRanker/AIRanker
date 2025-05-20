@@ -17,15 +17,14 @@ export const rankCommentRouter = createTRPCRouter({
       return await rankCommentService.getCommentList(rankId, pageable, replyLimit)
     }),
   createComment: protectedProcedure.input(z.object({ rankId: z.string(), content: z.string(), replyTo: z.string().optional() })).mutation(async ({ input, ctx }) => {
-    const userAddress = ctx.auth!.userId!
     return await rankCommentService.createComment({
       ...input,
       replyToCommentId: input.replyTo,
-      userAddress
+      userId: ctx.userId!
     })
   }),
   deleteComment: protectedProcedure.input(z.object({ commentId: z.string() })).mutation(async ({ input, ctx }) => {
-    const userAddress = ctx.auth!.userId!
-    return await rankCommentService.deleteComment(input.commentId, userAddress)
+    const userId = ctx.auth!.userId!
+    return await rankCommentService.deleteComment(input.commentId, userId)
   })
 })

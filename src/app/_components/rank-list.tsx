@@ -4,7 +4,7 @@ import { Heart, Star } from "lucide-react"
 import Link from "next/link"
 import type { FC } from "react"
 import { toast } from "sonner"
-import { useAuth } from "~/components/auth/auth-context"
+import { useAuth, useClerk, useSignIn } from "@clerk/nextjs"
 import { cn } from "~/lib/utils"
 import type { TopRanksResult } from "~/server/services/rank"
 import { api } from "~/trpc/react"
@@ -17,7 +17,8 @@ interface TopRankedProps {
 export const RankList: FC<TopRankedProps> = ({ title = "Top Ranked", className }) => {
   const { data } = api.rank.topRanks.useQuery()
 
-  const { isAuthenticated, openDialog } = useAuth()
+  const { isSignedIn } = useAuth()
+  const { openSignIn } = useClerk()
   const useUtils = api.useUtils()
   const { mutate: starMutate } = api.rank.star.useMutation({
     onSuccess: () => {
@@ -62,8 +63,8 @@ export const RankList: FC<TopRankedProps> = ({ title = "Top Ranked", className }
                       item.isStared && "text-yellow-400 fill-yellow-400"
                     )}
                     onClick={(event) => {
-                      if (!isAuthenticated) {
-                        void openDialog()
+                      if (!isSignedIn) {
+                        void openSignIn()
                       } else {
                         starMutate({ rankId: item.id })
                       }
@@ -77,8 +78,8 @@ export const RankList: FC<TopRankedProps> = ({ title = "Top Ranked", className }
                   <Heart
                     className={cn("cursor-pointer text-primary hover:scale-125 hover:fill-red-400 hover:text-red-400 transition", item.isLiked && "text-red-400 fill-red-400")}
                     onClick={(event) => {
-                      if (!isAuthenticated) {
-                        void openDialog()
+                      if (!isSignedIn) {
+                        void openSignIn()
                       } else {
                         likeMutate({ rankId: item.id })
                       }

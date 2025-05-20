@@ -1,6 +1,6 @@
 "use client"
 
-import { useAuth, useClerk } from "@clerk/nextjs"
+import { useAuth, useClerk, useSignIn } from "@clerk/nextjs"
 import { Heart, MessageCircle, Share2, Star } from "lucide-react"
 import { toast } from "sonner"
 import { cn } from "~/lib/utils"

@@ -36,37 +36,28 @@ model UserPlatform {
   platformId     String   @map("platform_id") @db.VarChar(255)
   platformName   String   @map("platform_name") @db.VarChar(255)
   platformAvatar String   @map("platform_avatar") @db.VarChar(255)
-  user           User     @relation(fields: [userAddress], references: [address])
-  userAddress    String   @map("user_address") @db.VarChar(255)
+  user           User     @relation(fields: [userId], references: [id])
+  userId         String   @map("user_address") @db.VarChar(255)
 
-  @@unique([userAddress, platform])
+  @@unique([userId, platform])
   @@index([platform, platformId])
   @@map("t_user_platform")
 }
 
 model ApiKey {
-  key         String    @id @unique @db.VarChar(255)
-  name        String    @db.VarChar(255)
-  userAddress String?   @map("user_address") @db.VarChar(255)
-  createdAt   DateTime  @default(now()) @map("created_at")
-  expiredAt   DateTime? @map("expired_at")
+  key       String    @id @unique @db.VarChar(255)
+  name      String    @db.VarChar(255)
+  userId    String?   @map("user_address") @db.VarChar(255)
+  createdAt DateTime  @default(now()) @map("created_at")
+  expiredAt DateTime? @map("expired_at")
 
-  @@unique([name, userAddress])
+  @@unique([name, userId])
   @@map("t_api_key")
 }
 
 model User {
-  avatar           String?           @map("avatar") @db.VarChar(1024)
-  address          String            @id @map("address") @db.VarChar(255)
-  description      String?           @map("description") @db.VarChar(1024)
-  name             String?           @map("name") @db.VarChar(255)
-  email            String?           @unique @map("email") @db.VarChar(255)
+  id               String            @id @map("id") @db.VarChar(255)
   referralCode     String            @unique @map("referral_code")
-  x                String?           @map("x") @db.VarChar(255)
-  website          String?           @map("website") @db.VarChar(255)
-  telegram         String?           @map("telegram") @db.VarChar(255)
-  github           String?           @map("github") @db.VarChar(255)
-  instagram        String?           @map("instagram") @db.VarChar(255)
   createdAt        DateTime          @default(now()) @map("created_at")
   updatedAt        DateTime          @default(now()) @updatedAt @map("updated_at")
   invitedBy        String[]          @default([]) @map("invited_by")
@@ -96,12 +87,12 @@ model Tag {
 
 model Rank {
   id          String           @id @default(dbgenerated("gen_random_uuid()")) @map("id")
-  userAddress String           @map("user_address") @db.VarChar(255)
+  userId      String           @map("user_id") @db.VarChar(255)
   name        String           @map("name") @db.VarChar(255)
   description String?          @map("description") @db.VarChar(255)
   createdAt   DateTime         @default(now()) @map("created_at")
   updatedAt   DateTime         @default(now()) @updatedAt @map("updated_at")
-  user        User             @relation(fields: [userAddress], references: [address])
+  user        User             @relation(fields: [userId], references: [id])
   tags        RankTag[]
   softwares   SoftwareOnRank[]
   articles    Article[]
@@ -211,56 +202,56 @@ model Article {
   content     String              @db.Text
   rank        Rank                @relation(fields: [rankId], references: [id])
   rankId      String              @map("rank_id")
-  author      User                @relation(fields: [userAddress], references: [address])
+  author      User                @relation(fields: [userId], references: [id])
   createdAt   DateTime            @default(now()) @map("created_at")
   updatedAt   DateTime            @default(now()) @updatedAt @map("updated_at")
-  userAddress String              @map("user_address") @db.VarChar(255)
+  userId      String              @map("user_id") @db.VarChar(255)
   softwares   SoftwareOnArticle[]
 
   @@map("t_rank_article")
 }
 
 model RankLike {
-  rank        Rank     @relation(fields: [rankId], references: [id])
-  rankId      String   @map("rank_id")
-  user        User     @relation(fields: [userAddress], references: [address])
-  userAddress String   @map("user_address") @db.VarChar(255)
-  createdAt   DateTime @default(now()) @map("created_at")
+  rank      Rank     @relation(fields: [rankId], references: [id])
+  rankId    String   @map("rank_id")
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String   @map("user_id") @db.VarChar(255)
+  createdAt DateTime @default(now()) @map("created_at")
 
-  @@id([rankId, userAddress])
+  @@id([rankId, userId])
   @@map("t_rank_like")
 }
 
 model RankStar {
-  rank        Rank     @relation(fields: [rankId], references: [id])
-  rankId      String   @map("rank_id")
-  user        User     @relation(fields: [userAddress], references: [address])
-  userAddress String   @map("user_address") @db.VarChar(255)
-  createdAt   DateTime @default(now()) @map("created_at")
+  rank      Rank     @relation(fields: [rankId], references: [id])
+  rankId    String   @map("rank_id")
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String   @map("user_id") @db.VarChar(255)
+  createdAt DateTime @default(now()) @map("created_at")
 
-  @@id([rankId, userAddress])
+  @@id([rankId, userId])
   @@map("t_rank_star")
 }
 
 model SoftwareLike {
-  software    Software @relation(fields: [softwareId], references: [id])
-  softwareId  String   @map("software_id")
-  user        User     @relation(fields: [userAddress], references: [address])
-  userAddress String   @map("user_address") @db.VarChar(255)
-  createdAt   DateTime @default(now()) @map("created_at")
+  software   Software @relation(fields: [softwareId], references: [id])
+  softwareId String   @map("software_id")
+  user       User     @relation(fields: [userId], references: [id])
+  userId     String   @map("user_id") @db.VarChar(255)
+  createdAt  DateTime @default(now()) @map("created_at")
 
-  @@id([softwareId, userAddress])
+  @@id([softwareId, userId])
   @@map("t_software_like")
 }
 
 model SoftwareStar {
-  software    Software @relation(fields: [softwareId], references: [id])
-  softwareId  String   @map("software_id")
-  user        User     @relation(fields: [userAddress], references: [address])
-  userAddress String   @map("user_address") @db.VarChar(255)
-  createdAt   DateTime @default(now()) @map("created_at")
+  software   Software @relation(fields: [softwareId], references: [id])
+  softwareId String   @map("software_id")
+  user       User     @relation(fields: [userId], references: [id])
+  userId     String   @map("user_id") @db.VarChar(255)
+  createdAt  DateTime @default(now()) @map("created_at")
 
-  @@id([softwareId, userAddress])
+  @@id([softwareId, userId])
   @@map("t_software_star")
 }
 
@@ -270,15 +261,15 @@ model RankComment {
   content   String   @db.Text
   createdAt DateTime @default(now()) @map("created_at")
 
-  userAddress String    @map("user_address") @db.VarChar(255)
-  deletedAt   DateTime? @map("deleted_at")
+  userId    String    @map("user_id") @db.VarChar(255)
+  deletedAt DateTime? @map("deleted_at")
 
   replyToComment String? @map("reply_to_comment") @db.VarChar(255)
   replyToUser    String? @map("reply_to_user") @db.VarChar(255)
   rootCommentId  String? @map("root_comment_id") @db.VarChar(255)
 
   rank Rank @relation(fields: [rankId], references: [id], onDelete: Cascade)
-  user User @relation(fields: [userAddress], references: [address])
+  user User @relation(fields: [userId], references: [id])
 
   @@index([rootCommentId])
   @@index([createdAt])
@@ -291,15 +282,15 @@ model SoftwareComment {
   content    String   @db.Text
   createdAt  DateTime @default(now()) @map("created_at")
 
-  userAddress String    @map("user_address") @db.VarChar(255)
-  deletedAt   DateTime? @map("deleted_at")
+  userId    String    @map("user_id") @db.VarChar(255)
+  deletedAt DateTime? @map("deleted_at")
 
   replyToComment String? @map("reply_to_comment") @db.VarChar(255)
   replyToUser    String? @map("reply_to_user") @db.VarChar(255)
   rootCommentId  String? @map("root_comment_id") @db.VarChar(255)
 
   software Software @relation(fields: [softwareId], references: [id], onDelete: Cascade)
-  user     User     @relation(fields: [userAddress], references: [address])
+  user     User     @relation(fields: [userId], references: [id])
 
   @@index([rootCommentId])
   @@index([createdAt])

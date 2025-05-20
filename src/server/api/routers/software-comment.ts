@@ -28,15 +28,15 @@ export const softwareCommentRouter = createTRPCRouter({
                 softwareId: input.softwareId,
                 content: input.content,
                 replyToCommentId: input.replyTo,
-                userAddress: ctx.userAddress!
+                userId: ctx.userId!
             })
         }),
 
     deleteComment: protectedProcedure
         .input(z.object({ commentId: z.string() }))
         .mutation(async ({ input, ctx }) => {
-            const userAddress = ctx.userAddress!
-            return await softwareCommentService.deleteComment(input.commentId, userAddress)
+            const userId = ctx.userId!
+            return await softwareCommentService.deleteComment(input.commentId, userId)
         }),
 
     getReplies: publicProcedure
@@ -54,10 +54,10 @@ export const softwareCommentRouter = createTRPCRouter({
             softwareId: z.string()
         }))
         .query(async ({ input, ctx }) => {
-            const userAddress = ctx.userAddress!
+            const userId = ctx.userId!
             return await softwareCommentService.getCommentStats({
                 id: input.softwareId,
-                userAddress
+                userId
             })
         })
 })

@@ -83,7 +83,7 @@ class RankCommentService {
             .map((reply) => ({
               ...reply,
               comment: reply.content,
-              createdBy: reply.userAddress
+              createdBy: reply.userId
             }))
         : []
       const replyCount = replyInfo?.count ?? 0
@@ -91,7 +91,7 @@ class RankCommentService {
       return {
         ...comment,
         comment: comment.content,
-        createdBy: comment.userAddress,
+        createdBy: comment.userId,
         replies,
         replyCount
       }
@@ -204,12 +204,12 @@ class RankCommentService {
 
   async getRecentUserComments({
     rankId,
-    userAddress,
+    userId,
     startTime,
     limit = 50
   }: {
     rankId: string
-    userAddress: string
+    userId: string
     startTime?: Date
     limit?: number
   }) {
@@ -218,7 +218,7 @@ class RankCommentService {
     const comments = await db.rankComment.findMany({
       where: {
         rankId,
-        userAddress: { not: userAddress },
+        userId: { not: userId },
         createdAt: {
           gte: startTime
         }
@@ -235,12 +235,12 @@ class RankCommentService {
   async createComment({
     rankId,
     content,
-    userAddress,
+    userId,
     replyToCommentId
   }: {
     rankId: string
     content: string
-    userAddress: string
+    userId: string
     replyToCommentId?: string
   }) {
     const rank = await db.rank.findUnique({
@@ -251,7 +251,7 @@ class RankCommentService {
       throw new CommonError(ErrorCode.BAD_PARAMS, `Can't found rank with id ${rankId}`)
     }
 
-    console.log(`Creating comment for rank ${rankId} from user ${userAddress} in reply to comment ${replyToCommentId}: ${content.slice(0, 10)}...`)
+    console.log(`Creating comment for rank ${rankId} from user ${userId} in reply to comment ${replyToCommentId}: ${content.slice(0, 10)}...`)
 
     const replyTo = replyToCommentId ? await this.getCommentById(replyToCommentId) : null
 
@@ -275,10 +275,10 @@ class RankCommentService {
         data: {
           rankId,
           content,
-          userAddress,
+          userId,
           rootCommentId,
           replyToComment: replyTo?.id ?? null,
-          replyToUser: replyTo?.userAddress ?? null
+          replyToUser: replyTo?.userId ?? null
         }
       })
 
@@ -294,10 +294,10 @@ class RankCommentService {
     })
   }
 
-  async deleteComment(id: string, userAddress: string) {
+  async deleteComment(id: string, userId: string) {
     await db.$transaction(async (tx) => {
       const comment = await tx.rankComment.findUnique({
-        where: { id, userAddress },
+        where: { id, userId },
         select: { rootCommentId: true }
       })
 
@@ -306,7 +306,7 @@ class RankCommentService {
       }
 
       await tx.rankComment.update({
-        where: { id, userAddress },
+        where: { id, userId },
         data: { deletedAt: new Date() }
       })
 
@@ -351,16 +351,16 @@ class RankCommentService {
 
   /**
    * Get comment history for a wallet address
-   * @param userAddress - The wallet address
+   * @param userId - The wallet address
    * @param limit - The number of comments to return, defaults to 10
    * @returns An array of comments
    */
-  async getCommentHistory(userAddress: string | null, limit = 10) {
-    return userAddress
+  async getCommentHistory(userId: string | null, limit = 10) {
+    return userId
       ? await db.rankComment.findMany({
           where: {
-            userAddress: {
-              contains: userAddress,
+            userId: {
+              contains: userId,
               mode: "insensitive"
             }
           },
@@ -374,22 +374,22 @@ class RankCommentService {
 
   /**
    * Get comment statistics for a Rank
-   * @param rank - The Rank object with id and userAddress
+   * @param rank - The Rank object with id and userId
    * @returns Comment statistics
    */
-  async getCommentStats(rank: { id: string; userAddress: string | null }) {
+  async getCommentStats(rank: { id: string; userId: string | null }) {
     const total = await db.rankComment.count({
       where: { rankId: rank.id }
     })
 
-    if (!rank.userAddress) {
+    if (!rank.userId) {
       return { total, selfTotal: 0, self24h: 0, self7d: 0 }
     }
 
     const selfTotal = await db.rankComment.count({
       where: {
-        userAddress: {
-          contains: rank.userAddress,
+        userId: {
+          contains: rank.userId,
           mode: "insensitive"
         }
       }
@@ -397,8 +397,8 @@ class RankCommentService {
 
     const self24h = await db.rankComment.count({
       where: {
-        userAddress: {
-          contains: rank.userAddress,
+        userId: {
+          contains: rank.userId,
           mode: "insensitive"
         },
         createdAt: {
@@ -409,8 +409,8 @@ class RankCommentService {
 
     const self7d = await db.rankComment.count({
       where: {
-        userAddress: {
-          contains: rank.userAddress,
+        userId: {
+          contains: rank.userId,
           mode: "insensitive"
         },
         createdAt: {

@@ -5,16 +5,13 @@ import { createArticleParamsSchema } from "~/server/schema"
 
 export const articleRouter = createTRPCRouter({
     detail: publicProcedure.input(z.object({ id: z.string() })).query(async ({ input, ctx }) => {
-        const userAddress = ctx.userAddress
-        return await articleService.detail(input.id, userAddress)
+        return await articleService.detail(input.id, ctx.userId)
     }),
     getArticlesByRankId: publicProcedure.input(z.object({ rankId: z.string() })).query(async ({ input, ctx }) => {
-        const userAddress = ctx.userAddress
-        return await articleService.getArticlesByRankId(input.rankId, userAddress)
+        return await articleService.getArticlesByRankId(input.rankId, ctx.userId)
     }),
     create: protectedProcedure.input(z.object({ rankId: z.string(), params: createArticleParamsSchema })).mutation(async ({ input, ctx }) => {
-        const userAddress = ctx.userAddress!
-        return await articleService.create(input.rankId, input.params, userAddress)
+        return await articleService.create(input.rankId, input.params, ctx.userId!)
     }),
     update: protectedProcedure
         .input(z.object({
@@ -22,13 +19,11 @@ export const articleRouter = createTRPCRouter({
             params: createArticleParamsSchema
         }))
         .mutation(async ({ input, ctx }) => {
-            const userAddress = ctx.userAddress!
-            return await articleService.update(input.id, input.params, userAddress)
+            return await articleService.update(input.id, input.params, ctx.userId!)
         }),
     delete: protectedProcedure
         .input(z.object({ id: z.string() }))
         .mutation(async ({ input, ctx }) => {
-            const userAddress = ctx.userAddress!
-            return await articleService.delete(input.id, userAddress)
+            return await articleService.delete(input.id, ctx.userId!)
         }),
 })

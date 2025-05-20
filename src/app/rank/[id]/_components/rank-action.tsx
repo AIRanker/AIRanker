@@ -2,7 +2,7 @@
 
 import { Heart, Share2, Star } from "lucide-react"
 import { toast } from "sonner"
-import { useAuth } from "~/components/auth/auth-context"
+import { useAuth, useClerk, useSignIn } from "@clerk/nextjs"
 import { cn } from "~/lib/utils"
 import type { RankDetailsResult } from "~/server/services/rank"
 import { api } from "~/trpc/react"
@@ -24,7 +24,8 @@ const RankAction = ({ detail, id }: RankActionProps) => {
       initialData: detail
     }
   )
-  const { isAuthenticated, openDialog } = useAuth()
+  const { isSignedIn } = useAuth()
+  const { openSignIn } = useClerk()
   const useUtils = api.useUtils()
   const { mutate: starMutate } = api.rank.star.useMutation({
     onSuccess: () => {
@@ -70,8 +71,8 @@ const RankAction = ({ detail, id }: RankActionProps) => {
               data?.isStared && "text-yellow-400 fill-yellow-400"
             )}
             onClick={(event) => {
-              if (!isAuthenticated) {
-                void openDialog()
+              if (!isSignedIn) {
+                void openSignIn()
               } else {
                 data && starMutate({ rankId: data.id })
               }
@@ -82,8 +83,8 @@ const RankAction = ({ detail, id }: RankActionProps) => {
           <Heart
             className={cn("cursor-pointer text-primary hover:scale-125 hover:fill-red-400 hover:text-red-400 transition", data?.isLiked && "text-red-400 fill-red-400")}
             onClick={(event) => {
-              if (!isAuthenticated) {
-                void openDialog()
+              if (!isSignedIn) {
+                void openSignIn()
               } else {
                 data && likeMutate({ rankId: data.id })
               }

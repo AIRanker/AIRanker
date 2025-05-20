@@ -10,14 +10,12 @@ import { headers } from "next/headers"
 import Link from "next/link"
 import { Toaster } from "sonner"
 import { cookieToInitialState } from "wagmi"
-import AuthProvider from "~/components/auth/auth-provider"
 import { wagmiConfig } from "~/components/auth/config"
 import LogoAiRankerFull from "~/components/icons/logo-ai-ranker-full"
 import Nav from "~/components/nav"
 import { Badge } from "~/components/ui/badge"
 import { Button } from "~/components/ui/button"
 import { env } from "~/env"
-import { auth } from "~/server/auth"
 import { TRPCReactProvider, queryClient } from "~/trpc/react"
 
 const socialMedias = [
@@ -50,8 +48,6 @@ const geist = Geist({
 })
 
 export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  const session = await auth()
-  const wagmiState = cookieToInitialState(wagmiConfig, (await headers()).get("cookie"))
   const version = "BETA"
   const hash = env.NEXT_PUBLIC_GIT_SHA?.slice(0, 7) ?? "DEV"
 
@@ -60,66 +56,64 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
       <html lang="en" className={`${geist.variable}`}>
         <body className={"flex h-screen w-full gap-12 flex-col"}>
           <QueryClientProvider client={queryClient}>
-            <AuthProvider session={session} wagmiState={wagmiState}>
-              <TRPCReactProvider>
-                <ReactQueryDevtools initialIsOpen={false} />
-                <Toaster />
-                <header className="bg-background fixed top-0 z-30 mx-auto flex h-20 w-full items-center justify-between shadow-lg px-4 xl:px-0">
-                  <div className="mx-auto flex w-full max-w-7xl items-center justify-between pr-0">
-                    <Link className={"flex flex-row items-center gap-2"} href="/">
-                      <LogoAiRankerFull className="size-12 text-primary" />
-                    </Link>
-                    <div>
-                      <Nav />
-                    </div>
-                    <div className="hidden items-center gap-4 md:flex md:gap-4">
-                      <SignedOut>
-                        <SignInButton />
-                        <SignUpButton />
-                      </SignedOut>
-                      <SignedIn>
-                        <UserButton />
-                      </SignedIn>
-                      <Link href={"/create/tool"}>
-                        <Button variant={"outline"} className={"border-primary text-primary font-bold"}>
-                          Create Tool
-                        </Button>
-                      </Link>
-                      <Link href={"/create"}>
-                        <Button variant={"outline"} className={"border-primary text-primary font-bold"}>
-                          Create Collection
-                        </Button>
-                      </Link>
-                    </div>
+            <TRPCReactProvider>
+              <ReactQueryDevtools initialIsOpen={false} />
+              <Toaster />
+              <header className="bg-background fixed top-0 z-30 mx-auto flex h-20 w-full items-center justify-between shadow-lg px-4 xl:px-0">
+                <div className="mx-auto flex w-full max-w-7xl items-center justify-between pr-0">
+                  <Link className={"flex flex-row items-center gap-2"} href="/">
+                    <LogoAiRankerFull className="size-12 text-primary" />
+                  </Link>
+                  <div>
+                    <Nav />
                   </div>
-                </header>
-                <div className={"flex-1 mx-auto w-full max-w-7xl px-4 xl:px-0"}>{children}</div>
-                <footer className="bg-background mt-auto w-full border-t py-6">
-                  <div className="mx-auto flex w-full max-w-7xl flex-col items-center justify-between gap-4 px-4 md:flex-row xl:px-0">
-                    <div className="flex flex-col items-center gap-2 md:items-start">
-                      <div className={"flex flex-row gap-4"}>
-                        <Link href="/" className="flex items-center gap-2">
-                          <LogoAiRankerFull className="size-8 text-primary" />
-                        </Link>
-                        <div className="flex items-center gap-2">
-                          <Badge variant="outline">{version}</Badge>
-                          <Badge className={"hidden"} variant="outline">
-                            {hash}
-                          </Badge>
-                        </div>
+                  <div className="hidden items-center gap-4 md:flex md:gap-4">
+                    <SignedOut>
+                      <SignInButton />
+                      <SignUpButton />
+                    </SignedOut>
+                    <SignedIn>
+                      <UserButton />
+                    </SignedIn>
+                    <Link href={"/create/tool"}>
+                      <Button variant={"outline"} className={"border-primary text-primary font-bold"}>
+                        Create Tool
+                      </Button>
+                    </Link>
+                    <Link href={"/create"}>
+                      <Button variant={"outline"} className={"border-primary text-primary font-bold"}>
+                        Create Collection
+                      </Button>
+                    </Link>
+                  </div>
+                </div>
+              </header>
+              <div className={"flex-1 mx-auto w-full max-w-7xl px-4 xl:px-0"}>{children}</div>
+              <footer className="bg-background mt-auto w-full border-t py-6">
+                <div className="mx-auto flex w-full max-w-7xl flex-col items-center justify-between gap-4 px-4 md:flex-row xl:px-0">
+                  <div className="flex flex-col items-center gap-2 md:items-start">
+                    <div className={"flex flex-row gap-4"}>
+                      <Link href="/" className="flex items-center gap-2">
+                        <LogoAiRankerFull className="size-8 text-primary" />
+                      </Link>
+                      <div className="flex items-center gap-2">
+                        <Badge variant="outline">{version}</Badge>
+                        <Badge className={"hidden"} variant="outline">
+                          {hash}
+                        </Badge>
                       </div>
                     </div>
-                    <div className="flex gap-6">
-                      {socialMedias.map((social) => (
-                        <a key={social.type} href={social.href} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary">
-                          {social.title}
-                        </a>
-                      ))}
-                    </div>
                   </div>
-                </footer>
-              </TRPCReactProvider>
-            </AuthProvider>
+                  <div className="flex gap-6">
+                    {socialMedias.map((social) => (
+                      <a key={social.type} href={social.href} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary">
+                        {social.title}
+                      </a>
+                    ))}
+                  </div>
+                </div>
+              </footer>
+            </TRPCReactProvider>
           </QueryClientProvider>
         </body>
       </html>

@@ -1,9 +1,9 @@
 import { create } from "domain"
 
-export function generateRankSelect(userAddress?: string) {
+export function generateRankSelect(userId?: string) {
   return {
     id: true,
-    userAddress: true,
+    userId: true,
     name: true,
     description: true,
     createdAt: true,
@@ -47,11 +47,11 @@ export function generateRankSelect(userAddress?: string) {
         stars: true
       }
     },
-    ...(userAddress
+    ...(userId
       ? {
         likes: {
           where: {
-            userAddress
+            userId
           },
           select: {
             rankId: true
@@ -60,7 +60,7 @@ export function generateRankSelect(userAddress?: string) {
         },
         stars: {
           where: {
-            userAddress
+            userId
           },
           select: {
             rankId: true
@@ -71,7 +71,7 @@ export function generateRankSelect(userAddress?: string) {
       : {})
   }
 }
-export function generateSoftwareSelect(userAddress?: string) {
+export function generateSoftwareSelect(userId?: string) {
   return {
     id: true,
     name: true,
@@ -105,11 +105,11 @@ export function generateSoftwareSelect(userAddress?: string) {
         comments: true
       }
     },
-    ...(userAddress
+    ...(userId
       ? {
         likes: {
           where: {
-            userAddress
+            userId
           },
           select: {
             softwareId: true
@@ -118,7 +118,7 @@ export function generateSoftwareSelect(userAddress?: string) {
         },
         stars: {
           where: {
-            userAddress
+            userId
           },
           select: {
             softwareId: true

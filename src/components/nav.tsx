@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { useAuth } from "~/components/auth/auth-context"
+import { useAuth, useClerk, useSignIn } from "@clerk/nextjs"
 import { cn } from "~/lib/utils"
 import { MobileMenu } from "./mobile-menu"
 export const navItems = [
@@ -15,13 +15,14 @@ export const navItems = [
 
 export default function Nav() {
   const pathname = usePathname()
-  const { isAuthenticated } = useAuth()
+  const { isSignedIn } = useAuth()
+  const { openSignIn } = useClerk()
 
   return (
     <>
       <nav className="hidden items-center justify-center gap-4 text-sm md:flex">
         {navItems.map((item) => {
-          if (item.requiresLogin && !isAuthenticated) {
+          if (item.requiresLogin && !isSignedIn) {
             return null
           }
           return (

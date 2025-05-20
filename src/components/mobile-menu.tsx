@@ -1,13 +1,11 @@
 import { Menu, XIcon } from "lucide-react"
-import { useSession } from "next-auth/react"
+import { useAuth, useClerk, useSignIn } from "@clerk/nextjs"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { useState } from "react"
-import WalletButton from "~/components/auth/wallet-button"
 import { Button } from "~/components/ui/button"
 import { Sheet, SheetTrigger, SheetContent, SheetHeader, SheetFooter, SheetClose } from "~/components/ui/sheet"
 import { cn } from "~/lib/utils"
-
 export const MobileMenu = ({
   navs
 }: {
@@ -15,9 +13,8 @@ export const MobileMenu = ({
 }) => {
   const pathname = usePathname()
   const [isOpen, setIsOpen] = useState(false)
-
-  const { data: session } = useSession()
-  const isLoggedIn = !!session?.address
+  const { isSignedIn } = useAuth()
+  const { openSignIn } = useClerk()
 
   return (
     <Sheet open={isOpen} onOpenChange={setIsOpen}>
@@ -39,7 +36,7 @@ export const MobileMenu = ({
         <div className="relative px-6 py-8">
           <ul className="space-y-4">
             {navs.map((item) => {
-              if (item.requiresLogin && !isLoggedIn) {
+              if (item.requiresLogin && !isSignedIn) {
                 return null
               }
               return (
@@ -60,9 +57,6 @@ export const MobileMenu = ({
             })}
           </ul>
         </div>
-        <SheetFooter className="border-t border-border px-6 py-2">
-          <WalletButton />
-        </SheetFooter>
       </SheetContent>
     </Sheet>
   )

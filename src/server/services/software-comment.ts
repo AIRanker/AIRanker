@@ -83,7 +83,7 @@ class SoftwareCommentService {
                     .map((reply) => ({
                         ...reply,
                         comment: reply.content,
-                        createdBy: reply.userAddress
+                        createdBy: reply.userId
                     }))
                 : []
             const replyCount = replyInfo?.count ?? 0
@@ -91,7 +91,7 @@ class SoftwareCommentService {
             return {
                 ...comment,
                 comment: comment.content,
-                createdBy: comment.userAddress,
+                createdBy: comment.userId,
                 replies,
                 replyCount
             }
@@ -204,12 +204,12 @@ class SoftwareCommentService {
 
     async getRecentUserComments({
         softwareId,
-        userAddress,
+        userId,
         startTime,
         limit = 50
     }: {
         softwareId: string
-        userAddress: string
+        userId: string
         startTime?: Date
         limit?: number
     }) {
@@ -218,7 +218,7 @@ class SoftwareCommentService {
         const comments = await db.softwareComment.findMany({
             where: {
                 softwareId,
-                userAddress: { not: userAddress },
+                userId: { not: userId },
                 createdAt: {
                     gte: startTime
                 }
@@ -235,12 +235,12 @@ class SoftwareCommentService {
     async createComment({
         softwareId,
         content,
-        userAddress,
+        userId,
         replyToCommentId
     }: {
         softwareId: string
         content: string
-        userAddress: string
+        userId: string
         replyToCommentId?: string
     }) {
         const software = await db.software.findUnique({
@@ -251,7 +251,7 @@ class SoftwareCommentService {
             throw new CommonError(ErrorCode.BAD_PARAMS, `Can't found software with id ${softwareId}`)
         }
 
-        console.log(`Creating comment for software ${softwareId} from user ${userAddress} in reply to comment ${replyToCommentId}: ${content.slice(0, 10)}...`)
+        console.log(`Creating comment for software ${softwareId} from user ${userId} in reply to comment ${replyToCommentId}: ${content.slice(0, 10)}...`)
 
         const replyTo = replyToCommentId ? await this.getCommentById(replyToCommentId) : null
 
@@ -275,10 +275,10 @@ class SoftwareCommentService {
                 data: {
                     softwareId,
                     content,
-                    userAddress,
+                    userId,
                     rootCommentId,
                     replyToComment: replyTo?.id ?? null,
-                    replyToUser: replyTo?.userAddress ?? null
+                    replyToUser: replyTo?.userId ?? null
                 }
             })
 
@@ -294,10 +294,10 @@ class SoftwareCommentService {
         })
     }
 
-    async deleteComment(id: string, userAddress: string) {
+    async deleteComment(id: string, userId: string) {
         await db.$transaction(async (tx) => {
             const comment = await tx.softwareComment.findUnique({
-                where: { id, userAddress },
+                where: { id, userId },
                 select: { rootCommentId: true }
             })
 
@@ -306,7 +306,7 @@ class SoftwareCommentService {
             }
 
             await tx.softwareComment.update({
-                where: { id, userAddress },
+                where: { id, userId },
                 data: { deletedAt: new Date() }
             })
 
@@ -351,16 +351,16 @@ class SoftwareCommentService {
 
     /**
      * Get comment history for a wallet address
-     * @param userAddress - The wallet address
+     * @param userId - The wallet address
      * @param limit - The number of comments to return, defaults to 10
      * @returns An array of comments
      */
-    async getCommentHistory(userAddress: string | null, limit = 10) {
-        return userAddress
+    async getCommentHistory(userId: string | null, limit = 10) {
+        return userId
             ? await db.softwareComment.findMany({
                 where: {
-                    userAddress: {
-                        contains: userAddress,
+                    userId: {
+                        contains: userId,
                         mode: "insensitive"
                     }
                 },
@@ -374,23 +374,23 @@ class SoftwareCommentService {
 
     /**
      * Get comment statistics for a Software
-     * @param software - The Software object with id and userAddress
+     * @param software - The Software object with id and userId
      * @returns Comment statistics
      */
-    async getCommentStats(software: { id: string; userAddress?: string }) {
+    async getCommentStats(software: { id: string; userId?: string }) {
         const total = await db.softwareComment.count({
             where: { softwareId: software.id }
         })
 
-        if (!software.userAddress) {
+        if (!software.userId) {
             return { total, selfTotal: 0, self24h: 0, self7d: 0 }
         }
 
         const selfTotal = await db.softwareComment.count({
             where: {
                 softwareId: software.id,
-                userAddress: {
-                    contains: software.userAddress,
+                userId: {
+                    contains: software.userId,
                     mode: "insensitive"
                 }
             }
@@ -399,8 +399,8 @@ class SoftwareCommentService {
         const self24h = await db.softwareComment.count({
             where: {
                 softwareId: software.id,
-                userAddress: {
-                    contains: software.userAddress,
+                userId: {
+                    contains: software.userId,
                     mode: "insensitive"
                 },
                 createdAt: {
@@ -412,8 +412,8 @@ class SoftwareCommentService {
         const self7d = await db.softwareComment.count({
             where: {
                 softwareId: software.id,
-                userAddress: {
-                    contains: software.userAddress,
+                userId: {
+                    contains: software.userId,
                     mode: "insensitive"
                 },
                 createdAt: {
