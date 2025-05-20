@@ -25,7 +25,7 @@ export const RankCommentReply = ({
   replyMessage?: {
     createdAt: Date
     createdBy: string
-    message: string
+    comment: string
     id: string
   }
 }) => {
@@ -71,7 +71,7 @@ export const RankCommentReply = ({
                 {shortenAddress(replyMessage.createdBy)}
                 <span className={"ml-6 text-xs text-gray-400"}>{formatDistanceToNow(replyMessage.createdAt)}</span>
               </div>
-              <div className={"text-sm text-gray-400"}>{replyMessage.message}</div>
+              <div className={"text-sm text-gray-400"}>{replyMessage.comment}</div>
             </div>
           )}
           <div className="space-y-2">

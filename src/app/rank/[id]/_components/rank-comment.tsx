@@ -7,25 +7,49 @@ import { RankCommentReply } from "~/app/rank/[id]/_components/rank-comment-reply
 import type { CommentListResult } from "~/server/services/rank-comment"
 import { api } from "~/trpc/react"
 
-const RankCommentItem = ({ comment }: { comment: CommentListResult["list"][number] }) => {
+const RankCommentItem = ({ comment, rankId }: { comment: CommentListResult["list"][number]; rankId: string }) => {
   return (
-    <div className="flex gap-3 py-4 border-b border-gray-100">
-      {/*<Avatar className="h-10 w-10">*/}
-      {/*  <AvatarImage src={comment.author.avatar} />*/}
-      {/*  <AvatarFallback>{comment.author.username[0]}</AvatarFallback>*/}
-      {/*</Avatar>*/}
-      <div className="flex-1">
-        <div className="flex items-center gap-2 mb-1">@{comment.createdBy}</div>
-        <p className="text-sm text-gray-700 mb-2">{comment.comment}</p>
-        <div className="flex items-center gap-4 text-sm text-gray-500">
-          <span className="text-xs">{formatDistanceToNow(comment.createdAt)}</span>
-          <div className="flex items-center gap-1">
-            <ThumbsUp size={14} className="cursor-pointer" />
-          </div>
-          <div className="flex items-center gap-1">
-            <MessageSquare size={14} className="cursor-pointer" />
-          </div>
+    <div className={"mt-4 flex flex-col rounded-lg p-3  border-b border-gray-100"}>
+      <div className={"flex flex-row items-center justify-between"}>
+        <div className={"text-sm"}>
+          {comment.createdBy}
+          <span className={"ml-6 text-xs text-gray-400"}>{formatDistanceToNow(comment.createdAt)}</span>
         </div>
+        <div className={"text-primary-foreground flex cursor-pointer flex-row items-center gap-4 text-xs"}>
+          {/*TODO 删除*/}
+          {/*{compareStringToUpperCase(address, item.createdBy) && <DeleteMessage messageId={item.id} />}*/}
+          <RankCommentReply rankId={comment.id} replyMessage={comment}>
+            <div>Reply</div>
+          </RankCommentReply>
+        </div>
+      </div>
+      <div className={"text-gray-400"}>
+        {comment.comment}
+        <div className="mb-1 text-xs text-gray-500">
+          {comment.replyCount} {comment.replyCount === 1 ? "reply" : "replies"}
+        </div>
+        {comment.replyCount > 0 && (
+          <div className="mt-2 space-y-2 rounded-lg border-t pt-2">
+            {comment.replies.map((reply) => (
+              <div key={reply.id} className="rounded bg-black p-3">
+                <div className="text-primary-foreground flex items-center justify-between text-xs font-bold">
+                  <div>
+                    {reply.createdBy}
+                    {reply.replyToUser && reply.replyToComment !== comment.id && <span className="mx-1 text-gray-500">replied to {reply.replyToUser}</span>}
+                    <span className="ml-2 text-gray-500">{formatDistanceToNow(reply.createdAt)}</span>
+                  </div>
+                  <div className={"text-primary-foreground flex cursor-pointer flex-row items-center gap-4 text-xs"}>
+                    {/*{compareStringToUpperCase(address, reply.createdBy) && <DeleteMessage messageId={reply.id} />}*/}
+                    <RankCommentReply rankId={rankId} replyMessage={reply}>
+                      <div>Reply</div>
+                    </RankCommentReply>
+                  </div>
+                </div>
+                <div className="text-primary-foreground mt-1 text-sm font-thin">{reply.comment}</div>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   )
@@ -45,7 +69,7 @@ const RankComments = ({ id }: { id: string }) => {
       <h2 className="text-2xl font-bold mb-6 text-primary">Comments</h2>
       <div className="space-y-1">
         {data?.list?.map((comment) => (
-          <RankCommentItem key={comment.id} comment={comment} />
+          <RankCommentItem key={`comment-${comment.id}`} comment={comment} rankId={id} />
         ))}
         {data?.list?.length === 0 && (
           <div>
