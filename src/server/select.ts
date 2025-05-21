@@ -1,4 +1,4 @@
-import { create } from "domain"
+import type { Prisma } from "@prisma/client"
 
 export function generateRankSelect(userId?: string) {
   return {
@@ -51,6 +51,22 @@ export function generateRankSelect(userId?: string) {
         articles: true,
         likes: true,
         stars: true
+      }
+    },
+    comments: {
+      select: {
+        id: true,
+        user: {
+          select: {
+            id: true,
+            name: true,
+            avatar: true
+          }
+        }
+      },
+      take: 4,
+      orderBy: {
+        createdAt: "desc" as Prisma.SortOrder
       }
     },
     ...(userId
@@ -109,6 +125,22 @@ export function generateSoftwareSelect(userId?: string) {
         likes: true,
         stars: true,
         comments: true
+      }
+    },
+    comments: {
+      select: {
+        id: true,
+        user: {
+          select: {
+            id: true,
+            name: true,
+            avatar: true
+          }
+        }
+      },
+      take: 4,
+      orderBy: {
+        createdAt: "desc" as Prisma.SortOrder
       }
     },
     ...(userId
