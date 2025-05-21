@@ -296,7 +296,7 @@ const TopTools = () => {
                   </Link>
                   <span className={"line-clamp-1 font-normal text-foreground/50 text-sm"}>{tool.description}</span>
                 </div>
-                <div className="text-sm text-gray-500">3 days ago</div>
+                <div className="text-sm text-gray-500">{formatDistanceToNow(tool.createdAt)} ago</div>
               </div>
             ))}
           </div>

@@ -1,6 +1,10 @@
 "use client"
 import { type MotionValue, motion, useScroll, useSpring, useTransform } from "motion/react"
+import Link from "next/link"
+import { useRouter } from "next/navigation"
 import React from "react"
+import { Cover } from "~/components/ui/cover"
+import { FlipWords } from "~/components/ui/flip-words"
 import { CommandSearch } from "./command-search"
 
 export const HeroParallax = ({
@@ -41,13 +45,22 @@ export const HeroParallax = ({
 }
 
 export const Header = () => {
+  const words = ["MCP Tools", "AI Agent"]
+  const router = useRouter()
   return (
     <div className="max-w-7xl relative mx-auto py-20 md:py-40 px-4 w-full  left-0 top-0">
       <h1 className="text-2xl md:text-7xl font-bold dark:text-white">
-        Crowd-Ranked AI Tools <br /> Globally Compared.
+        <div>
+          Global <FlipWords className={"text-primary"} words={words} /> Ranked
+        </div>
+        <div>by the Crowd</div>
       </h1>
-      <p className="max-w-2xl text-base md:text-xl mt-8 dark:text-neutral-200 opacity-50">
-        Discover the most impactful AI tools across categories — ranked by the global community, tracked by region, and driven by open participation.
+      <p className="max-w-2xl text-base md:text-xl mt-8 dark:text-neutral-200 ">
+        <span className={"opacity-50"}>Discover, review, and collection the best AI tools or MCP Tools globally. </span>
+        <Link href={"https://x.com/airanker_"} target={"_blank"}>
+          <Cover className={"opacity-100 text-foreground font-bold inline-block cursor-pointer"}>Join our community</Cover>{" "}
+        </Link>
+        <span className={"opacity-50"}>to share experiences, explore top recommendations, and find the perfect AI tool for your needs!</span>
       </p>
       <div className={"relative z-50 w-fit"}>
         <CommandSearch />

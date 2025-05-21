@@ -19,17 +19,7 @@ const socialMedias = [
   {
     title: "Twitter / X",
     type: "x",
-    href: "https://x.com/REPO_Protocol"
-  },
-  {
-    title: "Discord",
-    type: "discord",
-    href: "https://t.me/REPOProtocol"
-  },
-  {
-    title: "Telegram",
-    type: "telegram",
-    href: "https://discord.gg/59hEPnGwT7"
+    href: "https://x.com/airanker_"
   }
 ]
 
