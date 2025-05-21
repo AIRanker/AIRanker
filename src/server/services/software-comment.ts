@@ -36,7 +36,16 @@ class SoftwareCommentService {
         createdAt: "desc"
       },
       skip: actualPage * pageable.size,
-      take: pageable.size
+      take: pageable.size,
+      include: {
+        user: {
+          select: {
+            id: true,
+            name: true,
+            avatar: true
+          }
+        }
+      }
     })
 
     if (totalCount === 0) {
@@ -60,31 +69,40 @@ class SoftwareCommentService {
 
     // Get replies from db
     const replyIds = replyInfos.flatMap((reply) => reply.replyIds)
-    // biome-ignore lint/complexity/noForEach: <explanation>
-    ;(
-      await db.softwareComment.findMany({
-        where: {
-          id: { in: replyIds },
-          deletedAt: null
+      // biome-ignore lint/complexity/noForEach: <explanation>
+      ; (
+        await db.softwareComment.findMany({
+          where: {
+            id: { in: replyIds },
+            deletedAt: null
+          },
+          include: {
+            user: {
+              select: {
+                id: true,
+                name: true,
+                avatar: true
+              }
+            }
+          }
+        })
+      ).forEach((reply) => {
+        const replyInfo = replyInfos.find((replyInfo) => replyInfo.rootId === reply.rootCommentId)
+        if (replyInfo) {
+          replyInfo.replies.push(reply)
         }
       })
-    ).forEach((reply) => {
-      const replyInfo = replyInfos.find((replyInfo) => replyInfo.rootId === reply.rootCommentId)
-      if (replyInfo) {
-        replyInfo.replies.push(reply)
-      }
-    })
 
     const commentsWithReplies = comments.map((comment) => {
       const replyInfo = replyInfos.find((replyInfo) => replyInfo.rootId === comment.id)
       const replies = replyInfo
         ? replyInfo.replies
-            .sort((a, b) => replyInfo.replyIds.indexOf(a.id) - replyInfo.replyIds.indexOf(b.id))
-            .map((reply) => ({
-              ...reply,
-              comment: reply.content,
-              createdBy: reply.userId
-            }))
+          .sort((a, b) => replyInfo.replyIds.indexOf(a.id) - replyInfo.replyIds.indexOf(b.id))
+          .map((reply) => ({
+            ...reply,
+            comment: reply.content,
+            createdBy: reply.userId
+          }))
         : []
       const replyCount = replyInfo?.count ?? 0
 
@@ -134,6 +152,15 @@ class SoftwareCommentService {
         where: {
           id: { in: replyIds },
           deletedAt: null
+        },
+        include: {
+          user: {
+            select: {
+              id: true,
+              name: true,
+              avatar: true
+            }
+          }
         }
       })
     ).sort((a, b) => replyIds.indexOf(a.id) - replyIds.indexOf(b.id))
@@ -153,6 +180,15 @@ class SoftwareCommentService {
       where: {
         id,
         deletedAt: null
+      },
+      include: {
+        user: {
+          select: {
+            id: true,
+            name: true,
+            avatar: true
+          }
+        }
       }
     })
 
@@ -226,7 +262,16 @@ class SoftwareCommentService {
       orderBy: {
         createdAt: "desc"
       },
-      take: Math.max(limit, 100)
+      take: Math.max(limit, 100),
+      include: {
+        user: {
+          select: {
+            id: true,
+            name: true,
+            avatar: true
+          }
+        }
+      }
     })
 
     return comments
@@ -279,6 +324,15 @@ class SoftwareCommentService {
           rootCommentId,
           replyToComment: replyTo?.id ?? null,
           replyToUser: replyTo?.userId ?? null
+        },
+        include: {
+          user: {
+            select: {
+              id: true,
+              name: true,
+              avatar: true
+            }
+          }
         }
       })
 
@@ -340,6 +394,15 @@ class SoftwareCommentService {
         where: {
           rootCommentId: comment.id,
           deletedAt: null
+        },
+        include: {
+          user: {
+            select: {
+              id: true,
+              name: true,
+              avatar: true
+            }
+          }
         }
       })
 
@@ -358,17 +421,26 @@ class SoftwareCommentService {
   async getCommentHistory(userId: string | null, limit = 10) {
     return userId
       ? await db.softwareComment.findMany({
-          where: {
-            userId: {
-              contains: userId,
-              mode: "insensitive"
+        where: {
+          userId: {
+            contains: userId,
+            mode: "insensitive"
+          }
+        },
+        orderBy: {
+          createdAt: "desc"
+        },
+        take: limit,
+        include: {
+          user: {
+            select: {
+              id: true,
+              name: true,
+              avatar: true
             }
-          },
-          orderBy: {
-            createdAt: "desc"
-          },
-          take: limit
-        })
+          }
+        }
+      })
       : []
   }
 

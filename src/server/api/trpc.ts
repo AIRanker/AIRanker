@@ -12,6 +12,7 @@ import superjson from "superjson"
 import { ZodError } from "zod"
 import { db } from "~/server/db"
 import { userService } from "../services/user"
+import { clerkClient } from "../clerk"
 type AuthObject = ReturnType<typeof getAuth>
 
 /**
@@ -28,9 +29,12 @@ type AuthObject = ReturnType<typeof getAuth>
  */
 export const createTRPCContext = async (opts: { headers: Headers, auth: AuthObject }) => {
   if (opts.auth.userId) {
+    const clerkUser = await clerkClient.users.getUser(opts.auth.userId)
     const currentUser = await userService.getUserById(opts.auth.userId)
     if (!currentUser) {
-      await userService.createUser(opts.auth.userId!, undefined)
+      await userService.createUser(opts.auth.userId, clerkUser.username, clerkUser.imageUrl, undefined)
+    } else {
+      await userService.updateUser(opts.auth.userId, clerkUser.username, clerkUser.imageUrl)
     }
   }
   return {

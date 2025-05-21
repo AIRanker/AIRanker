@@ -3,8 +3,6 @@ import { db } from "../db"
 import type { CreateRankParams, Pageable, PageableData, RankSearchParams, UpdateRankParams } from "../schema"
 import { generateRankSelect } from "../select"
 import { createSoftware } from "./software"
-import { clerkClient, fetchUserMap } from "../clerk"
-import type { User } from "@clerk/nextjs/server"
 
 class RankService {
   async topRanks(userId?: string) {
@@ -74,16 +72,11 @@ class RankService {
       take: params.pageable.size,
       skip: actualPage * params.pageable.size
     })
-    const clerkUserMap = await fetchUserMap(ranks.map((rank) => rank.userId))
     const list = ranks.map((rank) => ({
       ...rank,
       tags: rank.tags.map((tag) => tag.tag.name),
       isLiked: userId ? rank.likes.length > 0 : false,
       isStared: userId ? rank.stars.length > 0 : false,
-      user: {
-        ...rank.user,
-        username: clerkUserMap.get(rank.userId)?.username || "",
-      },
       likes: undefined,
       stars: undefined
     }))

@@ -61,6 +61,8 @@ model User {
   createdAt        DateTime          @default(now()) @map("created_at")
   updatedAt        DateTime          @default(now()) @updatedAt @map("updated_at")
   invitedBy        String[]          @default([]) @map("invited_by")
+  avatar           String?           @map("avatar") @db.VarChar(255)
+  name             String?           @map("name") @db.VarChar(255)
   ranks            Rank[]
   platforms        UserPlatform[]
   articles         Article[]
