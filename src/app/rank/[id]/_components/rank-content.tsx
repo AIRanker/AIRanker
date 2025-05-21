@@ -1,5 +1,7 @@
 "use client"
+import { formatDistanceToNow } from "date-fns"
 import { motion } from "framer-motion"
+import { Heart } from "lucide-react"
 import Link from "next/link"
 import SoftwareAction from "~/app/_components/software-action"
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar"
@@ -7,6 +9,7 @@ import { Separator } from "~/components/ui/separator"
 import { cn } from "~/lib/utils"
 import type { SoftwareByRankIdResult } from "~/server/services/software"
 import { api } from "~/trpc/react"
+
 interface RankerContentProps {
   id: string
 }
@@ -64,6 +67,7 @@ const RankTopList = ({ data }: { data: SoftwareByRankIdResult }) => {
 const RankContent = ({ id }: RankerContentProps) => {
   const { data } = api.software.getSoftwaresByRankId.useQuery({ rankId: id })
   const { data: articleData } = api.article.getArticlesByRankId.useQuery({ rankId: id })
+  const { data: rank, isPending: rankPending } = api.rank.topRanks.useQuery()
   return (
     <div className={"flex flex-col justify-center -mt-40"}>
       {data && <RankTopList data={data} />}
@@ -95,13 +99,17 @@ const RankContent = ({ id }: RankerContentProps) => {
             ))}
         </div>
         <div className="col-span-1 h-fit flex flex-col rounded-2xl border-[1px] p-6 bg-background">
-          <div className="mb-4 text-2xl font-bold text-primary"># Recently Articles</div>
-          {articleData?.map((item) => (
+          <div className="mb-4 text-2xl font-bold text-primary"># Popular Collections</div>
+          {rank?.map((item) => (
             <div key={item.id} className="flex flex-row gap-4 items-center mb-4 justify-between">
-              <Link target="_blank" href={"/"} className="font-semibold text-muted-foreground hover:underline">
-                {item.title}
-              </Link>
-              <div className="text-xs text-muted-foreground">{item.createdAt.toLocaleDateString()}</div>
+              <div className={"flex flex-row gap-1 items-center"}>
+                <Link target="_blank" href={`/rank/${item.id}`} className="line-clamp-1 font-semibold text-muted-foreground hover:underline">
+                  {item.name}
+                </Link>
+                <Heart className={"text-primary"} size={16} />
+                <div className={"text-primary/60"}>{item._count.stars}</div>
+              </div>
+              <div className="text-xs text-muted-foreground">{formatDistanceToNow(item.createdAt)}</div>
             </div>
           ))}
         </div>

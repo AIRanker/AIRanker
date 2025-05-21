@@ -53,13 +53,13 @@ export const Header = () => {
         </div>
         <div>by the Crowd</div>
       </h1>
-      <p className="max-w-2xl text-base md:text-xl mt-8 dark:text-neutral-200 ">
+      <div className="max-w-2xl text-base md:text-xl mt-8 dark:text-neutral-200 ">
         <span className={"opacity-50"}>Discover, review, and collection the best AI tools or MCP Tools globally. </span>
         <Link href={"https://x.com/airanker_"} target={"_blank"}>
           <Cover className={"opacity-100 text-foreground font-bold inline-block cursor-pointer"}>Join our community</Cover>{" "}
         </Link>
         <span className={"opacity-50"}>to share experiences, explore top recommendations, and find the perfect AI tool for your needs!</span>
-      </p>
+      </div>
       <div className={"relative z-50 w-fit"}>
         <CommandSearch />
       </div>
