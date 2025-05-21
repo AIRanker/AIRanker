@@ -9,6 +9,7 @@ import { toast } from "sonner"
 import { ToolDialog } from "~/app/_components/tool-dialog"
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar"
 import { Button } from "~/components/ui/button"
+import { Skeleton } from "~/components/ui/skeleton"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs"
 import { cn } from "~/lib/utils"
 import type { Pageable } from "~/server/schema"
@@ -256,6 +257,15 @@ const TopTools = () => {
       <h1 className="mt-20 text-4xl font-bold">Top Tools</h1>
       <div className="flex flex-row mx-auto py-8 w-full gap-28">
         <div className="flex-1">
+          {categoryPending && (
+            <div className={"flex flex-row gap-4"}>
+              {Array(4)
+                .fill(0)
+                .map((_, index) => (
+                  <Skeleton className={"w-32 h-8"} key={`category-${index}`} />
+                ))}
+            </div>
+          )}
           <Tabs value={condition.currentCategory} onValueChange={(c) => setCondition({ ...condition, currentCategory: c })} className={"flex flex-col"}>
             <TabsList className="flex shrink-0 border-b border-mauve6">
               {category?.map((item) => (
@@ -273,9 +283,26 @@ const TopTools = () => {
             </TabsList>
 
             <div className="space-y-2">
-              {data?.list?.map((tool) => (
-                <ToolCard key={tool.id} tool={tool} />
-              ))}
+              {!isPending && data?.list?.map((tool) => <ToolCard key={tool.id} tool={tool} />)}
+              {isPending &&
+                Array(10)
+                  .fill(0)
+                  .map((_, index) => (
+                    <div key={`skeleton-${index}`} className="flex items-center justify-between border-b py-4">
+                      <div className="flex items-center gap-3">
+                        <Skeleton className="h-12 w-12 rounded-full" />
+                        <div className="flex-1">
+                          <Skeleton className="h-5 w-32 mb-2" />
+                          <Skeleton className="h-4 w-96" />
+                          <Skeleton className="h-4 w-3/4 mt-1" />
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-4">
+                        <Skeleton className="h-6 w-12" />
+                        <Skeleton className="h-6 w-12" />
+                      </div>
+                    </div>
+                  ))}
             </div>
           </Tabs>
         </div>
@@ -299,26 +326,52 @@ const TopTools = () => {
                 <div className="text-sm text-gray-500">{formatDistanceToNow(tool.createdAt)} ago</div>
               </div>
             ))}
+            {recentlyPending &&
+              Array(5)
+                .fill(0)
+                .map((_, index) => (
+                  <div key={`recent-skeleton-${index}`} className="flex items-center justify-between py-2 gap-4 w-full">
+                    <Skeleton className="h-8 w-8 rounded-full" />
+                    <div className="flex flex-col flex-1">
+                      <Skeleton className="h-4 w-24 mb-1" />
+                      <Skeleton className="h-3 w-full" />
+                    </div>
+                    <Skeleton className="h-4 w-16" />
+                  </div>
+                ))}
           </div>
 
           <div className={"flex-1"}>
             <h2 className="mt-4 mb-4 text-2xl font-bold text-primary">Top Contributors</h2>
             <div className="space-y-2">
-              {userData?.map((contributor) => (
-                <div key={contributor.id} className="flex items-center justify-between py-2">
-                  <div className="flex items-center gap-2">
-                    <Avatar className={"size-5"}>
-                      <AvatarImage src={contributor.info?.imageUrl ?? ""} />
-                      <AvatarFallback>{contributor.info?.username?.charAt(0)}</AvatarFallback>
-                    </Avatar>
-                    <span>{contributor.info?.username}</span>
-                    {/*<span className="text-sm text-gray-500">{contributor} points</span>*/}
+              {!userPending &&
+                userData?.map((contributor) => (
+                  <div key={contributor.id} className="flex items-center justify-between py-2">
+                    <div className="flex items-center gap-2">
+                      <Avatar className={"size-5"}>
+                        <AvatarImage src={contributor.info?.imageUrl ?? ""} />
+                        <AvatarFallback>{contributor.info?.username?.charAt(0)}</AvatarFallback>
+                      </Avatar>
+                      <span>{contributor.info?.username}</span>
+                      {/*<span className="text-sm text-gray-500">{contributor} points</span>*/}
+                    </div>
+                    <div className="flex items-center gap-1 text-primary">
+                      <span>{formatDistanceToNow(new Date(contributor.info?.lastSignInAt ?? new Date()))}</span>
+                    </div>
                   </div>
-                  <div className="flex items-center gap-1 text-primary">
-                    <span>{formatDistanceToNow(new Date(contributor.info?.lastSignInAt ?? new Date()))}</span>
-                  </div>
-                </div>
-              ))}
+                ))}
+              {userPending &&
+                Array(5)
+                  .fill(0)
+                  .map((_, index) => (
+                    <div key={`user-skeleton-${index}`} className="flex items-center justify-between py-2">
+                      <div className="flex items-center gap-2">
+                        <Skeleton className="h-5 w-5 rounded-full" />
+                        <Skeleton className="h-4 w-36" />
+                      </div>
+                      <Skeleton className="h-4 w-20" />
+                    </div>
+                  ))}
             </div>
           </div>
 

@@ -1,7 +1,6 @@
 "use client"
-import { type MotionValue, motion, useScroll, useSpring, useTransform } from "motion/react"
+import { motion } from "motion/react"
 import Link from "next/link"
-import { useRouter } from "next/navigation"
 import React from "react"
 import { Cover } from "~/components/ui/cover"
 import { FlipWords } from "~/components/ui/flip-words"
@@ -46,7 +45,6 @@ export const HeroParallax = ({
 
 export const Header = () => {
   const words = ["MCP Tools", "AI Agent"]
-  const router = useRouter()
   return (
     <div className="max-w-7xl relative mx-auto py-20 md:py-40 px-4 w-full  left-0 top-0">
       <h1 className="text-2xl md:text-7xl font-bold dark:text-white">
