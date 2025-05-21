@@ -57,7 +57,7 @@ importers:
         specifier: ^1.1.4
         version: 1.1.7(@types/react-dom@19.1.5(@types/react@19.1.4))(@types/react@19.1.4)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@radix-ui/react-slot':
-        specifier: ^1.2.0
+        specifier: ^1.2.3
         version: 1.2.3(@types/react@19.1.4)(react@19.1.0)
       '@radix-ui/react-tabs':
         specifier: ^1.1.9
@@ -3099,7 +3099,7 @@ packages:
     engines: {node: '>=8.6'}
 
   pify@3.0.0:
-    resolution: {integrity: sha1-5aSs0sEB/fPZpNB/DbxNtJ3SgXY=}
+    resolution: {integrity: sha512-C3FsVNH1udSEX48gGX1xfvwTWfsYWj5U+8/uK15BGzIGrKoUpghX8hWZwa/OFnakBiiVNmBvemTJR5mcy7iPcg==}
     engines: {node: '>=4'}
 
   pify@5.0.0:

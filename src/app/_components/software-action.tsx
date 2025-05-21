@@ -39,7 +39,30 @@ const SoftwareAction = ({
         <Star
           className={cn(
             "cursor-pointer text-primary hover:scale-125 hover:fill-yellow-400 hover:text-yellow-400 transition",
-            item.isLiked && "fill-yellow-400 text-yellow-400",
+            item.isStared && "fill-yellow-400 text-yellow-400",
+            starPending && "opacity-25 cursor-not-allowed",
+            className
+          )}
+          onClick={(event) => {
+            if (starPending) {
+              return
+            }
+            if (!isSignedIn) {
+              void openSignIn()
+            } else {
+              starMutate({ softwareId: item.id })
+            }
+            event.preventDefault()
+            event.stopPropagation()
+          }}
+        />
+        <span className="text-sm font-medium">{item._count.stars ?? 0}</span>
+      </div>
+      <div className="flex items-center gap-1">
+        <Heart
+          className={cn(
+            " cursor-pointer text-primary hover:scale-125 hover:fill-red-400 hover:text-red-400 transition",
+            item.isLiked && "fill-red-400 text-red-400",
             likePending && "opacity-25 cursor-not-allowed",
             className
           )}
@@ -57,29 +80,6 @@ const SoftwareAction = ({
           }}
         />
         <span className="text-sm font-medium">{item._count.likes ?? 0}</span>
-      </div>
-      <div className="flex items-center gap-1">
-        <Heart
-          className={cn(
-            " cursor-pointer text-primary hover:scale-125 hover:fill-red-400 hover:text-red-400 transition",
-            item.isStared && "fill-red-400 text-red-400",
-            likePending && "opacity-25 cursor-not-allowed",
-            className
-          )}
-          onClick={(event) => {
-            if (likePending) {
-              return
-            }
-            if (!isSignedIn) {
-              void openSignIn()
-            } else {
-              starMutate({ softwareId: item.id })
-            }
-            event.preventDefault()
-            event.stopPropagation()
-          }}
-        />
-        <span className="text-sm font-medium">{item._count.stars ?? 0}</span>
       </div>
       <div className="flex items-center gap-1">
         <MessageCircle

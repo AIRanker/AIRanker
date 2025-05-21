@@ -5,11 +5,9 @@ import { userService } from "~/server/services/user"
 
 export const userRouter = createTRPCRouter({
   bind: protectedProcedure.input(z.object({ accessToken: z.string(), platform: PlatformSchema })).mutation(({ input, ctx }) => {
-
     return userService.bind(input.accessToken, input.platform, ctx.userId!)
   }),
   me: protectedProcedure.query(({ ctx }) => {
-
     return userService.getUserById(ctx.userId!)
   }),
   topContributors: publicProcedure.query(() => {

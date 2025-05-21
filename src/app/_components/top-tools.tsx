@@ -1,6 +1,7 @@
 "use client"
 
 import { useAuth, useClerk } from "@clerk/nextjs"
+import { formatDistanceToNow } from "date-fns"
 import { Heart, MessageCircle, Share2, Star } from "lucide-react"
 import Link from "next/link"
 import { type FC, useEffect, useMemo, useState } from "react"
@@ -248,11 +249,8 @@ const TopTools = () => {
       enabled: condition.currentCategory.trim().length > 0
     }
   )
-  const currentCategory = useMemo(() => {
-    return category?.find((item) => item.id === condition.currentCategory)
-  }, [condition])
-  console.log("data", data)
-  const { data: recentlySoftware } = api.software.recentlySoftwares.useQuery()
+  const { data: recentlySoftware, isPending: recentlyPending } = api.software.recentlySoftwares.useQuery()
+  const { data: userData, isPending: userPending } = api.user.topContributors.useQuery()
   return (
     <>
       <h1 className="mt-20 text-4xl font-bold">Top Tools</h1>
@@ -282,28 +280,23 @@ const TopTools = () => {
           </Tabs>
         </div>
         <div className="space-y-4 min-w-[330px] flex flex-col">
-          {/*<div>*/}
-          {/*  <h2 className="mb-4 text-2xl font-bold text-primary">Community Pulse</h2>*/}
-          {/*  <div className="space-y-4 divide-y">*/}
-          {/*    {communityPosts.map((post) => (*/}
-          {/*      <CommunityPost key={post.id} post={post} />*/}
-          {/*    ))}*/}
-          {/*  </div>*/}
-          {/*</div>*/}
           <h2 className="mb-4 text-2xl font-bold text-primary">Recently Added Tools</h2>
           <div className="space-y-2">
             {recentlySoftware?.map((tool) => (
-              <div key={tool.id} className="flex items-center justify-between py-2 gap-4">
-                <div className="flex items-center gap-2 text-sm font-bold">
-                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-green-100">
-                    <Avatar className={"size-5"}>
-                      <AvatarImage src={tool.image ?? ""} />
-                      <AvatarFallback>{tool.name[0]}</AvatarFallback>
-                    </Avatar>
-                  </div>
-                  <span className={"truncate"}>{tool.name}</span>
+              <div key={tool.id} className="flex items-center justify-between py-2 gap-4 w-full">
+                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-green-100">
+                  <Avatar className={"size-5"}>
+                    <AvatarImage src={tool.image ?? ""} />
+                    <AvatarFallback>{tool.name[0]}</AvatarFallback>
+                  </Avatar>
                 </div>
-                <span className="text-sm text-gray-500">3 days ago</span>
+                <div className={"flex flex-col flex-1"}>
+                  <Link href={`/tool/${tool.id}`} className={"line-clamp-1 cursor-pointer"}>
+                    {tool.name}
+                  </Link>
+                  <span className={"line-clamp-1 font-normal text-foreground/50 text-sm"}>{tool.description}</span>
+                </div>
+                <div className="text-sm text-gray-500">3 days ago</div>
               </div>
             ))}
           </div>
@@ -311,17 +304,19 @@ const TopTools = () => {
           <div className={"flex-1"}>
             <h2 className="mt-4 mb-4 text-2xl font-bold text-primary">Top Contributors</h2>
             <div className="space-y-2">
-              {contributors.map((contributor) => (
+              {userData?.map((contributor) => (
                 <div key={contributor.id} className="flex items-center justify-between py-2">
                   <div className="flex items-center gap-2">
-                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-green-100" />
-                    <span>{contributor.username}</span>
-                    <span className="text-sm text-gray-500">{contributor.points} points</span>
+                    <Avatar className={"size-5"}>
+                      <AvatarImage src={contributor.info?.imageUrl ?? ""} />
+                      <AvatarFallback>{contributor.info?.username?.charAt(0)}</AvatarFallback>
+                    </Avatar>
+                    <span>{contributor.info?.username}</span>
+                    {/*<span className="text-sm text-gray-500">{contributor} points</span>*/}
                   </div>
-                  <button className="flex items-center gap-1 text-primary">
-                    <Heart className="size-4" />
-                    <span>{contributor.points}</span>
-                  </button>
+                  <div className="flex items-center gap-1 text-primary">
+                    <span>{formatDistanceToNow(new Date(contributor.info?.lastSignInAt ?? new Date()))}</span>
+                  </div>
                 </div>
               ))}
             </div>

@@ -17,15 +17,15 @@ export const rankRouter = createTRPCRouter({
   star: protectedProcedure.input(z.object({ rankId: z.string() })).mutation(async ({ input, ctx }) => {
     return await rankService.star(input.rankId, ctx.userId!)
   }),
-  create: protectedProcedure.input(z.object({ forms: createRankParamsSchema, metadataId: z.string() })).mutation(async ({ input, ctx }) => {
-    return await rankService.create(input.forms, ctx.userId!, input.metadataId)
+  create: protectedProcedure.input(z.object({ forms: createRankParamsSchema })).mutation(async ({ input, ctx }) => {
+    return await rankService.create(input.forms, ctx.userId!)
   }),
   detail: publicProcedure.input(z.object({ rankId: z.string() })).query(async ({ input, ctx }) => {
     return await rankService.detail(input.rankId, ctx.userId)
   }),
   pageRanksBySoftwareId: publicProcedure.input(pageableSchema.extend({ softwareId: z.string() })).query(async ({ input, ctx }) => {
     return await rankService.pageRanksBySoftwareId(input.softwareId, { page: input.page, size: input.size }, ctx.userId)
-  }),
+  })
 })
 
 export default rankRouter

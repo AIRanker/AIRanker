@@ -10,6 +10,7 @@ import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, For
 
 import { useRouter } from "next/navigation"
 import React from "react"
+import { toast } from "sonner"
 import AddDialog from "~/app/create/_components/add-dialog"
 import RankSearch from "~/app/create/_components/rank-search"
 import SoftwareItem from "~/app/create/_components/software-item"
@@ -38,9 +39,23 @@ const CreateForm = () => {
     setValue,
     getValues
   } = form
-  const { mutate, isPending } = api.rank.create.useMutation({})
+  const { mutate, isPending } = api.rank.create.useMutation({
+    onSuccess: async (data) => {
+      if (data) {
+        toast.success("Create success!")
+        reset()
+        router.push(`/rank/${data.id}`)
+      } else {
+        toast.error("Create failed!")
+      }
+    },
+    onError: (error) => {
+      console.error(error)
+      toast.error(`Failed to create message! ${error.message}`)
+    }
+  })
   const submit = (data: CreateRankParams) => {
-    // mutate(data)
+    mutate({ forms: data })
   }
 
   return (
