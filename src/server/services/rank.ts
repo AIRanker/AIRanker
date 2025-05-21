@@ -139,7 +139,7 @@ class RankService {
     })
     return true
   }
-  async create(params: CreateRankParams, userId: string, metadataId: string) {
+  async create(params: CreateRankParams, userId: string) {
     return await db.$transaction(async (tx) => {
       // 1. 创建 Rank
       const rank = await tx.rank.create({
@@ -153,15 +153,8 @@ class RankService {
         }
       })
 
-      // 2. 创建 RankMetadata
-      const rankMetadata = await tx.rankMetadata.create({
-        data: {
-          rankId: rank.id,
-          id: metadataId
-        }
-      })
 
-      // 3. 处理标签 - 检查已存在的并创建新的
+      // 2. 处理标签 - 检查已存在的并创建新的
       if (params.tags && params.tags.length > 0) {
         // 查找已存在的标签
         const existingTags = await tx.tag.findMany({
@@ -205,7 +198,7 @@ class RankService {
         )
       }
 
-      // 4. 处理软件
+      // 3. 处理软件
       if (params.softwareList && params.softwareList.length > 0) {
         await Promise.all(
           params.softwareList.map(async (softwareItem, index) => {

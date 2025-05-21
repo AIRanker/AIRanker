@@ -8,7 +8,13 @@ export function generateRankSelect(userId?: string) {
     description: true,
     createdAt: true,
     updatedAt: true,
-    user: true,
+    user: {
+      select: {
+        id: true,
+        name: true,
+        avatar: true
+      }
+    },
     softwares: {
       select: {
         software: {
