@@ -69,9 +69,9 @@ export const RankCommentReply = ({
             <div className="bg-muted flex flex-col justify-between gap-2 rounded-lg p-4">
               <div className={"text-xs"}>
                 {shortenAddress(replyMessage.createdBy)}
-                <span className={"ml-6 text-xs text-gray-400"}>{formatDistanceToNow(replyMessage.createdAt)}</span>
+                <span className={"ml-6 text-xs "}>{formatDistanceToNow(replyMessage.createdAt)}</span>
               </div>
-              <div className={"text-sm text-gray-400"}>{replyMessage.comment}</div>
+              <div className={"text-sm "}>{replyMessage.comment}</div>
             </div>
           )}
           <div className="space-y-2">

@@ -1,4 +1,3 @@
-import Comments from "~/app/rank/[id]/_components/comment"
 import RankComments from "~/app/rank/[id]/_components/rank-comment"
 import RankDetail from "~/app/rank/[id]/_components/rank-detail"
 import { api } from "~/trpc/server"

@@ -66,7 +66,6 @@ const RankTopList = ({ data }: { data: SoftwareByRankIdResult }) => {
 
 const RankContent = ({ id }: RankerContentProps) => {
   const { data } = api.software.getSoftwaresByRankId.useQuery({ rankId: id })
-  const { data: articleData } = api.article.getArticlesByRankId.useQuery({ rankId: id })
   const { data: rank, isPending: rankPending } = api.rank.topRanks.useQuery()
   return (
     <div className={"flex flex-col justify-center -mt-40"}>

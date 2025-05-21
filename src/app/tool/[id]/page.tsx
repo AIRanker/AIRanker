@@ -1,6 +1,5 @@
 import { formatDistanceToNow } from "date-fns"
 import SoftwareAction from "~/app/_components/software-action"
-import Comments from "~/app/rank/[id]/_components/comment"
 import SimilarSoftware from "~/app/tool/[id]/_components/similar-software"
 import ToolComments from "~/app/tool/[id]/_components/tool-comment"
 import { WarpBackground } from "~/components/magicui/warp-background"
