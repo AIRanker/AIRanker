@@ -10,6 +10,7 @@ import { api } from "~/trpc/react"
 interface Props {
   item: {
     id: string
+    name: string
     isLiked: boolean
     isStared: boolean
     _count: { likes: number; stars: number; comments: number }
@@ -106,7 +107,16 @@ const SoftwareAction = ({ item, className, comment = true }: Props) => {
         </div>
       )}
       <div>
-        <Share2 className={"cursor-pointer text-primary hover:scale-125 hover:fill-blue-400 hover:text-blue-400 transition"} />
+        <Share2
+          className={"cursor-pointer text-primary hover:scale-125 hover:fill-blue-400 hover:text-blue-400 transition"}
+          onClick={(event) => {
+            const shareUrl = encodeURIComponent(window.location.href)
+            const shareText = encodeURIComponent(`Check out this : ${item.name || "Amazing software"}`)
+            window.open(`https://twitter.com/intent/tweet?text=${shareText}&url=${shareUrl}`, "_blank")
+            event.preventDefault()
+            event.stopPropagation()
+          }}
+        />
       </div>
     </div>
   )

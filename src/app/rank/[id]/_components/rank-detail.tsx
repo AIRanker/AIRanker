@@ -95,7 +95,16 @@ const RankDetail = ({ detail, id }: RankDetailProps) => {
           <span className="text-sm font-medium">{detail._count.stars ?? 0}</span>
         </div>
         <div>
-          <Share2 className={"cursor-pointer text-primary hover:scale-125 hover:fill-blue-400 hover:text-blue-400 transition"} />
+          <Share2
+            className={"cursor-pointer text-primary hover:scale-125 hover:fill-blue-400 hover:text-blue-400 transition"}
+            onClick={(event) => {
+              const shareUrl = encodeURIComponent(window.location.href)
+              const shareText = encodeURIComponent(`Check out this collection: ${detail.name || "Amazing software"}`)
+              window.open(`https://twitter.com/intent/tweet?text=${shareText}&url=${shareUrl}`, "_blank")
+              event.preventDefault()
+              event.stopPropagation()
+            }}
+          />
         </div>
       </div>
     </div>
