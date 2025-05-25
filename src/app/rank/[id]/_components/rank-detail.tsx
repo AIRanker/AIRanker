@@ -14,7 +14,6 @@ interface RankDetailProps {
 const RankDetail = ({ detail, id }: RankDetailProps) => {
   const { isSignedIn } = useAuth()
   const { openSignIn } = useClerk()
-  const useUtils = api.useUtils()
   const pathname = usePathname()
   const router = useRouter()
   const { mutate: starMutate } = api.rank.star.useMutation({
