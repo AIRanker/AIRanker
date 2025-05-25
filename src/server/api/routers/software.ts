@@ -40,7 +40,6 @@ export const softwareRouter = createTRPCRouter({
         return await softwareService.recentlyStarAndLikeSoftwares(ctx.userId)
     }),
     detail: publicProcedure.input(z.string()).query(async ({ input, ctx }) => {
-
         return await softwareService.detail(input, ctx.userId!)
     })
 })

@@ -143,6 +143,7 @@ model Software {
   image       String              @map("image") @db.VarChar(255)
   name        String              @map("name") @db.VarChar(255)
   description String?             @map("description") @db.Text
+  content     String?             @map("content") @db.Text
   categoryId  String              @map("category_id")
   url         String              @map("url") @db.VarChar(255)
   createdAt   DateTime            @default(now()) @map("created_at")

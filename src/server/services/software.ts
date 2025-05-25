@@ -372,7 +372,10 @@ class SoftwareService {
   async detail(id: string, userId?: string) {
     const software = await db.software.findUnique({
       where: { id },
-      select: generateSoftwareSelect(userId)
+      select: {
+        ...generateSoftwareSelect(userId),
+        content: true,
+      }
     })
 
     if (!software) {
