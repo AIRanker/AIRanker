@@ -20,7 +20,7 @@ export const rankRouter = createTRPCRouter({
   create: protectedProcedure.input(z.object({ forms: createRankParamsSchema })).mutation(async ({ input, ctx }) => {
     return await rankService.create(input.forms, ctx.userId!)
   }),
-  update: protectedProcedure.input(z.object({ rankId: z.string(), forms: updateRankParamsSchema })).mutation(async ({ input, ctx }) => {
+  update: protectedProcedure.input(z.object({ rankId: z.string(), forms: createRankParamsSchema })).mutation(async ({ input, ctx }) => {
     return await rankService.update(input.rankId, input.forms, ctx.userId!)
   }),
   detail: publicProcedure.input(z.object({ rankId: z.string() })).query(async ({ input, ctx }) => {
