@@ -34,7 +34,7 @@ const RankCommentItem = ({ comment, rankId }: RankCommentItemProps) => {
         <div className={"flex cursor-pointer flex-row items-center gap-4 text-xs"}>
           {/*TODO 删除*/}
           {/*{compareStringToUpperCase(address, item.createdBy) && <DeleteMessage messageId={item.id} />}*/}
-          <RankCommentReply rankId={comment.id} replyMessage={comment}>
+          <RankCommentReply rankId={rankId} replyMessage={comment}>
             <div>Reply</div>
           </RankCommentReply>
         </div>
@@ -81,7 +81,7 @@ const RankComments = ({ id }: { id: string }) => {
     }
   })
   return (
-    <div className="container py-8">
+    <div className="container py-8" id="comments">
       <h2 className="text-2xl font-bold mb-6 text-primary">Comments</h2>
       <div className="space-y-1">
         {data?.list?.map((comment) => (

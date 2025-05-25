@@ -49,10 +49,10 @@ const RankTopList = ({ data }: { data: SoftwareByRankIdResult }) => {
             <AvatarImage src={item.image ?? ""} />
             <AvatarFallback>{item.name}</AvatarFallback>
           </Avatar>
-          <Link target="_blank" href={item.url} className="text-xl font-semibold text-muted-foreground">
+          <Link target="_blank" href={`/tool/${item.id}`} className="text-xl font-semibold text-muted-foreground">
             {item.name}
           </Link>
-          <SoftwareAction item={item} />
+          <SoftwareAction item={item} comment={false} />
           <div className={"text-muted-foreground/60"}>{item.description}</div>
           <Separator />
           <div className="relative mt-2 text-left text-primary border-l-4 border-primary pl-4 w-full">
@@ -83,10 +83,10 @@ const RankContent = ({ id }: RankerContentProps) => {
                   </Avatar>
                   <div className="flex flex-col">
                     <div className="flex flex-row gap-4">
-                      <Link target="_blank" href={item.url} className="text-xl font-semibold text-muted-foreground">
+                      <Link target="_blank" href={`/tool/${item.id}`} className="text-xl font-semibold text-muted-foreground">
                         {item.name}
                       </Link>
-                      <SoftwareAction item={item} className="size 4" />
+                      <SoftwareAction item={item} className="size 4" comment={false} />
                     </div>
                     <div className={"text-sm text-muted-foreground/60"}>{item.description}</div>
                   </div>

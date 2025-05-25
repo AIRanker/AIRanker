@@ -4,6 +4,7 @@ import { useAuth, useClerk } from "@clerk/nextjs"
 import { formatDistanceToNow } from "date-fns"
 import { Heart, MessageCircle, Share2, Star } from "lucide-react"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 import { type FC, useEffect, useMemo, useState } from "react"
 import { toast } from "sonner"
 import { ToolDialog } from "~/app/_components/tool-dialog"
@@ -117,8 +118,10 @@ const ToolCard: FC<{ tool: PageSoftwareResult["list"][number] }> = ({ tool }) =>
   const { openSignIn } = useClerk()
   const useUtils = api.useUtils()
   const [dialogOpen, setDialogOpen] = useState(false)
+  const router = useRouter()
   const { mutate: starMutate } = api.software.fav.useMutation({
     onSuccess: () => {
+      router.refresh()
       void useUtils.software.getSoftwaresByRankId.refetch()
     },
     onError: (error) => {
@@ -128,6 +131,7 @@ const ToolCard: FC<{ tool: PageSoftwareResult["list"][number] }> = ({ tool }) =>
   })
   const { mutate: likeMutate } = api.software.like.useMutation({
     onSuccess: () => {
+      router.refresh()
       void useUtils.software.getSoftwaresByRankId.refetch()
     },
     onError: (error) => {

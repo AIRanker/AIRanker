@@ -1,10 +1,11 @@
 "use client"
 
+import { useAuth, useClerk, useSignIn } from "@clerk/nextjs"
 import { Heart, Star } from "lucide-react"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 import type { FC } from "react"
 import { toast } from "sonner"
-import { useAuth, useClerk, useSignIn } from "@clerk/nextjs"
 import { cn } from "~/lib/utils"
 import type { TopRanksResult } from "~/server/services/rank"
 import { api } from "~/trpc/react"
@@ -19,10 +20,11 @@ export const RankList: FC<TopRankedProps> = ({ title = "Top Ranked", className }
 
   const { isSignedIn } = useAuth()
   const { openSignIn } = useClerk()
+  const router = useRouter()
   const useUtils = api.useUtils()
   const { mutate: starMutate } = api.rank.star.useMutation({
     onSuccess: () => {
-      void useUtils.rank.topRanks.refetch()
+      router.refresh()
     },
     onError: (error) => {
       console.error(error)
@@ -31,7 +33,7 @@ export const RankList: FC<TopRankedProps> = ({ title = "Top Ranked", className }
   })
   const { mutate: likeMutate } = api.rank.like.useMutation({
     onSuccess: () => {
-      void useUtils.rank.topRanks.refetch()
+      router.refresh()
     },
     onError: (error) => {
       console.error(error)

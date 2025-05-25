@@ -126,3 +126,5 @@ export const WarpBackground: React.FC<WarpBackgroundProps> = ({
     </div>
   )
 }
+
+export default WarpBackground

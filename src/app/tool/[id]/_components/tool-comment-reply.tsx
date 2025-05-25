@@ -54,7 +54,6 @@ export const ToolCommentReply = ({
       replyTo: replyMessage?.id
     })
   }
-
   return (
     <Drawer direction={isDesktop ? "right" : "bottom"} open={open} onOpenChange={setOpen}>
       <DrawerTrigger asChild>{children}</DrawerTrigger>
@@ -65,6 +64,7 @@ export const ToolCommentReply = ({
         </DrawerHeader>
         <div className="grow space-y-4 p-6">
           {replyMessage && <div className={"text-xs font-bold"}>In Reply to</div>}
+          {/*TODO 用户信息*/}
           {replyMessage && (
             <div className="bg-muted flex flex-col justify-between gap-2 rounded-lg p-4">
               <div className={"text-xs"}>

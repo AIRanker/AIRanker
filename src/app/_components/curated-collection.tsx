@@ -4,6 +4,7 @@ import { useAuth, useClerk } from "@clerk/nextjs"
 import { formatDistanceToNow } from "date-fns"
 import { Heart, PackageOpen, Search } from "lucide-react"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 import React, { forwardRef, useMemo, useRef, useState } from "react"
 import { toast } from "sonner"
 import ListPagination from "~/components/list-pagination"
@@ -95,11 +96,12 @@ const CuratedCollection = () => {
   })
 
   const useUtils = api.useUtils()
+  const router = useRouter()
   const { isSignedIn } = useAuth()
   const { openSignIn } = useClerk()
   const { mutate: likeMutate, isPending: likePending } = api.rank.like.useMutation({
     onSuccess: () => {
-      void useUtils.rank.pageRanks.refetch()
+      router.refresh()
     },
     onError: (error) => {
       console.error(error)

@@ -9,6 +9,7 @@ import { api } from "~/trpc/react"
 
 import { format } from "date-fns"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 import { Badge } from "~/components/ui/badge"
 import { shortenAddress } from "~/lib/web3"
 
@@ -27,8 +28,10 @@ const RankAction = ({ detail, id }: RankActionProps) => {
   const { isSignedIn } = useAuth()
   const { openSignIn } = useClerk()
   const useUtils = api.useUtils()
+  const router = useRouter()
   const { mutate: starMutate } = api.rank.star.useMutation({
     onSuccess: () => {
+      router.refresh()
       void useUtils.rank.detail.refetch()
     },
     onError: (error) => {
@@ -38,6 +41,7 @@ const RankAction = ({ detail, id }: RankActionProps) => {
   })
   const { mutate: likeMutate } = api.rank.like.useMutation({
     onSuccess: () => {
+      router.refresh()
       void useUtils.rank.detail.refetch()
     },
     onError: (error) => {
