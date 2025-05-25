@@ -37,16 +37,16 @@ const MyRank = () => {
   return (
     <Card>
       <CardHeader className="flex flex-row items-center justify-between">
-        <CardTitle className="text-primary">My Rankings</CardTitle>
+        <CardTitle className="text-primary">My Collections</CardTitle>
       </CardHeader>
       <CardContent>
         {ownPending ? (
           <RankListSkeleton />
         ) : ownData?.list.length === 0 ? (
           <div className="py-10 text-center">
-            <p className="text-muted-foreground">You haven't created any rankings yet.</p>
+            <p className="text-muted-foreground">You haven't created any collections yet.</p>
             <Button className="mt-4" asChild>
-              <Link href="/rank/create">Create Your First Rank</Link>
+              <Link href="/rank/create">Create Your First Collection</Link>
             </Button>
           </div>
         ) : (
@@ -72,8 +72,8 @@ const MyRank = () => {
                   </div>
                   <div className="flex items-center gap-2">
                     <Button variant="outline" size="icon" asChild>
-                      <Link href={`/rank/${rank.id}`}>
-                        <EyeIcon className="h-4 w-4" />
+                      <Link href={`/rank/${rank.id}/update`}>
+                        <PencilIcon className="h-4 w-4" />
                       </Link>
                     </Button>
                   </div>
