@@ -97,10 +97,11 @@ const CuratedCollection = () => {
 
   const useUtils = api.useUtils()
   const router = useRouter()
-  const { isSignedIn } = useAuth()
+  const { isSignedIn, userId } = useAuth()
   const { openSignIn } = useClerk()
   const { mutate: likeMutate, isPending: likePending } = api.rank.like.useMutation({
-    onSuccess: () => {
+    onSuccess: async () => {
+      await useUtils.rank.pageRanks.refetch()
       router.refresh()
     },
     onError: (error) => {
@@ -156,28 +157,19 @@ const CuratedCollection = () => {
                 <div className={"text-muted-foreground"}>{formatDistanceToNow(item.createdAt)} ago</div>
               </div>
               <div className={"flex-1 text-center"}>
-                <AvatarGroup
-                  avatars={[
-                    {
-                      src: "https://pbs.twimg.com/profile_images/1913868626605535232/yYTNh-zg_400x400.jpg",
-                      label: "preett"
-                    },
-                    {
-                      src: "https://pbs.twimg.com/profile_images/1909249051968839680/MdA0uZV4_400x400.png",
-                      label: "21st.dev"
-                    },
-                    {
-                      src: "https://pbs.twimg.com/profile_images/1593304942210478080/TUYae5z7_400x400.jpg",
-                      label: "shadcn"
-                    },
-                    { src: "https://hextaui.com/logo.svg", label: "HextaUI" },
-                    { src: "/logo.png", label: "HextaUI" },
-                    { src: "/logo.png", label: "HextaUI" }
-                  ]}
-                  maxVisible={4}
-                  size={35}
-                  overlap={1}
-                />
+                {item.comments.length > 0 && (
+                  <AvatarGroup
+                    avatars={item.comments
+                      .filter((comment) => comment.user.id !== userId)
+                      .map((comment) => ({
+                        src: comment.user?.avatar ?? "",
+                        label: comment.user?.name ?? "A"
+                      }))}
+                    maxVisible={4}
+                    size={35}
+                    overlap={1}
+                  />
+                )}
               </div>
               <div className="flex items-center gap-1">
                 <Heart
