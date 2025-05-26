@@ -3,7 +3,7 @@ import type { CreateArticleParams } from "../schema"
 import { generateSoftwareSelect } from "../select"
 
 class ArticleService {
-  async detail(id: string, userAddress?: string) {
+  async detail(id: string, userId?: string) {
     return await db.article.findUnique({
       where: { id },
       select: {
@@ -14,12 +14,12 @@ class ArticleService {
         content: true,
         createdAt: true,
         updatedAt: true,
-        userAddress: true,
+        userId: true,
         author: true,
         softwares: {
           select: {
             software: {
-              select: generateSoftwareSelect(userAddress)
+              select: generateSoftwareSelect(userId)
             }
           }
         }
@@ -27,7 +27,7 @@ class ArticleService {
     })
   }
 
-  async getArticlesByRankId(rankId: string, userAddress?: string) {
+  async getArticlesByRankId(rankId: string, userId?: string) {
     // 1. 查询与指定 rankId 关联的所有文章
     const articles = await db.article.findMany({
       where: {
@@ -40,12 +40,12 @@ class ArticleService {
         image: true,
         createdAt: true,
         updatedAt: true,
-        userAddress: true,
+        userId: true,
         author: true,
         softwares: {
           select: {
             software: {
-              select: generateSoftwareSelect(userAddress)
+              select: generateSoftwareSelect(userId)
             }
           }
         }
@@ -62,8 +62,8 @@ class ArticleService {
         return {
           ...software,
           tags: software.tags.map((tag) => tag.tag.name),
-          isLiked: userAddress ? software.likes?.length > 0 : false,
-          isStared: userAddress ? software.stars?.length > 0 : false,
+          isLiked: userId ? software.likes?.length > 0 : false,
+          isStared: userId ? software.stars?.length > 0 : false,
           likes: undefined,
           stars: undefined
         }
@@ -76,19 +76,19 @@ class ArticleService {
     })
   }
 
-  async create(rankId: string, params: CreateArticleParams, userAddress: string) {
+  async create(rankId: string, params: CreateArticleParams, userId: string) {
     return await db.$transaction(async (tx) => {
       // 1. 验证 rank 的创建者是否为当前用户
       const rank = await tx.rank.findUnique({
         where: { id: rankId },
-        select: { userAddress: true }
+        select: { userId: true }
       })
 
       if (!rank) {
         throw new Error(`Rank with ID ${rankId} not found`)
       }
 
-      if (rank.userAddress !== userAddress) {
+      if (rank.userId !== userId) {
         throw new Error("You don't have permission to create an article for this rank")
       }
       // 2. 创建文章
@@ -99,7 +99,7 @@ class ArticleService {
           content: params.content,
           image: params.image || "",
           rankId,
-          userAddress
+          userId: userId
         },
         select: {
           id: true
@@ -143,23 +143,23 @@ class ArticleService {
       }
 
       // 返回创建的文章（包含完整信息）
-      return await this.detail(article.id, userAddress)
+      return await this.detail(article.id, userId)
     })
   }
 
-  async update(id: string, params: CreateArticleParams, userAddress: string) {
+  async update(id: string, params: CreateArticleParams, userId: string) {
     return await db.$transaction(async (tx) => {
       // 1. 验证文章的创建者是否为当前用户
       const article = await tx.article.findUnique({
         where: { id },
-        select: { userAddress: true }
+        select: { userId: true }
       })
 
       if (!article) {
         throw new Error(`Article with ID ${id} not found`)
       }
 
-      if (article.userAddress !== userAddress) {
+      if (article.userId !== userId) {
         throw new Error("You don't have permission to update this article")
       }
 
@@ -198,16 +198,16 @@ class ArticleService {
       }
 
       // 返回更新后的文章（包含完整信息）
-      return await this.detail(updatedArticle.id, userAddress)
+      return await this.detail(updatedArticle.id, userId)
     })
   }
-  async delete(id: string, userAddress: string): Promise<boolean> {
+  async delete(id: string, userId: string): Promise<boolean> {
     return await db.$transaction(async (tx) => {
       // 1. 查找文章并验证所有者
       const article = await tx.article.findUnique({
         where: { id },
         select: {
-          userAddress: true,
+          userId: true,
           rankId: true
         }
       })
@@ -218,7 +218,7 @@ class ArticleService {
       }
 
       // 3. 验证当前用户是否为文章创建者
-      if (article.userAddress !== userAddress) {
+      if (article.userId !== userId) {
         throw new Error("You don't have permission to delete this article")
       }
 

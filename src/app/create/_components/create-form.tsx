@@ -1,34 +1,43 @@
 "use client"
 
 import { zodResolver } from "@hookform/resolvers/zod"
-import { ImagePlus, TrashIcon } from "lucide-react"
 import { useForm } from "react-hook-form"
-import { uploadFile } from "~/app/actions"
-import PictureSelectPopover from "~/components/picture-select-popover"
 import { Button } from "~/components/ui/button"
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "~/components/ui/form"
 
 import { useRouter } from "next/navigation"
-import React, { useTransition } from "react"
+import React from "react"
+import { toast } from "sonner"
 import AddDialog from "~/app/create/_components/add-dialog"
 import RankSearch from "~/app/create/_components/rank-search"
 import SoftwareItem from "~/app/create/_components/software-item"
 import { TagsInput } from "~/components/extension/tags-input"
 import { Input } from "~/components/ui/input"
-import { MultiStepLoader } from "~/components/ui/multi-step-loader"
 import { Separator } from "~/components/ui/separator"
 import { Textarea } from "~/components/ui/textarea"
-import { useApprovedTransaction, useCreateStepState, useCreateTransaction, useDataPersistence } from "~/hooks/use-create"
-import { UPLOAD_PATH_POST } from "~/lib/const"
-import { cn } from "~/lib/utils"
 import { type CreateRankParams, createRankParamsSchema } from "~/server/schema"
+import type { RankDetailsResult } from "~/server/services/rank"
+import { api } from "~/trpc/react"
 
-const CreateForm = () => {
+const CreateForm = ({ detail }: { detail?: RankDetailsResult }) => {
   const router = useRouter()
   const form = useForm<CreateRankParams>({
     resolver: zodResolver(createRankParamsSchema, { async: true }),
     reValidateMode: "onBlur",
-    defaultValues: {}
+    defaultValues: {
+      name: detail?.name,
+      description: detail?.description ?? "",
+      tags: detail?.tags ?? [],
+      softwareList: detail?.softwares.map((item) => ({
+        softwareId: item.software.id,
+        name: item.software.name ?? "",
+        description: item.software.description ?? "",
+        image: item.software.image ?? "",
+        url: item.software.url ?? "",
+        rankDescription: item.description ?? "",
+        rankIndex: item.rankIndex ?? 0
+      }))
+    }
   })
 
   const {
@@ -39,122 +48,50 @@ const CreateForm = () => {
     setValue,
     getValues
   } = form
-  const [open, setOpen] = React.useState(true)
-
-  React.useEffect(() => {
-    const down = (e: KeyboardEvent) => {
-      if (e.key === "k" && (e.metaKey || e.ctrlKey)) {
-        e.preventDefault()
-        setOpen((open) => !open)
+  const { mutate, isPending } = api.rank.create.useMutation({
+    onSuccess: async (data) => {
+      if (data) {
+        toast.success("Create success!")
+        reset()
+        router.push(`/rank/${data.id}`)
+      } else {
+        toast.error("Create failed!")
       }
+    },
+    onError: (error) => {
+      console.error(error)
+      toast.error(`Failed to create message! ${error.message}`)
     }
-    document.addEventListener("keydown", down)
-    return () => document.removeEventListener("keydown", down)
-  }, [])
-
-  const { launchStepState, updateDescription, initStep, nextStep, errorStep, exitStep, finallyStep } = useCreateStepState()
-  const [isVerifying, startVerify] = useTransition()
-  const onError = (error: Error) => {
-    updateDescription(error.message)
-    errorStep()
-    throw error
-  }
-  const { execute: approvedTransaction } = useApprovedTransaction({
-    onApproveMessage: updateDescription,
-    onApproveError: onError
   })
-  const { execute: createTransaction } = useCreateTransaction({
-    onCreateMessage: updateDescription,
-    onCreateError: onError
-  })
-  const { execute: dataPersistence } = useDataPersistence({
-    onPersistenceMessage: updateDescription,
-    onPersistenceError: onError
+  const { mutate: updateMutate, isPending: updatePending } = api.rank.update.useMutation({
+    onSuccess: async (data) => {
+      if (data) {
+        toast.success("Update success!")
+        reset()
+        router.push(`/rank/${data.id}`)
+      } else {
+        toast.error("Create failed!")
+      }
+    },
+    onError: (error) => {
+      console.error(error)
+      toast.error(`Failed to create message! ${error.message}`)
+    }
   })
   const submit = (data: CreateRankParams) => {
-    console.log(data)
-    initStep()
-    startVerify(async () => {
-      try {
-        await approvedTransaction()
-        nextStep()
-        const metadataId = await createTransaction()
-        nextStep()
-        await dataPersistence(data, metadataId!.toString())
-        finallyStep()
-      } catch (e) {
-        console.error(e)
-      }
-    })
+    if (detail) {
+      updateMutate({
+        rankId: detail.id,
+        forms: data
+      })
+    } else {
+      mutate({ forms: data })
+    }
   }
 
   return (
     <Form {...form}>
-      <MultiStepLoader
-        loadingStates={[{ text: "Approve asset amount." }, { text: "Initializing Rank." }, { text: "Finally loading." }]}
-        errorState={launchStepState.error}
-        visible={launchStepState.showSteps}
-        currentState={launchStepState.now}
-        description={launchStepState.description}
-        progressState={launchStepState.progress}
-        onClose={exitStep}
-        onFinish={() => {
-          exitStep()
-          // useUtils.dao.detail.invalidate()
-          void router.push("/")
-        }}
-      />
       <form onSubmit={handleSubmit(submit)} className={"pt-6 flex flex-col gap-12"}>
-        <div className={"flex flex-row"}>
-          <div className={"flex flex-col w-80"}>
-            <div className={"text-xl font-bold"}>Banner</div>
-            <div className={"text-sm text-foreground/50"}>You can set base information</div>
-          </div>
-          <div className={"w-full max-w-2xl"}>
-            <FormField
-              control={control}
-              name="image"
-              render={({ field }) =>
-                field.value ? (
-                  <div className="flex gap-2">
-                    <div
-                      className="w-1/2 max-h-52 rounded-xl bg-gray-700 bg-cover bg-center bg-no-repeat shadow lg:w-4/5"
-                      style={{
-                        backgroundImage: `url(${field.value})`,
-                        aspectRatio: "1 / 1"
-                      }}
-                    />
-                    <Button
-                      type="button"
-                      size="icon"
-                      variant="ghost"
-                      className="text-muted-foreground"
-                      onClick={() => {
-                        field.onChange("")
-                      }}
-                    >
-                      <TrashIcon className="text-primary mx-auto h-5 w-5" />
-                    </Button>
-                  </div>
-                ) : (
-                  <PictureSelectPopover
-                    onSelect={(url) => {
-                      field.onChange(url)
-                    }}
-                    uploadPath={UPLOAD_PATH_POST}
-                    onUpload={uploadFile}
-                    side={"bottom"}
-                  >
-                    <button type={"button"} className={cn("flex h-36 cursor-pointer w-full flex-col items-center justify-center rounded-lg border border-dashed")}>
-                      <ImagePlus className="text-primary h-14 w-14" />
-                    </button>
-                  </PictureSelectPopover>
-                )
-              }
-            />
-          </div>
-        </div>
-        <Separator />
         <div className={"flex flex-row"}>
           <div className={"flex flex-col w-80"}>
             <div className={"text-xl font-bold"}>Information</div>
@@ -166,15 +103,16 @@ const CreateForm = () => {
               control={control}
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Rank Name</FormLabel>
+                  <FormLabel>Collection Name</FormLabel>
                   <FormControl>
                     <Input placeholder="" {...field} />
                   </FormControl>
-                  <FormDescription>A concise and descriptive title for this content block.</FormDescription>
+                  <FormDescription>Enter a clear and descriptive name for your collection.</FormDescription>
                   <FormMessage>{errors.name?.message}</FormMessage>
                 </FormItem>
               )}
             />
+
             <FormField
               name={"description"}
               control={control}
@@ -182,13 +120,14 @@ const CreateForm = () => {
                 <FormItem>
                   <FormLabel>Description</FormLabel>
                   <FormControl>
-                    <Textarea rows={5} placeholder="Enter Rank description" {...field} />
+                    <Textarea rows={5} placeholder="Enter Collection" {...field} />
                   </FormControl>
-                  <FormDescription>A concise and descriptive title for this content block.</FormDescription>
+                  <FormDescription>Provide a detailed explanation of your collection criteria and methodology.</FormDescription>
                   <FormMessage>{errors.description?.message}</FormMessage>
                 </FormItem>
               )}
             />
+
             <FormField
               name={"tags"}
               render={({ field }) => (
@@ -197,7 +136,7 @@ const CreateForm = () => {
                   <FormControl>
                     <TagsInput value={field.value ?? []} onValueChange={field.onChange} placeholder="Enter your tag" />
                   </FormControl>
-                  <FormDescription>Ranker tag</FormDescription>
+                  <FormDescription>Add relevant tags to help users discover your collection.</FormDescription>
                   <FormMessage>{errors.tags?.message}</FormMessage>
                 </FormItem>
               )}
@@ -207,7 +146,7 @@ const CreateForm = () => {
         <Separator />
         <div className={"flex flex-row"}>
           <div className={"flex flex-col w-80"}>
-            <div className={"text-xl font-bold"}>Rank list</div>
+            <div className={"text-xl font-bold"}>Collection Content</div>
             <div className={"text-sm text-foreground/50"}>You can set base information</div>
             <FormMessage>{errors.softwareList?.message}</FormMessage>
           </div>
@@ -263,6 +202,7 @@ const CreateForm = () => {
                       ))}
                     </div>
                   </FormControl>
+                  <FormDescription>Search for existing tools or add new ones to include in your collection.</FormDescription>
                 </FormItem>
               )}
             />
@@ -272,11 +212,10 @@ const CreateForm = () => {
         <div className={"flex flex-row"}>
           <div className={"flex flex-col w-80"}>
             <div className={"text-xl font-bold"}>Actions</div>
-            <div className={"text-sm text-foreground/50"}>You can set base information</div>
           </div>
           <div className={"flex flex-row"}>
-            <Button type="submit" disabled={isVerifying}>
-              {isVerifying ? "Submitting..." : "Submit"}
+            <Button type="submit" disabled={isPending || updatePending}>
+              {updatePending || isPending ? "Submitting..." : "Submit"}
             </Button>
           </div>
         </div>

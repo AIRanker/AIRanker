@@ -1,5 +1,6 @@
 "use client"
 import { ArrowUpRight, CircleFadingPlus, FileInput, FolderPlus, Heart, Search } from "lucide-react"
+import { useRouter } from "next/navigation"
 import * as React from "react"
 import { useState } from "react"
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar"
@@ -9,6 +10,7 @@ import { api } from "~/trpc/react"
 export const CommandSearch = () => {
   const [open, setOpen] = useState(false)
   const [search, setSearch] = useState("")
+  const router = useRouter()
   const { data: toolData, isPending: toolPending } = api.software.pageSoftwares.useQuery({
     pageable: {
       size: 5,
@@ -23,6 +25,7 @@ export const CommandSearch = () => {
     },
     search
   })
+  console.log(toolData, rankData)
   React.useEffect(() => {
     const down = (e: KeyboardEvent) => {
       if (e.key === "k" && (e.metaKey || e.ctrlKey)) {
@@ -30,7 +33,6 @@ export const CommandSearch = () => {
         setOpen((open) => !open)
       }
     }
-
     document.addEventListener("keydown", down)
     return () => document.removeEventListener("keydown", down)
   }, [])
@@ -38,48 +40,67 @@ export const CommandSearch = () => {
     <>
       <button
         type={"button"}
-        className="curso inline-flex h-9 w-fit rounded-lg border border-input bg-background px-3 py-2 text-sm text-foreground shadow-sm shadow-black/5 transition-shadow placeholder:text-muted-foreground/70 focus-visible:border-ring focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/20"
+        className="curso cursor-pointer inline-flex h-9 z-[100] mt-10 w-96 rounded-lg border border-primary px-3 py-2 text-sm shadow-sm shadow-black/5 transition-shadow focus-visible:border-ring focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/20"
         onClick={() => setOpen(true)}
       >
         <span className="flex grow items-center">
-          <Search className="-ms-1 me-3 text-muted-foreground/80" size={16} strokeWidth={2} aria-hidden="true" />
-          <span className="font-normal text-muted-foreground/70">Search</span>
+          <Search className="-ms-1 me-3 " size={16} strokeWidth={2} aria-hidden="true" />
+          <span className="font-normal">Search</span>
         </span>
-        <kbd className="-me-1 ms-12 inline-flex h-5 max-h-full items-center rounded border border-border bg-background px-1 font-[inherit] text-[0.625rem] font-medium text-muted-foreground/70">
-          ⌘K
-        </kbd>
+        <kbd className="-me-1 ms-12 inline-flex h-5 max-h-full items-center rounded border px-1 font-[inherit] text-[0.625rem] font-medium">⌘K</kbd>
       </button>
       <CommandDialog open={open} onOpenChange={setOpen}>
         <CommandInput value={search} onValueChange={(e) => setSearch(e)} placeholder="Type a tool or collection..." />
         <CommandList>
-          <CommandEmpty>No results found.</CommandEmpty>
-          <CommandGroup heading="Tools">
-            {toolData?.list?.map((tool) => (
-              <CommandItem key={`tool-${tool.id}`} className={"flex flex-row"}>
-                <Avatar className={"w-4 h-4"}>
-                  <AvatarImage src={tool.image} />
-                  <AvatarFallback>{tool.name.charAt(0)}</AvatarFallback>
-                </Avatar>
-                <div className={"flex-1"}>{tool.name}</div>
-                <div className={"flex flex-row items-center gap-1"}>
-                  <Heart size={12} />
-                  <div>{tool._count.likes}</div>
-                </div>
-              </CommandItem>
-            ))}
-          </CommandGroup>
-          <CommandSeparator />
-          <CommandGroup heading="Collections">
-            {rankData?.list?.map((tool) => (
-              <CommandItem key={`tool-${tool.id}`} className={"flex flex-row justify-between"}>
-                <span>{tool.name}</span>
-                <div className={"flex flex-row items-center gap-1"}>
-                  <Heart size={12} />
-                  <div>{tool._count.likes}</div>
-                </div>
-              </CommandItem>
-            ))}
-          </CommandGroup>
+          <CommandEmpty>
+            {toolPending || rankPending
+              ? Array(6)
+                  .fill(0)
+                  .map((_, index) => (
+                    <div key={`skeleton-tool-${index}`} className="flex flex-row items-center gap-2 w-full p-2 animate-pulse">
+                      <div className="w-4 h-4 rounded-full bg-gray-200 dark:bg-gray-700" />
+                      <div className="flex-1 h-4 bg-gray-200 dark:bg-gray-700 rounded" />
+                      <div className="flex flex-row items-center gap-1">
+                        <div className="w-3 h-3 bg-gray-200 dark:bg-gray-700 rounded" />
+                        <div className="w-4 h-3 bg-gray-200 dark:bg-gray-700 rounded" />
+                      </div>
+                    </div>
+                  ))
+              : toolData?.list?.length === 0 && rankData?.list?.length === 0 && "No results found."}
+          </CommandEmpty>
+          {!toolPending && toolData?.list && toolData?.list.length > 0 && (
+            <CommandGroup heading="Tools">
+              {toolData?.list?.map((tool) => (
+                <CommandItem key={`tool-${tool.id}`} className={"flex flex-row cursor-pointer"} onSelect={() => router.push(`/tool/${tool.id}`)}>
+                  <Avatar className={"w-4 h-4"}>
+                    <AvatarImage src={tool.image} />
+                    <AvatarFallback>{tool.name.charAt(0)}</AvatarFallback>
+                  </Avatar>
+                  <div className={"flex-1"}>{tool.name}</div>
+                  <div className={"flex flex-row items-center gap-1"}>
+                    <Heart size={12} />
+                    <div>{tool._count.likes}</div>
+                  </div>
+                </CommandItem>
+              ))}
+            </CommandGroup>
+          )}
+          {!rankPending && rankData?.list && rankData?.list.length > 0 && (
+            <>
+              <CommandSeparator />
+              <CommandGroup heading="Collections">
+                {rankData?.list?.map((tool) => (
+                  <CommandItem key={`tool-${tool.id}`} className={"flex flex-row justify-between cursor-pointer"} onSelect={() => router.push(`/rank/${tool.id}`)}>
+                    <span>{tool.name}</span>
+                    <div className={"flex flex-row items-center gap-1"}>
+                      <Heart size={12} />
+                      <div>{tool._count.likes}</div>
+                    </div>
+                  </CommandItem>
+                ))}
+              </CommandGroup>
+            </>
+          )}
         </CommandList>
       </CommandDialog>
     </>

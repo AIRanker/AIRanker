@@ -1,12 +1,20 @@
 "use client"
 
-import { Heart, PackageOpen } from "lucide-react"
+import { useAuth, useClerk } from "@clerk/nextjs"
+import { formatDistanceToNow } from "date-fns"
+import { Heart, PackageOpen, Search } from "lucide-react"
 import Link from "next/link"
-import React, { forwardRef, useMemo, useRef } from "react"
+import { useRouter } from "next/navigation"
+import React, { forwardRef, useMemo, useRef, useState } from "react"
+import { toast } from "sonner"
+import ListPagination from "~/components/list-pagination"
 import { AnimatedBeam } from "~/components/magicui/animated-beam"
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar"
 import { AvatarGroup } from "~/components/ui/avatar-group"
+import { Input } from "~/components/ui/input"
+import { Skeleton } from "~/components/ui/skeleton"
 import { cn } from "~/lib/utils"
+import type { Pageable } from "~/server/schema"
 import type { PageRankResult } from "~/server/services/rank"
 import { api } from "~/trpc/react"
 
@@ -77,14 +85,61 @@ const LogoBeam = ({ data }: { data: PageRankResult["list"][number] }) => {
 }
 
 const CuratedCollection = () => {
+  const [pageable, setPageable] = useState<Pageable>({
+    page: 0,
+    size: 6
+  })
+  const [search, setSearch] = useState("")
   const { data, isPending } = api.rank.pageRanks.useQuery({
-    pageable: { page: 0, size: 6 }
+    pageable: { ...pageable },
+    search
   })
 
+  const useUtils = api.useUtils()
+  const router = useRouter()
+  const { isSignedIn, userId } = useAuth()
+  const { openSignIn } = useClerk()
+  const { mutate: likeMutate, isPending: likePending } = api.rank.like.useMutation({
+    onSuccess: async () => {
+      await useUtils.rank.pageRanks.refetch()
+      router.refresh()
+    },
+    onError: (error) => {
+      console.error(error)
+      toast.error("Failed to like the rank", { duration: 3000 })
+    }
+  })
   return (
     <>
-      <h1 className="mt-20 text-4xl font-bold">Curated Collections</h1>
+      <div className="flex flex-row justify-between mt-20">
+        <div className={"text-4xl font-bold"}>Curated Collections</div>
+        <div className={"relative"}>
+          <Search className={"absolute m-2"} size={18} />
+          <Input placeholder={"Search..."} className={"pl-8"} value={search} onChange={(e) => setSearch(e.target.value)} />
+        </div>
+      </div>
       <div className="mt-10 grid grid-cols-3 gap-4">
+        {isPending &&
+          Array(6)
+            .fill(0)
+            .map((_, index) => (
+              <div key={`cc-${index}`} className={"w-full border border-primary/20 rounded-lg p-5 animate-pulse"}>
+                <Skeleton className={"h-60 rounded-t-lg mb-4 "} />
+                <Skeleton className={"h-8 w-3/4 rounded-md mb-3"} />
+                <Skeleton className={"h-16 rounded-md mb-4"} />
+                <div className={"flex flex-row items-center gap-3"}>
+                  <Skeleton className={"w-10 h-10 rounded-full"} />
+                  <div className={"flex flex-col gap-2 flex-1"}>
+                    <Skeleton className={"h-4 w-20 rounded-md"} />
+                    <Skeleton className={"h-3 w-24 rounded-md"} />
+                  </div>
+                  <div className={"flex flex-row gap-1 items-center"}>
+                    <Skeleton className={"w-5 h-5 rounded-full"} />
+                    <Skeleton className={"h-4 w-4 rounded-md"} />
+                  </div>
+                </div>
+              </div>
+            ))}
         {data?.list?.map((item) => (
           <div key={`cc-${item.id}`} className={"flex flex-col border border-primary rounded-lg p-5 gap-4"}>
             <LogoBeam data={item} />
@@ -98,40 +153,52 @@ const CuratedCollection = () => {
                 <AvatarFallback>A</AvatarFallback>
               </Avatar>
               <div className={"flex flex-col justify-between"}>
-                <div className={"font-bold"}>@alex</div>
-                <div className={"text-muted-foreground"}>3 days ago</div>
+                <div className={"font-bold"}>{item.user?.name}</div>
+                <div className={"text-muted-foreground"}>{formatDistanceToNow(item.createdAt)} ago</div>
               </div>
               <div className={"flex-1 text-center"}>
-                <AvatarGroup
-                  avatars={[
-                    {
-                      src: "https://pbs.twimg.com/profile_images/1913868626605535232/yYTNh-zg_400x400.jpg",
-                      label: "preett"
-                    },
-                    {
-                      src: "https://pbs.twimg.com/profile_images/1909249051968839680/MdA0uZV4_400x400.png",
-                      label: "21st.dev"
-                    },
-                    {
-                      src: "https://pbs.twimg.com/profile_images/1593304942210478080/TUYae5z7_400x400.jpg",
-                      label: "shadcn"
-                    },
-                    { src: "https://hextaui.com/logo.svg", label: "HextaUI" },
-                    { src: "/logo.png", label: "HextaUI" },
-                    { src: "/logo.png", label: "HextaUI" }
-                  ]}
-                  maxVisible={4}
-                  size={35}
-                  overlap={1}
-                />
+                {item.comments.length > 0 && (
+                  <AvatarGroup
+                    avatars={item.comments
+                      .filter((comment) => comment.user.id !== userId)
+                      .map((comment) => ({
+                        src: comment.user?.avatar ?? "",
+                        label: comment.user?.name ?? "A"
+                      }))}
+                    maxVisible={4}
+                    size={35}
+                    overlap={1}
+                  />
+                )}
               </div>
               <div className="flex items-center gap-1">
-                <Heart className={cn("cursor-pointer text-primary hover:scale-125 hover:fill-red-400 hover:text-red-400 transition")} />
-                <span className="text-sm font-medium">{0}</span>
+                <Heart
+                  className={cn(
+                    " cursor-pointer text-primary hover:scale-125 hover:fill-red-400 hover:text-red-400 transition",
+                    item.isLiked && "fill-red-400 text-red-400",
+                    likePending && "opacity-25 cursor-not-allowed"
+                  )}
+                  onClick={(event) => {
+                    if (likePending) {
+                      return
+                    }
+                    if (!isSignedIn) {
+                      void openSignIn()
+                    } else {
+                      likeMutate({ rankId: item.id })
+                    }
+                    event.preventDefault()
+                    event.stopPropagation()
+                  }}
+                />
+                <span className="text-sm font-medium">{item._count.likes}</span>
               </div>
             </div>
           </div>
         ))}
+        <div className={"col-span-3"}>
+          <ListPagination pageable={pageable} totalPages={data?.pages ?? 0} setPageable={setPageable} />
+        </div>
       </div>
     </>
   )

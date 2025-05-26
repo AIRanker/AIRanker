@@ -1,14 +1,20 @@
-import { create } from "domain"
+import type { Prisma } from "@prisma/client"
 
-export function generateRankSelect(userAddress?: string) {
+export function generateRankSelect(userId?: string) {
   return {
     id: true,
-    userAddress: true,
+    userId: true,
     name: true,
     description: true,
     createdAt: true,
     updatedAt: true,
-    user: true,
+    user: {
+      select: {
+        id: true,
+        name: true,
+        avatar: true
+      }
+    },
     softwares: {
       select: {
         software: {
@@ -40,17 +46,34 @@ export function generateRankSelect(userAddress?: string) {
     },
     _count: {
       select: {
+        comments: true,
         softwares: true,
         articles: true,
         likes: true,
         stars: true
       }
     },
-    ...(userAddress
+    comments: {
+      select: {
+        id: true,
+        user: {
+          select: {
+            id: true,
+            name: true,
+            avatar: true
+          }
+        }
+      },
+      take: 4,
+      orderBy: {
+        createdAt: "desc" as Prisma.SortOrder
+      }
+    },
+    ...(userId
       ? {
         likes: {
           where: {
-            userAddress
+            userId
           },
           select: {
             rankId: true
@@ -59,7 +82,7 @@ export function generateRankSelect(userAddress?: string) {
         },
         stars: {
           where: {
-            userAddress
+            userId
           },
           select: {
             rankId: true
@@ -70,7 +93,7 @@ export function generateRankSelect(userAddress?: string) {
       : {})
   }
 }
-export function generateSoftwareSelect(userAddress?: string) {
+export function generateSoftwareSelect(userId?: string) {
   return {
     id: true,
     name: true,
@@ -100,14 +123,31 @@ export function generateSoftwareSelect(userAddress?: string) {
     _count: {
       select: {
         likes: true,
-        stars: true
+        stars: true,
+        comments: true
       }
     },
-    ...(userAddress
+    comments: {
+      select: {
+        id: true,
+        user: {
+          select: {
+            id: true,
+            name: true,
+            avatar: true
+          }
+        }
+      },
+      take: 4,
+      orderBy: {
+        createdAt: "desc" as Prisma.SortOrder
+      }
+    },
+    ...(userId
       ? {
         likes: {
           where: {
-            userAddress
+            userId
           },
           select: {
             softwareId: true
@@ -116,7 +156,7 @@ export function generateSoftwareSelect(userAddress?: string) {
         },
         stars: {
           where: {
-            userAddress
+            userId
           },
           select: {
             softwareId: true

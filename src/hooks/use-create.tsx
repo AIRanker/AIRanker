@@ -140,6 +140,7 @@ export function useApprovedTransaction({
       return execute()
     } catch (error) {
       if (error instanceof Error && "shortMessage" in error) {
+        // biome-ignore lint/suspicious/noExplicitAny: <explanation>
         onApproveError?.(new Error((error as any).shortMessage))
       } else {
         onApproveError?.(new Error("Failed to approve spending cap", { cause: error }))
@@ -206,9 +207,8 @@ export function useCreateTransaction({
       const { id: metadataId, creator } = args as unknown as {
         creator: `0x${string}`
         id: bigint
-
       }
-      console.log("Parsed metadataId:", metadataId,"creator:", creator)
+      console.log("Parsed metadataId:", metadataId, "creator:", creator)
       if (!metadataId || !creator) {
         onCreateError?.(new Error("Failed to parse leaderboard creation event."))
         return
@@ -223,6 +223,7 @@ export function useCreateTransaction({
       return metadataId
     } catch (error) {
       if (error instanceof Error && "shortMessage" in error) {
+        // biome-ignore lint/suspicious/noExplicitAny: <explanation>
         onCreateError?.(new Error((error as any).shortMessage))
       } else {
         onCreateError?.(new Error("Leaderboard creation failed.", { cause: error }))
@@ -252,9 +253,10 @@ export function useDataPersistence({
           onPersistenceError?.(new Error("MetadataId is undefined."))
           return
         }
-        return await createMutate({ forms: params, metadataId })
+        return await createMutate({ forms: params })
       } catch (error) {
         if (error instanceof Error && "shortMessage" in error) {
+          // biome-ignore lint/suspicious/noExplicitAny: <explanation>
           onPersistenceError?.(new Error((error as any).shortMessage))
         } else {
           onPersistenceError?.(new Error("Failed to persist Rank data.", { cause: error }))

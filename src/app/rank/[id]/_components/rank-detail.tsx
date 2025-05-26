@@ -2,6 +2,7 @@
 
 import { useAuth, useClerk, useSignIn } from "@clerk/nextjs"
 import { Heart, MessageCircle, Share2, Star } from "lucide-react"
+import { usePathname, useRouter } from "next/navigation"
 import { toast } from "sonner"
 import { cn } from "~/lib/utils"
 import type { RankDetailsResult } from "~/server/services/rank"
@@ -11,13 +12,13 @@ interface RankDetailProps {
   id: string
 }
 const RankDetail = ({ detail, id }: RankDetailProps) => {
-  console.log(detail)
   const { isSignedIn } = useAuth()
   const { openSignIn } = useClerk()
-  const useUtils = api.useUtils()
+  const pathname = usePathname()
+  const router = useRouter()
   const { mutate: starMutate } = api.rank.star.useMutation({
     onSuccess: () => {
-      void useUtils.rank.topRanks.refetch()
+      router.refresh()
     },
     onError: (error) => {
       console.error(error)
@@ -26,7 +27,7 @@ const RankDetail = ({ detail, id }: RankDetailProps) => {
   })
   const { mutate: likeMutate } = api.rank.like.useMutation({
     onSuccess: () => {
-      void useUtils.rank.topRanks.refetch()
+      router.refresh()
     },
     onError: (error) => {
       console.error(error)
@@ -84,13 +85,9 @@ const RankDetail = ({ detail, id }: RankDetailProps) => {
         </div>
         <div className="flex items-center gap-1">
           <MessageCircle
-            className={cn(" cursor-pointer text-primary hover:scale-125 hover:fill-green-400 hover:text-green-400 transition", detail.isLiked && "text-red-400 fill-red-400")}
+            className={cn(" cursor-pointer text-primary hover:scale-125 hover:fill-green-400 hover:text-green-400 transition")}
             onClick={(event) => {
-              if (!isSignedIn) {
-                void openSignIn()
-              } else {
-                likeMutate({ rankId: id })
-              }
+              router.push(`${pathname}#comments`, { scroll: true })
               event.preventDefault()
               event.stopPropagation()
             }}
@@ -98,7 +95,16 @@ const RankDetail = ({ detail, id }: RankDetailProps) => {
           <span className="text-sm font-medium">{detail._count.stars ?? 0}</span>
         </div>
         <div>
-          <Share2 className={"cursor-pointer text-primary hover:scale-125 hover:fill-blue-400 hover:text-blue-400 transition"} />
+          <Share2
+            className={"cursor-pointer text-primary hover:scale-125 hover:fill-blue-400 hover:text-blue-400 transition"}
+            onClick={(event) => {
+              const shareUrl = encodeURIComponent(window.location.href)
+              const shareText = encodeURIComponent(`Check out this collection: ${detail.name || "Amazing software"}`)
+              window.open(`https://twitter.com/intent/tweet?text=${shareText}&url=${shareUrl}`, "_blank")
+              event.preventDefault()
+              event.stopPropagation()
+            }}
+          />
         </div>
       </div>
     </div>

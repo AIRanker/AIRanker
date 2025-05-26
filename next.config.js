@@ -9,7 +9,7 @@ const config = {
   reactStrictMode: true,
   output: "standalone",
   images: {
-    domains: ["storage.googleapis.com", "avatars.githubusercontent.com", "picsum.photos"]
+    domains: ["storage.googleapis.com", "avatars.githubusercontent.com", "picsum.photos", "api.microlink.io", "aceternity.com"]
   },
   eslint: {
     ignoreDuringBuilds: true

@@ -2,7 +2,7 @@ import type { Prisma } from "@prisma/client"
 import { db } from "../db"
 import type { PageableData, SearchParams, SoftwareParams, SoftwareSearchParams } from "../schema"
 import { generateSoftwareSelect } from "../select"
-export async function createSoftware(tx: Prisma.TransactionClient, softwareParams: SoftwareParams, userAddress: string) {
+export async function createSoftware(tx: Prisma.TransactionClient, softwareParams: SoftwareParams, userId: string) {
   const newSoftware = await tx.software.create({
     data: {
       name: softwareParams.name,
@@ -11,7 +11,7 @@ export async function createSoftware(tx: Prisma.TransactionClient, softwareParam
       url: softwareParams.url,
       categoryId: softwareParams.categoryId
     },
-    select: generateSoftwareSelect(userAddress)
+    select: generateSoftwareSelect(userId)
   })
   // 只有创建新软件时才处理标签
   if (softwareParams.tags && softwareParams.tags.length > 0) {
@@ -60,7 +60,7 @@ export async function createSoftware(tx: Prisma.TransactionClient, softwareParam
 }
 
 class SoftwareService {
-  async pageSoftwares(params: SoftwareSearchParams, userAddress?: string) {
+  async pageSoftwares(params: SoftwareSearchParams, userId?: string) {
     const whereOptions: Prisma.SoftwareWhereInput = {}
 
     if (params.search) {
@@ -83,14 +83,14 @@ class SoftwareService {
     if (params.isLiked) {
       whereOptions.likes = {
         some: {
-          userAddress
+          userId
         }
       }
     }
     if (params.isStared) {
       whereOptions.stars = {
         some: {
-          userAddress
+          userId
         }
       }
     }
@@ -112,7 +112,7 @@ class SoftwareService {
     // 查询软件数据，包括关联的标签和统计信息
     const softwares = await db.software.findMany({
       where: whereOptions,
-      select: generateSoftwareSelect(userAddress),
+      select: generateSoftwareSelect(userId),
       orderBy: {
         [params.sort]: {
           _count: params.order
@@ -126,8 +126,8 @@ class SoftwareService {
     const list = softwares.map((software) => ({
       ...software,
       tags: software.tags.map((tag) => tag.tag.name),
-      isLiked: userAddress ? software.likes?.length > 0 : false,
-      isStared: userAddress ? software.stars?.length > 0 : false,
+      isLiked: userId ? software.likes?.length > 0 : false,
+      isStared: userId ? software.stars?.length > 0 : false,
       // 移除原始关联数据，只保留处理后的状态
       likes: undefined,
       stars: undefined
@@ -140,7 +140,7 @@ class SoftwareService {
     } as PageableData<(typeof list)[number]>
   }
 
-  async getSoftwaresByRankId(rankId: string, userAddress?: string) {
+  async getSoftwaresByRankId(rankId: string, userId?: string) {
     const softwaresOnRank = await db.softwareOnRank.findMany({
       where: {
         rankId
@@ -149,7 +149,7 @@ class SoftwareService {
         description: true,
         rankIndex: true,
         software: {
-          select: generateSoftwareSelect(userAddress)
+          select: generateSoftwareSelect(userId)
         }
       },
       orderBy: {
@@ -164,26 +164,26 @@ class SoftwareService {
         rankDescription: item.description,
         rankIndex: item.rankIndex,
         tags: software.tags.map((tag) => tag.tag.name),
-        isLiked: userAddress ? software.likes?.length > 0 : false,
-        isStared: userAddress ? software.stars?.length > 0 : false,
+        isLiked: userId ? software.likes?.length > 0 : false,
+        isStared: userId ? software.stars?.length > 0 : false,
         likes: undefined,
         stars: undefined
       }
     })
   }
-  async like(softwareId: string, userAddress: string) {
+  async like(softwareId: string, userId: string) {
     const softwareLike = await db.softwareLike.findFirst({
       where: {
         softwareId: softwareId,
-        userAddress
+        userId: userId
       }
     })
     if (softwareLike) {
       await db.softwareLike.delete({
         where: {
-          softwareId_userAddress: {
+          softwareId_userId: {
             softwareId: softwareId,
-            userAddress
+            userId: userId
           }
         }
       })
@@ -192,25 +192,25 @@ class SoftwareService {
     await db.softwareLike.create({
       data: {
         softwareId: softwareId,
-        userAddress
+        userId: userId
       }
     })
     return true
   }
 
-  async star(softwareId: string, userAddress: string) {
+  async star(softwareId: string, userId: string) {
     const softwareStar = await db.softwareStar.findFirst({
       where: {
         softwareId: softwareId,
-        userAddress
+        userId: userId
       }
     })
     if (softwareStar) {
       await db.softwareStar.delete({
         where: {
-          softwareId_userAddress: {
+          softwareId_userId: {
             softwareId: softwareId,
-            userAddress
+            userId: userId
           }
         }
       })
@@ -219,54 +219,48 @@ class SoftwareService {
     await db.softwareStar.create({
       data: {
         softwareId: softwareId,
-        userAddress
+        userId: userId
       }
     })
     return true
   }
-  async create(softwareParams: SoftwareParams, userAddress: string) {
+  async create(softwareParams: SoftwareParams, userId: string) {
     return await db.$transaction(async (tx) => {
-      const newSoftware = await createSoftware(tx, softwareParams, userAddress)
+      const newSoftware = await createSoftware(tx, softwareParams, userId)
       return newSoftware
     })
   }
-  async recentlySoftwares(userAddress?: string) {
+  async recentlySoftwares(userId?: string) {
     const softwares = await db.software.findMany({
       orderBy: {
         updatedAt: "desc"
       },
       take: 5,
-      select: generateSoftwareSelect(userAddress)
+      select: generateSoftwareSelect(userId)
     })
     return softwares.map((software) => ({
       ...software,
       tags: software.tags.map((tag) => tag.tag.name),
-      isLiked: userAddress ? software.likes?.length > 0 : false,
-      isStared: userAddress ? software.stars?.length > 0 : false,
+      isLiked: userId ? software.likes?.length > 0 : false,
+      isStared: userId ? software.stars?.length > 0 : false,
       likes: undefined,
       stars: undefined
     }))
   }
-  async recentlyStarAndLikeSoftwares(userAddress?: string) {
+  async recentlyStarAndLikeSoftwares(userId?: string) {
     const recentStarSoftwares = await db.softwareStar.findMany({
       orderBy: {
         createdAt: "desc"
       },
       take: 5,
       select: {
-        user: {
-          select: {
-            address: true,
-            name: true,
-            avatar: true
-          }
-        },
+        userId: true,
         software: {
-          select: generateSoftwareSelect(userAddress)
+          select: generateSoftwareSelect(userId)
         },
         createdAt: true
       }
-    });
+    })
 
     // 查询最近的点赞记录
     const recentLikeSoftwares = await db.softwareLike.findMany({
@@ -275,19 +269,13 @@ class SoftwareService {
       },
       take: 5,
       select: {
-        user: {
-          select: {
-            address: true,
-            name: true,
-            avatar: true
-          }
-        },
+        userId: true,
         software: {
-          select: generateSoftwareSelect(userAddress)
+          select: generateSoftwareSelect(userId)
         },
         createdAt: true
       }
-    });
+    })
     return {
       star: recentStarSoftwares.map((item) => {
         const software = item.software
@@ -295,15 +283,10 @@ class SoftwareService {
           software: {
             ...software,
             tags: software.tags.map((tag) => tag.tag.name),
-            isLiked: userAddress ? software.likes?.length > 0 : false,
-            isStared: userAddress ? software.stars?.length > 0 : false,
+            isLiked: userId ? software.likes?.length > 0 : false,
+            isStared: userId ? software.stars?.length > 0 : false,
             likes: undefined,
             stars: undefined
-          },
-          user: {
-            address: item.user.address,
-            name: item.user.name,
-            avatar: item.user.avatar
           },
           createdAt: item.createdAt
         }
@@ -314,19 +297,100 @@ class SoftwareService {
           software: {
             ...software,
             tags: software.tags.map((tag) => tag.tag.name),
-            isLiked: userAddress ? software.likes?.length > 0 : false,
-            isStared: userAddress ? software.stars?.length > 0 : false,
+            isLiked: userId ? software.likes?.length > 0 : false,
+            isStared: userId ? software.stars?.length > 0 : false,
             likes: undefined,
-            stars: undefined,
-          },
-          user: {
-            address: item.user.address,
-            name: item.user.name,
-            avatar: item.user.avatar
+            stars: undefined
           },
           createdAt: item.createdAt
         }
       })
+    }
+  }
+  async similarSoftwares(softwareId: string, limit = 10, userId?: string) {
+    const software = await db.software.findUnique({
+      where: { id: softwareId },
+      select: {
+        tags: {
+          select: {
+            tagId: true
+          }
+        },
+        categoryId: true
+      }
+    })
+
+    if (!software) return []
+
+    // 构建 OR 条件: 匹配标签 OR 匹配分类
+    const whereCondition: Prisma.SoftwareWhereInput = {
+      id: { not: softwareId }
+    }
+
+    const orConditions: Prisma.SoftwareWhereInput[] = []
+
+    // 条件1: 相同标签
+    orConditions.push({
+      tags: {
+        some: {
+          tagId: { in: software.tags.map((tag) => tag.tagId) }
+        }
+      }
+    })
+
+    // 条件2: 相同分类
+    if (software.categoryId) {
+      orConditions.push({
+        categoryId: software.categoryId
+      })
+    }
+
+    if (orConditions.length > 0) {
+      whereCondition.OR = orConditions
+    }
+
+    const similarSoftwares = await db.software.findMany({
+      where: whereCondition,
+      select: generateSoftwareSelect(userId),
+      orderBy: {
+        likes: {
+          _count: "desc"
+        }
+      },
+      take: limit
+    })
+
+    return similarSoftwares.map((software) => ({
+      ...software,
+      tags: software.tags.map((tag) => tag.tag.name),
+      isLiked: userId ? software.likes?.length > 0 : false,
+      isStared: userId ? software.stars?.length > 0 : false,
+      likes: undefined,
+      stars: undefined
+    }))
+  }
+  async detail(id: string, userId?: string) {
+    const software = await db.software.findUnique({
+      where: { id },
+      select: {
+        ...generateSoftwareSelect(userId),
+        content: true,
+      }
+    })
+
+    if (!software) {
+      return null
+    }
+
+    // 处理返回数据，将标签列表转换为名称数组，处理点赞/收藏状态
+    return {
+      ...software,
+      tags: software.tags.map((tag) => tag.tag.name),
+      isLiked: userId ? software.likes?.length > 0 : false,
+      isStared: userId ? software.stars?.length > 0 : false,
+      // 移除原始关联数据，只保留处理后的状态
+      likes: undefined,
+      stars: undefined
     }
   }
 }
@@ -336,3 +400,5 @@ export default softwareService
 export type PageSoftwareResult = Awaited<ReturnType<typeof softwareService.pageSoftwares>>
 export type SoftwareByRankIdResult = Awaited<ReturnType<typeof softwareService.getSoftwaresByRankId>>
 export type RecentlySoftwaresResult = Awaited<ReturnType<typeof softwareService.recentlySoftwares>>
+export type SoftwareDetailResult = Awaited<ReturnType<typeof softwareService.detail>>
+export type SimilarSoftwaresResult = Awaited<ReturnType<typeof softwareService.similarSoftwares>>

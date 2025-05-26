@@ -12,6 +12,7 @@ import superjson from "superjson"
 import { ZodError } from "zod"
 import { db } from "~/server/db"
 import { userService } from "../services/user"
+import { clerkClient } from "../clerk"
 type AuthObject = ReturnType<typeof getAuth>
 
 /**
@@ -27,39 +28,20 @@ type AuthObject = ReturnType<typeof getAuth>
  * @see https://trpc.io/docs/server/context
  */
 export const createTRPCContext = async (opts: { headers: Headers, auth: AuthObject }) => {
-  // const session = await auth()
-  // if (session) {
-  //   return {
-  //     db,
-  //     session,
-  //     ...opts
-  //   }
-  // }
-  // const entity = await getApiKey(opts.headers.get("x-api-key"))
-  // return {
-  //   db,
-  //   session:
-  //     entity && "user" in entity
-  //       ? {
-  //         address: entity.user.address,
-  //         user: entity.user
-  //       }
-  //       : undefined,
-  //   ...opts
-  // }
-  if (opts.auth) {
-    const currentUser = await userService.getUserByAddress(opts.auth.userId!)
+  if (opts.auth.userId) {
+    const clerkUser = await clerkClient.users.getUser(opts.auth.userId)
+    const currentUser = await userService.getUserById(opts.auth.userId)
     if (!currentUser) {
-      await userService.createUser(opts.auth.userId!, undefined)
+      await userService.createUser(opts.auth.userId, clerkUser.username, clerkUser.imageUrl, undefined)
+    } else {
+      await userService.updateUser(opts.auth.userId, clerkUser.username, clerkUser.imageUrl)
     }
   }
-  console.log("auth", opts.auth)
   return {
     db,
-    userAddress: opts.auth?.userId || undefined,
+    userId: opts.auth?.userId || undefined,
     ...opts,
-    auth: opts.auth,
-    clerk: createClerkClient({ secretKey: process.env.CLERK_SECRET_KEY }),
+    auth: opts.auth
   }
 
 }
@@ -138,7 +120,7 @@ const timingMiddleware = t.middleware(async ({ next, path }) => {
 export const publicProcedure = t.procedure.use(timingMiddleware)
 
 export const protectedProcedure = t.procedure.use(timingMiddleware).use(async ({ ctx, next }) => {
-  if (!ctx.userAddress!) {
+  if (!ctx.userId!) {
     throw new TRPCError({ code: "UNAUTHORIZED" })
   }
   return next({ ctx })

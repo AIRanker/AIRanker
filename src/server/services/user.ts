@@ -2,6 +2,7 @@ import { type Platform, Prisma, type User } from "@prisma/client"
 import { db } from "~/server/db"
 import type { UpdateUserParams } from "~/server/schema"
 import { fetchUserInfo } from "~/server/tools/platform"
+import { fetchUser, fetchUserMap } from "../clerk"
 
 const generateReferralCode = (): string => {
   const timestamp = Date.now().toString(36)
@@ -11,7 +12,7 @@ const generateReferralCode = (): string => {
 }
 
 class UserService {
-  async createUser(address: string, referralCode?: string) {
+  async createUser(id: string, name: string | null, avatar: string | null, referralCode?: string) {
     let referrer: User | null = null
     if (referralCode) {
       referrer = await db.user.findUnique({
@@ -22,18 +23,30 @@ class UserService {
     }
     return await db.user.create({
       data: {
-        address: address,
-        name: address,
+        id,
+        name,
+        avatar,
         referralCode: generateReferralCode(),
-        invitedBy: referrer ? [referrer.address, ...referrer.invitedBy] : []
+        invitedBy: referrer ? [referrer.id, ...referrer.invitedBy] : []
+      }
+    })
+  }
+  async updateUser(id: string, name: string | null, avatar: string | null) {
+    return await db.user.update({
+      where: {
+        id
+      },
+      data: {
+        name,
+        avatar
       }
     })
   }
 
-  async getUserByAddress(address: string) {
+  async getUserById(id: string) {
     return await db.user.findUnique({
       where: {
-        address: address
+        id
       },
       include: {
         platforms: true
@@ -41,12 +54,12 @@ class UserService {
     })
   }
 
-  async bind(accessToken: string, platform: Platform, userAddress: string) {
+  async bind(accessToken: string, platform: Platform, userId: string) {
     const user = await fetchUserInfo(accessToken, platform)
     await db.userPlatform.upsert({
       where: {
-        userAddress_platform: {
-          userAddress: userAddress,
+        userId_platform: {
+          userId: userId,
           platform: platform
         }
       },
@@ -56,7 +69,7 @@ class UserService {
         platformId: user.id
       },
       create: {
-        userAddress: userAddress,
+        userId: userId,
         platform: platform,
         platformAvatar: user.avatar,
         platformName: user.name,
@@ -65,24 +78,6 @@ class UserService {
     })
   }
 
-  async updateMe(params: UpdateUserParams, userAddress: string) {
-    return await db.user.update({
-      where: {
-        address: userAddress
-      },
-      data: {
-        name: params.name,
-        description: params.description,
-        email: params.email,
-        github: params.github,
-        instagram: params.instagram,
-        telegram: params.telegram,
-        website: params.website,
-        x: params.x,
-        avatar: params.avatar
-      }
-    })
-  }
   async topContributors() {
     // 使用聚合查询获取创建 rank 数量最多的用户
     const topContributors = await db.user.findMany({
@@ -92,9 +87,7 @@ class UserService {
         }
       },
       select: {
-        address: true,
-        name: true,
-        avatar: true,
+        id: true,
         _count: {
           select: {
             ranks: true // 计算每个用户的 rank 数量
@@ -108,12 +101,11 @@ class UserService {
       },
       take: 10 // 只取前 10 名
     });
-
+    const userMap = await fetchUserMap(topContributors.map(user => user.id))
     // 格式化返回结果
     return topContributors.map(user => ({
-      address: user.address,
-      name: user.name,
-      avatar: user.avatar,
+      id: user.id,
+      info: userMap.get(user.id),
       rankCount: user._count.ranks
     }));
   }

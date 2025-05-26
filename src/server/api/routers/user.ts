@@ -1,21 +1,14 @@
 import { z } from "zod"
 import { PlatformSchema } from "~/lib/zod"
 import { createTRPCRouter, protectedProcedure, publicProcedure } from "~/server/api/trpc"
-import { updateUserParamsSchema } from "~/server/schema"
 import { userService } from "~/server/services/user"
 
 export const userRouter = createTRPCRouter({
   bind: protectedProcedure.input(z.object({ accessToken: z.string(), platform: PlatformSchema })).mutation(({ input, ctx }) => {
-    const userAddress = ctx.userAddress!
-    return userService.bind(input.accessToken, input.platform, userAddress)
+    return userService.bind(input.accessToken, input.platform, ctx.userId!)
   }),
   me: protectedProcedure.query(({ ctx }) => {
-    const userAddress = ctx.userAddress!
-    return userService.getUserByAddress(userAddress)
-  }),
-  updateMe: protectedProcedure.input(updateUserParamsSchema).mutation(({ input, ctx }) => {
-    const userAddress = ctx.userAddress!
-    return userService.updateMe(input, userAddress)
+    return userService.getUserById(ctx.userId!)
   }),
   topContributors: publicProcedure.query(() => {
     return userService.topContributors()

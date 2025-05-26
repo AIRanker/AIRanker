@@ -1,14 +1,12 @@
 import { Heart, List, User } from "lucide-react"
 import LikeStar from "~/app/profile/_components/like-star"
 import MyRank from "~/app/profile/_components/my-rank"
-import Profile from "~/app/profile/_components/profile"
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs"
 import { api } from "~/trpc/server"
 
 const ProfilePage = async () => {
   const user = await api.user.me()
-  await api.user.me.prefetch()
   return (
     <div className={"mt-4 space-y-6 max-w-4xl mx-auto"}>
       <div className={"flex flex-row gap-5 items-center"}>
@@ -21,21 +19,15 @@ const ProfilePage = async () => {
           <div className={"text-muted-foreground text-sm"}>Manage your account settings and preferences</div>
         </div>
       </div>
-      <Tabs defaultValue="profile">
+      <Tabs defaultValue="like">
         <TabsList className={"bg-background w-full"}>
-          <TabsTrigger className={"transition-all cursor-pointer data-[state=active]:bg-primary data-[state=active]:text-background font-bold"} value="profile">
-            <User /> Profile
-          </TabsTrigger>
           <TabsTrigger className={"transition-all cursor-pointer data-[state=active]:bg-primary data-[state=active]:text-background font-bold"} value="like">
             <Heart /> Likes & Stars
           </TabsTrigger>
           <TabsTrigger className={"transition-all cursor-pointer data-[state=active]:bg-primary data-[state=active]:text-background font-bold"} value="rank">
-            <List /> My Rank
+            <List /> My Collection
           </TabsTrigger>
         </TabsList>
-        <TabsContent value="profile" className={"mt-6"}>
-          <Profile />
-        </TabsContent>
         <TabsContent value="like" className={"mt-6"}>
           <LikeStar />
         </TabsContent>

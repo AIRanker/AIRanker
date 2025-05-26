@@ -1,12 +1,16 @@
 "use client"
 
 import { useAuth, useClerk } from "@clerk/nextjs"
+import { formatDistanceToNow } from "date-fns"
 import { Heart, MessageCircle, Share2, Star } from "lucide-react"
+import Link from "next/link"
+import { useRouter } from "next/navigation"
 import { type FC, useEffect, useMemo, useState } from "react"
 import { toast } from "sonner"
 import { ToolDialog } from "~/app/_components/tool-dialog"
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar"
 import { Button } from "~/components/ui/button"
+import { Skeleton } from "~/components/ui/skeleton"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs"
 import { cn } from "~/lib/utils"
 import type { Pageable } from "~/server/schema"
@@ -114,8 +118,10 @@ const ToolCard: FC<{ tool: PageSoftwareResult["list"][number] }> = ({ tool }) =>
   const { openSignIn } = useClerk()
   const useUtils = api.useUtils()
   const [dialogOpen, setDialogOpen] = useState(false)
+  const router = useRouter()
   const { mutate: starMutate } = api.software.fav.useMutation({
     onSuccess: () => {
+      router.refresh()
       void useUtils.software.getSoftwaresByRankId.refetch()
     },
     onError: (error) => {
@@ -125,6 +131,7 @@ const ToolCard: FC<{ tool: PageSoftwareResult["list"][number] }> = ({ tool }) =>
   })
   const { mutate: likeMutate } = api.software.like.useMutation({
     onSuccess: () => {
+      router.refresh()
       void useUtils.software.getSoftwaresByRankId.refetch()
     },
     onError: (error) => {
@@ -142,9 +149,9 @@ const ToolCard: FC<{ tool: PageSoftwareResult["list"][number] }> = ({ tool }) =>
           </Avatar>
         </div>
         <div className="flex-1">
-          <h3 className="font-bold cursor-pointer w-fit" onClick={() => setDialogOpen(true)}>
+          <Link className="font-bold cursor-pointer w-fit" href={`/tool/${tool.id}`}>
             {tool.name}
-          </h3>
+          </Link>
           <p className="text-sm text-gray-600 line-clamp-3">{tool.description}</p>
         </div>
       </div>
@@ -247,16 +254,22 @@ const TopTools = () => {
       enabled: condition.currentCategory.trim().length > 0
     }
   )
-  const currentCategory = useMemo(() => {
-    return category?.find((item) => item.id === condition.currentCategory)
-  }, [condition])
-  console.log("data", data)
-  const { data: recentlySoftware } = api.software.recentlySoftwares.useQuery()
+  const { data: recentlySoftware, isPending: recentlyPending } = api.software.recentlySoftwares.useQuery()
+  const { data: userData, isPending: userPending } = api.user.topContributors.useQuery()
   return (
     <>
       <h1 className="mt-20 text-4xl font-bold">Top Tools</h1>
       <div className="flex flex-row mx-auto py-8 w-full gap-28">
         <div className="flex-1">
+          {categoryPending && (
+            <div className={"flex flex-row gap-4"}>
+              {Array(4)
+                .fill(0)
+                .map((_, index) => (
+                  <Skeleton className={"w-32 h-8"} key={`category-${index}`} />
+                ))}
+            </div>
+          )}
           <Tabs value={condition.currentCategory} onValueChange={(c) => setCondition({ ...condition, currentCategory: c })} className={"flex flex-col"}>
             <TabsList className="flex shrink-0 border-b border-mauve6">
               {category?.map((item) => (
@@ -274,55 +287,95 @@ const TopTools = () => {
             </TabsList>
 
             <div className="space-y-2">
-              {data?.list?.map((tool) => (
-                <ToolCard key={tool.id} tool={tool} />
-              ))}
+              {!isPending && data?.list?.map((tool) => <ToolCard key={tool.id} tool={tool} />)}
+              {isPending &&
+                Array(10)
+                  .fill(0)
+                  .map((_, index) => (
+                    <div key={`skeleton-${index}`} className="flex items-center justify-between border-b py-4">
+                      <div className="flex items-center gap-3">
+                        <Skeleton className="h-12 w-12 rounded-full" />
+                        <div className="flex-1">
+                          <Skeleton className="h-5 w-32 mb-2" />
+                          <Skeleton className="h-4 w-96" />
+                          <Skeleton className="h-4 w-3/4 mt-1" />
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-4">
+                        <Skeleton className="h-6 w-12" />
+                        <Skeleton className="h-6 w-12" />
+                      </div>
+                    </div>
+                  ))}
             </div>
           </Tabs>
         </div>
         <div className="space-y-4 min-w-[330px] flex flex-col">
-          {/*<div>*/}
-          {/*  <h2 className="mb-4 text-2xl font-bold text-primary">Community Pulse</h2>*/}
-          {/*  <div className="space-y-4 divide-y">*/}
-          {/*    {communityPosts.map((post) => (*/}
-          {/*      <CommunityPost key={post.id} post={post} />*/}
-          {/*    ))}*/}
-          {/*  </div>*/}
-          {/*</div>*/}
           <h2 className="mb-4 text-2xl font-bold text-primary">Recently Added Tools</h2>
           <div className="space-y-2">
             {recentlySoftware?.map((tool) => (
-              <div key={tool.id} className="flex items-center justify-between py-2 gap-4">
-                <div className="flex items-center gap-2 text-sm font-bold">
-                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-green-100">
-                    <Avatar className={"size-5"}>
-                      <AvatarImage src={tool.image ?? ""} />
-                      <AvatarFallback>{tool.name[0]}</AvatarFallback>
-                    </Avatar>
-                  </div>
-                  <span className={"truncate"}>{tool.name}</span>
+              <div key={tool.id} className="flex items-center justify-between py-2 gap-4 w-full">
+                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-green-100">
+                  <Avatar className={"size-5"}>
+                    <AvatarImage src={tool.image ?? ""} />
+                    <AvatarFallback>{tool.name[0]}</AvatarFallback>
+                  </Avatar>
                 </div>
-                <span className="text-sm text-gray-500">3 days ago</span>
+                <div className={"flex flex-col flex-1"}>
+                  <Link href={`/tool/${tool.id}`} className={"line-clamp-1 cursor-pointer"}>
+                    {tool.name}
+                  </Link>
+                  <span className={"line-clamp-1 font-normal text-foreground/50 text-sm"}>{tool.description}</span>
+                </div>
+                <div className="text-sm text-gray-500">{formatDistanceToNow(tool.createdAt)} ago</div>
               </div>
             ))}
+            {recentlyPending &&
+              Array(5)
+                .fill(0)
+                .map((_, index) => (
+                  <div key={`recent-skeleton-${index}`} className="flex items-center justify-between py-2 gap-4 w-full">
+                    <Skeleton className="h-8 w-8 rounded-full" />
+                    <div className="flex flex-col flex-1">
+                      <Skeleton className="h-4 w-24 mb-1" />
+                      <Skeleton className="h-3 w-full" />
+                    </div>
+                    <Skeleton className="h-4 w-16" />
+                  </div>
+                ))}
           </div>
 
           <div className={"flex-1"}>
             <h2 className="mt-4 mb-4 text-2xl font-bold text-primary">Top Contributors</h2>
             <div className="space-y-2">
-              {contributors.map((contributor) => (
-                <div key={contributor.id} className="flex items-center justify-between py-2">
-                  <div className="flex items-center gap-2">
-                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-green-100" />
-                    <span>{contributor.username}</span>
-                    <span className="text-sm text-gray-500">{contributor.points} points</span>
+              {!userPending &&
+                userData?.map((contributor) => (
+                  <div key={contributor.id} className="flex items-center justify-between py-2">
+                    <div className="flex items-center gap-2">
+                      <Avatar className={"size-5"}>
+                        <AvatarImage src={contributor.info?.imageUrl ?? ""} />
+                        <AvatarFallback>{contributor.info?.username?.charAt(0)}</AvatarFallback>
+                      </Avatar>
+                      <span>{contributor.info?.username}</span>
+                      {/*<span className="text-sm text-gray-500">{contributor} points</span>*/}
+                    </div>
+                    <div className="flex items-center gap-1 text-primary">
+                      <span>{formatDistanceToNow(new Date(contributor.info?.lastSignInAt ?? new Date()))}</span>
+                    </div>
                   </div>
-                  <button className="flex items-center gap-1 text-primary">
-                    <Heart className="size-4" />
-                    <span>{contributor.points}</span>
-                  </button>
-                </div>
-              ))}
+                ))}
+              {userPending &&
+                Array(5)
+                  .fill(0)
+                  .map((_, index) => (
+                    <div key={`user-skeleton-${index}`} className="flex items-center justify-between py-2">
+                      <div className="flex items-center gap-2">
+                        <Skeleton className="h-5 w-5 rounded-full" />
+                        <Skeleton className="h-4 w-36" />
+                      </div>
+                      <Skeleton className="h-4 w-20" />
+                    </div>
+                  ))}
             </div>
           </div>
 
