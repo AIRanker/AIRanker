@@ -17,7 +17,7 @@ const SimilarSoftware = ({ list }: { list: SimilarSoftwaresResult }) => {
     })
   }, [list])
   return (
-    <div className={"flex flex-col"}>
+    <div className={"flex flex-col overflow-hidden"}>
       <div className={"text-primary text-2xl font-bold"}>Maybe you will be interested</div>
       <InfiniteMovingCards speed={"slow"} items={data} />
     </div>
