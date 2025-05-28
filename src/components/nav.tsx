@@ -20,34 +20,23 @@ export default function Nav() {
   return (
     <>
       <nav className="hidden items-center justify-center gap-4 text-sm md:flex">
-        {navItems.map((item) => {
-          if (item.requiresLogin && !isSignedIn) {
-            return (
-              <div
-                key={item.name}
-                className={cn(
-                  "px-4 py-2 text-muted-foreground hover:text-foreground cursor-pointer",
-                  item.href === "/" ? pathname === "/" && "font-bold text-primary " : pathname.startsWith(item.href) && "font-medium text-primary"
-                )}
-                onClick={() => openSignIn()}
-              >
-                {item.name}
-              </div>
-            )
-          }
-          return (
-            <Link
-              key={item.name}
-              className={cn(
-                "px-4 py-2 text-muted-foreground hover:text-foreground",
-                item.href === "/" ? pathname === "/" && "font-bold text-primary " : pathname.startsWith(item.href) && "font-medium text-primary"
-              )}
-              href={item.href}
-            >
-              {item.name}
-            </Link>
-          )
-        })}
+        {/*{navItems.map((item) => {*/}
+        {/*  if (item.requiresLogin && !isSignedIn) {*/}
+        {/*    return null*/}
+        {/*  }*/}
+        {/*  return (*/}
+        {/*    <Link*/}
+        {/*      key={item.name}*/}
+        {/*      className={cn(*/}
+        {/*        "px-4 py-2 text-muted-foreground hover:text-foreground",*/}
+        {/*        item.href === "/" ? pathname === "/" && "font-bold text-primary " : pathname.startsWith(item.href) && "font-medium text-primary"*/}
+        {/*      )}*/}
+        {/*      href={item.href}*/}
+        {/*    >*/}
+        {/*      {item.name}*/}
+        {/*    </Link>*/}
+        {/*  )*/}
+        {/*})}*/}
       </nav>
       <div className="block md:hidden">
         <MobileMenu navs={navItems} />

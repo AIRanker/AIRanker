@@ -6,8 +6,10 @@ import { Geist } from "next/font/google"
 import { ClerkProvider, SignInButton, SignUpButton, SignedIn, SignedOut, UserButton } from "@clerk/nextjs"
 import { QueryClientProvider } from "@tanstack/react-query"
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools"
+import { DotIcon } from "lucide-react"
 import Link from "next/link"
 import { Toaster } from "sonner"
+import UserAction from "~/app/_components/user-action"
 import LogoAiRankerFull from "~/components/icons/logo-ai-ranker-full"
 import Nav from "~/components/nav"
 import { Badge } from "~/components/ui/badge"
@@ -55,12 +57,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
                     <Nav />
                   </div>
                   <div className="hidden items-center gap-4 md:flex md:gap-4">
-                    <SignedOut>
-                      <SignInButton />
-                    </SignedOut>
-                    <SignedIn>
-                      <UserButton />
-                    </SignedIn>
+                    <UserAction />
                     <Link href={"/create/tool"}>
                       <Button variant={"outline"} className={"border-primary text-primary font-bold"}>
                         Create Tool
