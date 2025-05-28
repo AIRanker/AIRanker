@@ -3,9 +3,7 @@
 import { formatDistanceToNow } from "date-fns"
 import Link from "next/link"
 import React, { useEffect, useState } from "react"
-import SoftwareAction from "~/app/_components/software-action"
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar"
-import { LinkPreview } from "~/components/ui/link-preview"
 import { cn } from "~/lib/utils"
 
 export const InfiniteMovingCards = ({
