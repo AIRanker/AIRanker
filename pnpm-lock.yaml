@@ -4,239 +4,237 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
-importers:
+dependencies:
+  '@clerk/nextjs':
+    specifier: ^6.19.0
+    version: 6.19.2(next@15.3.1)(react-dom@19.1.0)(react@19.1.0)
+  '@date-fns/utc':
+    specifier: ^2.1.0
+    version: 2.1.0
+  '@google-cloud/storage':
+    specifier: ^7.16.0
+    version: 7.16.0
+  '@hookform/resolvers':
+    specifier: ^5.0.1
+    version: 5.0.1(react-hook-form@7.56.1)
+  '@icons-pack/react-simple-icons':
+    specifier: ^12.7.0
+    version: 12.7.0(react@19.1.0)
+  '@metamask/jazzicon':
+    specifier: ^2.0.0
+    version: 2.0.0
+  '@prisma/client':
+    specifier: ^6.5.0
+    version: 6.6.0(prisma@6.6.0)(typescript@5.8.3)
+  '@radix-ui/react-avatar':
+    specifier: ^1.1.7
+    version: 1.1.7(@types/react-dom@19.1.2)(@types/react@19.1.2)(react-dom@19.1.0)(react@19.1.0)
+  '@radix-ui/react-dialog':
+    specifier: ^1.1.14
+    version: 1.1.14(@types/react-dom@19.1.2)(@types/react@19.1.2)(react-dom@19.1.0)(react@19.1.0)
+  '@radix-ui/react-hover-card':
+    specifier: ^1.1.13
+    version: 1.1.13(@types/react-dom@19.1.2)(@types/react@19.1.2)(react-dom@19.1.0)(react@19.1.0)
+  '@radix-ui/react-icons':
+    specifier: ^1.3.2
+    version: 1.3.2(react@19.1.0)
+  '@radix-ui/react-label':
+    specifier: ^2.1.4
+    version: 2.1.4(@types/react-dom@19.1.2)(@types/react@19.1.2)(react-dom@19.1.0)(react@19.1.0)
+  '@radix-ui/react-popover':
+    specifier: ^1.1.11
+    version: 1.1.11(@types/react-dom@19.1.2)(@types/react@19.1.2)(react-dom@19.1.0)(react@19.1.0)
+  '@radix-ui/react-progress':
+    specifier: ^1.1.4
+    version: 1.1.4(@types/react-dom@19.1.2)(@types/react@19.1.2)(react-dom@19.1.0)(react@19.1.0)
+  '@radix-ui/react-select':
+    specifier: ^2.2.4
+    version: 2.2.4(@types/react-dom@19.1.2)(@types/react@19.1.2)(react-dom@19.1.0)(react@19.1.0)
+  '@radix-ui/react-separator':
+    specifier: ^1.1.4
+    version: 1.1.4(@types/react-dom@19.1.2)(@types/react@19.1.2)(react-dom@19.1.0)(react@19.1.0)
+  '@radix-ui/react-slot':
+    specifier: ^1.2.3
+    version: 1.2.3(@types/react@19.1.2)(react@19.1.0)
+  '@radix-ui/react-tabs':
+    specifier: ^1.1.9
+    version: 1.1.9(@types/react-dom@19.1.2)(@types/react@19.1.2)(react-dom@19.1.0)(react@19.1.0)
+  '@radix-ui/react-tooltip':
+    specifier: ^1.2.4
+    version: 1.2.4(@types/react-dom@19.1.2)(@types/react@19.1.2)(react-dom@19.1.0)(react@19.1.0)
+  '@radix-ui/themes':
+    specifier: ^3.2.1
+    version: 3.2.1(@types/react-dom@19.1.2)(@types/react@19.1.2)(react-dom@19.1.0)(react@19.1.0)
+  '@reown/appkit':
+    specifier: ^1.7.3
+    version: 1.7.3(@types/react@19.1.2)(ioredis@5.6.1)(react@19.1.0)(typescript@5.8.3)(zod@3.24.3)
+  '@reown/appkit-adapter-wagmi':
+    specifier: ^1.7.3
+    version: 1.7.3(@types/react@19.1.2)(@wagmi/core@2.17.0)(ioredis@5.6.1)(react@19.1.0)(typescript@5.8.3)(viem@2.28.0)(wagmi@2.15.0)(zod@3.24.3)
+  '@reown/appkit-siwe':
+    specifier: ^1.7.3
+    version: 1.7.3(@types/react@19.1.2)(ioredis@5.6.1)(react@19.1.0)(typescript@5.8.3)(zod@3.24.3)
+  '@splinetool/react-spline':
+    specifier: ^4.0.0
+    version: 4.0.0(@splinetool/runtime@1.9.93)(next@15.3.1)(react-dom@19.1.0)(react@19.1.0)
+  '@splinetool/runtime':
+    specifier: ^1.9.92
+    version: 1.9.93
+  '@t3-oss/env-nextjs':
+    specifier: ^0.12.0
+    version: 0.12.0(typescript@5.8.3)(zod@3.24.3)
+  '@tanstack/react-query':
+    specifier: ^5.74.4
+    version: 5.74.4(react@19.1.0)
+  '@tanstack/react-query-devtools':
+    specifier: ^5.74.6
+    version: 5.74.7(@tanstack/react-query@5.74.4)(react@19.1.0)
+  '@trpc/client':
+    specifier: ^11.0.0
+    version: 11.1.1(@trpc/server@11.1.1)(typescript@5.8.3)
+  '@trpc/react-query':
+    specifier: ^11.0.0
+    version: 11.1.1(@tanstack/react-query@5.74.4)(@trpc/client@11.1.1)(@trpc/server@11.1.1)(react-dom@19.1.0)(react@19.1.0)(typescript@5.8.3)
+  '@trpc/server':
+    specifier: ^11.0.0
+    version: 11.1.1(typescript@5.8.3)
+  '@tsparticles/engine':
+    specifier: ^3.8.1
+    version: 3.8.1
+  '@tsparticles/react':
+    specifier: ^3.0.0
+    version: 3.0.0(@tsparticles/engine@3.8.1)(react-dom@19.1.0)(react@19.1.0)
+  '@tsparticles/slim':
+    specifier: ^3.8.1
+    version: 3.8.1
+  '@wagmi/core':
+    specifier: ^2.17.0
+    version: 2.17.0(@types/react@19.1.2)(react@19.1.0)(typescript@5.8.3)(use-sync-external-store@1.4.0)(viem@2.28.0)
+  class-variance-authority:
+    specifier: ^0.7.1
+    version: 0.7.1
+  clsx:
+    specifier: ^2.1.1
+    version: 2.1.1
+  cmdk:
+    specifier: ^1.1.1
+    version: 1.1.1(@types/react-dom@19.1.2)(@types/react@19.1.2)(react-dom@19.1.0)(react@19.1.0)
+  date-fns:
+    specifier: ^4.1.0
+    version: 4.1.0
+  decimal.js:
+    specifier: ^10.5.0
+    version: 10.5.0
+  framer-motion:
+    specifier: ^12.10.5
+    version: 12.12.1(react-dom@19.1.0)(react@19.1.0)
+  ioredis:
+    specifier: ^5.6.1
+    version: 5.6.1
+  loadable-image:
+    specifier: ^3.3.0
+    version: 3.3.0(react-dom@19.1.0)(react@19.1.0)
+  lucide-react:
+    specifier: ^0.503.0
+    version: 0.503.0(react@19.1.0)
+  motion:
+    specifier: ^12.12.1
+    version: 12.12.1(react-dom@19.1.0)(react@19.1.0)
+  next:
+    specifier: ^15.2.3
+    version: 15.3.1(react-dom@19.1.0)(react@19.1.0)
+  next-themes:
+    specifier: ^0.4.6
+    version: 0.4.6(react-dom@19.1.0)(react@19.1.0)
+  octokit:
+    specifier: ^4.1.3
+    version: 4.1.3
+  posthog-js:
+    specifier: ^1.236.5
+    version: 1.236.7
+  qss:
+    specifier: ^3.0.0
+    version: 3.0.0
+  react:
+    specifier: ^19.0.0
+    version: 19.1.0
+  react-dom:
+    specifier: ^19.0.0
+    version: 19.1.0(react@19.1.0)
+  react-hook-form:
+    specifier: ^7.56.1
+    version: 7.56.1(react@19.1.0)
+  react-select:
+    specifier: ^5.10.1
+    version: 5.10.1(@types/react@19.1.2)(react-dom@19.1.0)(react@19.1.0)
+  server-only:
+    specifier: ^0.0.1
+    version: 0.0.1
+  sonner:
+    specifier: ^2.0.3
+    version: 2.0.3(react-dom@19.1.0)(react@19.1.0)
+  superjson:
+    specifier: ^2.2.1
+    version: 2.2.2
+  tailwind-merge:
+    specifier: ^3.2.0
+    version: 3.2.0
+  use-debounce:
+    specifier: ^10.0.4
+    version: 10.0.4(react@19.1.0)
+  vaul:
+    specifier: ^1.1.2
+    version: 1.1.2(@types/react-dom@19.1.2)(@types/react@19.1.2)(react-dom@19.1.0)(react@19.1.0)
+  vditor:
+    specifier: ^3.11.0
+    version: 3.11.0
+  viem:
+    specifier: ^2.28.0
+    version: 2.28.0(typescript@5.8.3)(zod@3.24.3)
+  wagmi:
+    specifier: ^2.15.0
+    version: 2.15.0(@tanstack/react-query@5.74.4)(@types/react@19.1.2)(ioredis@5.6.1)(react@19.1.0)(typescript@5.8.3)(viem@2.28.0)(zod@3.24.3)
+  zod:
+    specifier: ^3.24.3
+    version: 3.24.3
 
-  .:
-    dependencies:
-      '@clerk/nextjs':
-        specifier: ^6.19.0
-        version: 6.19.5(next@15.3.2(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
-      '@date-fns/utc':
-        specifier: ^2.1.0
-        version: 2.1.0
-      '@google-cloud/storage':
-        specifier: ^7.16.0
-        version: 7.16.0
-      '@hookform/resolvers':
-        specifier: ^5.0.1
-        version: 5.0.1(react-hook-form@7.56.4(react@19.1.0))
-      '@icons-pack/react-simple-icons':
-        specifier: ^12.7.0
-        version: 12.7.0(react@19.1.0)
-      '@metamask/jazzicon':
-        specifier: ^2.0.0
-        version: 2.0.0
-      '@prisma/client':
-        specifier: ^6.5.0
-        version: 6.6.0(prisma@6.8.2(typescript@5.8.3))(typescript@5.8.3)
-      '@radix-ui/react-avatar':
-        specifier: ^1.1.7
-        version: 1.1.10(@types/react-dom@19.1.5(@types/react@19.1.5))(@types/react@19.1.5)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
-      '@radix-ui/react-dialog':
-        specifier: ^1.1.14
-        version: 1.1.14(@types/react-dom@19.1.5(@types/react@19.1.5))(@types/react@19.1.5)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
-      '@radix-ui/react-hover-card':
-        specifier: ^1.1.13
-        version: 1.1.14(@types/react-dom@19.1.5(@types/react@19.1.5))(@types/react@19.1.5)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
-      '@radix-ui/react-icons':
-        specifier: ^1.3.2
-        version: 1.3.2(react@19.1.0)
-      '@radix-ui/react-label':
-        specifier: ^2.1.4
-        version: 2.1.7(@types/react-dom@19.1.5(@types/react@19.1.5))(@types/react@19.1.5)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
-      '@radix-ui/react-popover':
-        specifier: ^1.1.11
-        version: 1.1.14(@types/react-dom@19.1.5(@types/react@19.1.5))(@types/react@19.1.5)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
-      '@radix-ui/react-progress':
-        specifier: ^1.1.4
-        version: 1.1.7(@types/react-dom@19.1.5(@types/react@19.1.5))(@types/react@19.1.5)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
-      '@radix-ui/react-select':
-        specifier: ^2.2.4
-        version: 2.2.5(@types/react-dom@19.1.5(@types/react@19.1.5))(@types/react@19.1.5)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
-      '@radix-ui/react-separator':
-        specifier: ^1.1.4
-        version: 1.1.7(@types/react-dom@19.1.5(@types/react@19.1.5))(@types/react@19.1.5)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
-      '@radix-ui/react-slot':
-        specifier: ^1.2.3
-        version: 1.2.3(@types/react@19.1.5)(react@19.1.0)
-      '@radix-ui/react-tabs':
-        specifier: ^1.1.9
-        version: 1.1.12(@types/react-dom@19.1.5(@types/react@19.1.5))(@types/react@19.1.5)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
-      '@radix-ui/react-tooltip':
-        specifier: ^1.2.4
-        version: 1.2.7(@types/react-dom@19.1.5(@types/react@19.1.5))(@types/react@19.1.5)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
-      '@radix-ui/themes':
-        specifier: ^3.2.1
-        version: 3.2.1(@types/react-dom@19.1.5(@types/react@19.1.5))(@types/react@19.1.5)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
-      '@reown/appkit':
-        specifier: ^1.7.3
-        version: 1.7.6(@types/react@19.1.5)(bufferutil@4.0.9)(ioredis@5.6.1)(react@19.1.0)(typescript@5.8.3)(utf-8-validate@5.0.10)(zod@3.25.17)
-      '@reown/appkit-adapter-wagmi':
-        specifier: ^1.7.3
-        version: 1.7.6(@types/react@19.1.5)(@wagmi/core@2.17.2(@tanstack/query-core@5.76.0)(@types/react@19.1.5)(react@19.1.0)(typescript@5.8.3)(use-sync-external-store@1.5.0(react@19.1.0))(viem@2.30.0(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)(zod@3.25.17)))(bufferutil@4.0.9)(ioredis@5.6.1)(react@19.1.0)(typescript@5.8.3)(utf-8-validate@5.0.10)(viem@2.30.0(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)(zod@3.25.17))(wagmi@2.15.4(@tanstack/query-core@5.76.0)(@tanstack/react-query@5.76.1(react@19.1.0))(@types/react@19.1.5)(bufferutil@4.0.9)(ioredis@5.6.1)(react@19.1.0)(typescript@5.8.3)(utf-8-validate@5.0.10)(viem@2.30.0(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)(zod@3.25.17))(zod@3.25.17))(zod@3.25.17)
-      '@reown/appkit-siwe':
-        specifier: ^1.7.3
-        version: 1.7.6(@types/react@19.1.5)(bufferutil@4.0.9)(ioredis@5.6.1)(react@19.1.0)(typescript@5.8.3)(utf-8-validate@5.0.10)(zod@3.25.17)
-      '@splinetool/react-spline':
-        specifier: ^4.0.0
-        version: 4.0.0(@splinetool/runtime@1.9.96)(next@15.3.2(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
-      '@splinetool/runtime':
-        specifier: ^1.9.92
-        version: 1.9.96
-      '@t3-oss/env-nextjs':
-        specifier: ^0.12.0
-        version: 0.12.0(typescript@5.8.3)(zod@3.25.17)
-      '@tanstack/react-query':
-        specifier: ^5.74.4
-        version: 5.76.1(react@19.1.0)
-      '@tanstack/react-query-devtools':
-        specifier: ^5.74.6
-        version: 5.76.1(@tanstack/react-query@5.76.1(react@19.1.0))(react@19.1.0)
-      '@trpc/client':
-        specifier: ^11.0.0
-        version: 11.1.2(@trpc/server@11.1.2(typescript@5.8.3))(typescript@5.8.3)
-      '@trpc/react-query':
-        specifier: ^11.0.0
-        version: 11.1.2(@tanstack/react-query@5.76.1(react@19.1.0))(@trpc/client@11.1.2(@trpc/server@11.1.2(typescript@5.8.3))(typescript@5.8.3))(@trpc/server@11.1.2(typescript@5.8.3))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(typescript@5.8.3)
-      '@trpc/server':
-        specifier: ^11.0.0
-        version: 11.1.2(typescript@5.8.3)
-      '@tsparticles/engine':
-        specifier: ^3.8.1
-        version: 3.8.1
-      '@tsparticles/react':
-        specifier: ^3.0.0
-        version: 3.0.0(@tsparticles/engine@3.8.1)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
-      '@tsparticles/slim':
-        specifier: ^3.8.1
-        version: 3.8.1
-      '@wagmi/core':
-        specifier: ^2.17.0
-        version: 2.17.2(@tanstack/query-core@5.76.0)(@types/react@19.1.5)(react@19.1.0)(typescript@5.8.3)(use-sync-external-store@1.5.0(react@19.1.0))(viem@2.30.0(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)(zod@3.25.17))
-      class-variance-authority:
-        specifier: ^0.7.1
-        version: 0.7.1
-      clsx:
-        specifier: ^2.1.1
-        version: 2.1.1
-      cmdk:
-        specifier: ^1.1.1
-        version: 1.1.1(@types/react-dom@19.1.5(@types/react@19.1.5))(@types/react@19.1.5)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
-      date-fns:
-        specifier: ^4.1.0
-        version: 4.1.0
-      decimal.js:
-        specifier: ^10.5.0
-        version: 10.5.0
-      framer-motion:
-        specifier: ^12.10.5
-        version: 12.12.1(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
-      ioredis:
-        specifier: ^5.6.1
-        version: 5.6.1
-      loadable-image:
-        specifier: ^3.3.0
-        version: 3.3.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
-      lucide-react:
-        specifier: ^0.503.0
-        version: 0.503.0(react@19.1.0)
-      motion:
-        specifier: ^12.12.1
-        version: 12.12.1(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
-      next:
-        specifier: ^15.2.3
-        version: 15.3.2(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
-      next-themes:
-        specifier: ^0.4.6
-        version: 0.4.6(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
-      octokit:
-        specifier: ^4.1.3
-        version: 4.1.4
-      posthog-js:
-        specifier: ^1.236.5
-        version: 1.245.1
-      qss:
-        specifier: ^3.0.0
-        version: 3.0.0
-      react:
-        specifier: ^19.0.0
-        version: 19.1.0
-      react-dom:
-        specifier: ^19.0.0
-        version: 19.1.0(react@19.1.0)
-      react-hook-form:
-        specifier: ^7.56.1
-        version: 7.56.4(react@19.1.0)
-      react-select:
-        specifier: ^5.10.1
-        version: 5.10.1(@types/react@19.1.5)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
-      server-only:
-        specifier: ^0.0.1
-        version: 0.0.1
-      sonner:
-        specifier: ^2.0.3
-        version: 2.0.3(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
-      superjson:
-        specifier: ^2.2.1
-        version: 2.2.2
-      tailwind-merge:
-        specifier: ^3.2.0
-        version: 3.3.0
-      use-debounce:
-        specifier: ^10.0.4
-        version: 10.0.4(react@19.1.0)
-      vaul:
-        specifier: ^1.1.2
-        version: 1.1.2(@types/react-dom@19.1.5(@types/react@19.1.5))(@types/react@19.1.5)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
-      vditor:
-        specifier: ^3.11.0
-        version: 3.11.0
-      viem:
-        specifier: ^2.28.0
-        version: 2.30.0(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)(zod@3.25.17)
-      wagmi:
-        specifier: ^2.15.0
-        version: 2.15.4(@tanstack/query-core@5.76.0)(@tanstack/react-query@5.76.1(react@19.1.0))(@types/react@19.1.5)(bufferutil@4.0.9)(ioredis@5.6.1)(react@19.1.0)(typescript@5.8.3)(utf-8-validate@5.0.10)(viem@2.30.0(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)(zod@3.25.17))(zod@3.25.17)
-      zod:
-        specifier: ^3.24.3
-        version: 3.25.17
-    devDependencies:
-      '@biomejs/biome':
-        specifier: 1.9.4
-        version: 1.9.4
-      '@tailwindcss/postcss':
-        specifier: ^4.0.15
-        version: 4.1.7
-      '@tailwindcss/typography':
-        specifier: ^0.5.16
-        version: 0.5.16(tailwindcss@4.1.7)
-      '@types/node':
-        specifier: ^20.14.10
-        version: 20.17.50
-      '@types/react':
-        specifier: ^19.0.0
-        version: 19.1.5
-      '@types/react-dom':
-        specifier: ^19.0.0
-        version: 19.1.5(@types/react@19.1.5)
-      postcss:
-        specifier: ^8.5.3
-        version: 8.5.3
-      prisma:
-        specifier: ^6.5.0
-        version: 6.8.2(typescript@5.8.3)
-      tailwindcss:
-        specifier: ^4.0.15
-        version: 4.1.7
-      tw-animate-css:
-        specifier: ^1.2.8
-        version: 1.3.0
-      typescript:
-        specifier: ^5.8.2
-        version: 5.8.3
-      zod-prisma-types:
-        specifier: ^3.2.4
-        version: 3.2.4(@prisma/client@6.6.0(prisma@6.8.2(typescript@5.8.3))(typescript@5.8.3))(prisma@6.8.2(typescript@5.8.3))
+devDependencies:
+  '@biomejs/biome':
+    specifier: 1.9.4
+    version: 1.9.4
+  '@tailwindcss/postcss':
+    specifier: ^4.0.15
+    version: 4.1.4
+  '@tailwindcss/typography':
+    specifier: ^0.5.16
+    version: 0.5.16(tailwindcss@4.1.4)
+  '@types/node':
+    specifier: ^20.14.10
+    version: 20.17.31
+  '@types/react':
+    specifier: ^19.0.0
+    version: 19.1.2
+  '@types/react-dom':
+    specifier: ^19.0.0
+    version: 19.1.2(@types/react@19.1.2)
+  postcss:
+    specifier: ^8.5.3
+    version: 8.5.3
+  prisma:
+    specifier: ^6.5.0
+    version: 6.6.0(typescript@5.8.3)
+  tailwindcss:
+    specifier: ^4.0.15
+    version: 4.1.4
+  tw-animate-css:
+    specifier: ^1.2.8
+    version: 1.2.8
+  typescript:
+    specifier: ^5.8.2
+    version: 5.8.3
+  zod-prisma-types:
+    specifier: ^3.2.4
+    version: 3.2.4(@prisma/client@6.6.0)(prisma@6.6.0)
 
 packages:
 
@@ -5504,7 +5502,7 @@ packages:
       '@radix-ui/react-compose-refs': 1.1.2(@types/react@19.1.2)(react@19.1.0)
       '@radix-ui/react-dialog': 1.1.14(@types/react-dom@19.1.2)(@types/react@19.1.2)(react-dom@19.1.0)(react@19.1.0)
       '@radix-ui/react-id': 1.1.1(@types/react@19.1.2)(react@19.1.0)
-      '@radix-ui/react-primitive': 2.1.0(@types/react-dom@19.1.2)(@types/react@19.1.2)(react-dom@19.1.0)(react@19.1.0)
+      '@radix-ui/react-primitive': 2.1.3(@types/react-dom@19.1.2)(@types/react@19.1.2)(react-dom@19.1.0)(react@19.1.0)
       react: 19.1.0
       react-dom: 19.1.0(react@19.1.0)
     transitivePeerDependencies:
@@ -6099,27 +6097,6 @@ packages:
       es-set-tostringtag: 2.1.0
       mime-types: 2.1.35
       safe-buffer: 5.2.1
-    dev: false
-
-  /framer-motion@12.11.0(react-dom@19.1.0)(react@19.1.0):
-    resolution: {integrity: sha512-BaBPmkhaC2l0n619Kt1nQaxSdUdyyz5V1Z7EKJ1CcraOTZitgVx0RTbL8lmg2XesaFi6o8MPBIhkWDIvzDpGaQ==}
-    peerDependencies:
-      '@emotion/is-prop-valid': '*'
-      react: ^18.0.0 || ^19.0.0
-      react-dom: ^18.0.0 || ^19.0.0
-    peerDependenciesMeta:
-      '@emotion/is-prop-valid':
-        optional: true
-      react:
-        optional: true
-      react-dom:
-        optional: true
-    dependencies:
-      motion-dom: 12.11.0
-      motion-utils: 12.9.4
-      react: 19.1.0
-      react-dom: 19.1.0(react@19.1.0)
-      tslib: 2.8.1
     dev: false
 
   /framer-motion@12.12.1(react-dom@19.1.0)(react@19.1.0):
@@ -6728,16 +6705,19 @@ packages:
       lit-html: 3.3.0
     dev: false
 
-  lit@3.3.0:
-    resolution: {integrity: sha512-DGVsqsOIHBww2DqnuZzW7QsuCdahp50ojuDaBPC7jUDRpYoH0z7kHBBYZewRzer75FwtrkmkKk7iOAwSaWdBmw==}
-
-  loadable-image@3.3.0:
+  /loadable-image@3.3.0(react-dom@19.1.0)(react@19.1.0):
     resolution: {integrity: sha512-P9mkG2mYB6IzegKhWNHi5uEsaTKlPMEGFR/Q9G0xMduyIJQWTdxfCVsGP/JTEvzXxBP44bQ/2HcxF2Kl/9Y2GA==}
     peerDependencies:
       react: '>=16.6.0'
       react-dom: '>=16.6.0'
+    dependencies:
+      react: 19.1.0
+      react-dom: 19.1.0(react@19.1.0)
+      react-intersection-observer: 9.16.0(react-dom@19.1.0)(react@19.1.0)
+      transitions-kit: 1.3.0(react-dom@19.1.0)(react@19.1.0)
+    dev: false
 
-  locate-path@5.0.0:
+  /locate-path@5.0.0:
     resolution: {integrity: sha512-t7hw9pI+WvuwNJXwk5zVHpyhIqzg2qTlklJOf0mVxGSbe3Fp2VieZcduNYjaLDoy6p9uGpQEGWG87WpMKlNq8g==}
     engines: {node: '>=8'}
     dependencies:
@@ -6850,12 +6830,6 @@ packages:
       typescript: 5.8.3
     dev: false
 
-  /motion-dom@12.11.0:
-    resolution: {integrity: sha512-CItkGYJenn5ZsbzTX0D9mE0UWdjdd9r535FrxEXhzR8Kwa9I2dLr1uhEJgQPWbgaIJ6i0sNFnf2T9NvVDWQVBw==}
-    dependencies:
-      motion-utils: 12.9.4
-    dev: false
-
   /motion-dom@12.12.1:
     resolution: {integrity: sha512-GXq/uUbZBEiFFE+K1Z/sxdPdadMdfJ/jmBALDfIuHGi0NmtealLOfH9FqT+6aNPgVx8ilq0DtYmyQlo6Uj9LKQ==}
     dependencies:
@@ -6864,10 +6838,6 @@ packages:
 
   /motion-utils@12.12.1:
     resolution: {integrity: sha512-f9qiqUHm7hWSLlNW8gS9pisnsN7CRFRD58vNjptKdsqFLpkVnX00TNeD6Q0d27V9KzT7ySFyK1TZ/DShfVOv6w==}
-    dev: false
-
-  /motion-utils@12.9.4:
-    resolution: {integrity: sha512-BW3I65zeM76CMsfh3kHid9ansEJk9Qvl+K5cu4DVHKGsI52n76OJ4z2CUJUV+Mn3uEP9k1JJA3tClG0ggSrRcg==}
     dev: false
 
   /motion@10.16.2:
@@ -7191,7 +7161,7 @@ packages:
     engines: {node: '>=8.6'}
     dev: false
 
-  pify@3.0.0:
+  /pify@3.0.0:
     resolution: {integrity: sha512-C3FsVNH1udSEX48gGX1xfvwTWfsYWj5U+8/uK15BGzIGrKoUpghX8hWZwa/OFnakBiiVNmBvemTJR5mcy7iPcg==}
     engines: {node: '>=4'}
     requiresBuild: true
@@ -7473,7 +7443,7 @@ packages:
       react: 19.1.0
     dev: false
 
-  react-intersection-observer@9.16.0:
+  /react-intersection-observer@9.16.0(react-dom@19.1.0)(react@19.1.0):
     resolution: {integrity: sha512-w9nJSEp+DrW9KmQmeWHQyfaP6b03v+TdXynaoA964Wxt7mdR3An11z4NNCQgL4gKSK7y1ver2Fq+JKH6CWEzUA==}
     peerDependencies:
       react: ^17.0.0 || ^18.0.0 || ^19.0.0
@@ -7481,8 +7451,12 @@ packages:
     peerDependenciesMeta:
       react-dom:
         optional: true
+    dependencies:
+      react: 19.1.0
+      react-dom: 19.1.0(react@19.1.0)
+    dev: false
 
-  react-is@16.13.1:
+  /react-is@16.13.1:
     resolution: {integrity: sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==}
     dev: false
 
@@ -8020,13 +7994,18 @@ packages:
     resolution: {integrity: sha512-N3WMsuqV66lT30CrXNbEjx4GEwlow3v6rr4mCcv6prnfwhS01rkgyFdjPNBYd9br7LpXV1+Emh01fHnq2Gdgrw==}
     dev: false
 
-  transitions-kit@1.3.0:
+  /transitions-kit@1.3.0(react-dom@19.1.0)(react@19.1.0):
     resolution: {integrity: sha512-noOD8P4RWSrJOvl2FXXOTnYqDS7oX3a4QlXzhWaNUaokzoecYaoMmq8TAf96MEVMLCA0u90h9IcxHnLJLTE6Jg==}
     peerDependencies:
       react: '>=16.6.0'
       react-dom: '>=16.6.0'
+    dependencies:
+      react: 19.1.0
+      react-dom: 19.1.0(react@19.1.0)
+      react-transition-group: 4.4.5(react-dom@19.1.0)(react@19.1.0)
+    dev: false
 
-  tslib@1.14.1:
+  /tslib@1.14.1:
     resolution: {integrity: sha512-Xni35NKzjgMrwevysHTCArtLDpPvye8zV/0E4EyYn43P7/7qvQwPh9BGkHewbMulVntbigmcT7rdX3BNo9wRJg==}
     dev: false
 
@@ -11188,14 +11167,12 @@ snapshots:
       '@lit/reactive-element': 2.1.0
       lit-element: 4.2.0
       lit-html: 3.3.0
-
   loadable-image@3.3.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0):
     dependencies:
       react: 19.1.0
       react-dom: 19.1.0(react@19.1.0)
       react-intersection-observer: 9.16.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       transitions-kit: 1.3.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
-
   locate-path@5.0.0:
     dependencies:
       p-locate: 4.1.0
@@ -11726,17 +11703,13 @@ snapshots:
     dependencies:
       '@types/react': 19.1.2
       react: 19.1.0
-
   react-intersection-observer@9.16.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0):
     dependencies:
       react: 19.1.0
     optionalDependencies:
       react-dom: 19.1.0(react@19.1.0)
-
   react-is@16.13.1: {}
-
   react-merge-refs@2.1.1: {}
-
   react-remove-scroll-bar@2.3.8(@types/react@19.1.5)(react@19.1.0):
     dependencies:
       react: 19.1.0
@@ -12044,31 +12017,20 @@ snapshots:
     requiresBuild: true
     dependencies:
       real-require: 0.1.0
-
   thumbhash@0.1.1: {}
-
   toad-cache@3.7.0: {}
-
   tr46@0.0.3: {}
-
   transitions-kit@1.3.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0):
     dependencies:
       react: 19.1.0
       react-dom: 19.1.0(react@19.1.0)
       react-transition-group: 4.4.5(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
-
   tslib@1.14.1: {}
-
   tslib@2.8.1: {}
-
   tw-animate-css@1.3.0: {}
-
   type-fest@4.41.0: {}
-
   typescript@5.8.3: {}
-
   ufo@1.6.1: {}
-
   uint8arrays@3.1.0:
     dependencies:
       multiformats: 9.9.0
