@@ -4,7 +4,7 @@ import { streamText, tool } from "ai"
 import { z } from "zod"
 const fetchWeatherAPI = async (location: string) => {
   // Simulate API call delay
-  await new Promise((resolve) => setTimeout(resolve, 500))
+  await new Promise((resolve) => setTimeout(resolve, 2000))
 
   // Return mock weather data
   return {

@@ -1,14 +1,18 @@
 "use client"
 
-import { SignInButton, SignedIn, SignedOut, UserButton } from "@clerk/nextjs"
+import { SignInButton, SignedIn, SignedOut, UserButton, useAuth, useClerk } from "@clerk/nextjs"
 import { DotIcon, User } from "lucide-react"
+import Link from "next/link"
+import { useRouter } from "next/navigation"
+import { Button } from "~/components/ui/button"
 
 const UserAction = () => {
+  const { openSignIn } = useClerk()
+  const { isSignedIn } = useAuth()
+
+  const router = useRouter()
   return (
     <div className="flex items-center gap-4">
-      <SignedOut>
-        <SignInButton />
-      </SignedOut>
       <SignedIn>
         <UserButton>
           <UserButton.MenuItems>
@@ -18,6 +22,32 @@ const UserAction = () => {
           </UserButton.MenuItems>
         </UserButton>
       </SignedIn>
+      <Button
+        variant={"outline"}
+        className={"border-primary text-primary font-bold"}
+        onClick={() => {
+          if (isSignedIn) {
+            router.push("/create/tool")
+          } else {
+            openSignIn()
+          }
+        }}
+      >
+        Create Tool
+      </Button>
+      <Button
+        variant={"outline"}
+        className={"border-primary text-primary font-bold"}
+        onClick={() => {
+          if (isSignedIn) {
+            router.push("/create")
+          } else {
+            openSignIn()
+          }
+        }}
+      >
+        Create Collection
+      </Button>
     </div>
   )
 }

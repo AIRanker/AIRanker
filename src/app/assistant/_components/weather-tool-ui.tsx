@@ -1,12 +1,12 @@
 import { makeAssistantToolUI } from "@assistant-ui/react"
 import { Spinner } from "@radix-ui/themes"
 
-type WeatherArgs = {
+export type WeatherArgs = {
   location: string
   unit: "celsius" | "fahrenheit"
 }
 
-type WeatherResult = {
+export type WeatherResult = {
   temperature: number
   description: string
   humidity: number

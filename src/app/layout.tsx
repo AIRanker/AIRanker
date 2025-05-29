@@ -4,6 +4,7 @@ import type { Metadata } from "next"
 import { Geist } from "next/font/google"
 
 import { ClerkProvider, SignInButton, SignUpButton, SignedIn, SignedOut, UserButton } from "@clerk/nextjs"
+import { auth } from "@clerk/nextjs/server"
 import { QueryClientProvider } from "@tanstack/react-query"
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools"
 import { DotIcon } from "lucide-react"
@@ -39,6 +40,7 @@ const geist = Geist({
 export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   const version = "BETA"
   const hash = env.NEXT_PUBLIC_GIT_SHA?.slice(0, 7) ?? "DEV"
+  const authData = await auth()
 
   return (
     <ClerkProvider>
@@ -58,16 +60,6 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
                   </div>
                   <div className="hidden items-center gap-4 md:flex md:gap-4">
                     <UserAction />
-                    <Link href={"/create/tool"}>
-                      <Button variant={"outline"} className={"border-primary text-primary font-bold"}>
-                        Create Tool
-                      </Button>
-                    </Link>
-                    <Link href={"/create"}>
-                      <Button variant={"outline"} className={"border-primary text-primary font-bold"}>
-                        Create Collection
-                      </Button>
-                    </Link>
                   </div>
                 </div>
               </header>
