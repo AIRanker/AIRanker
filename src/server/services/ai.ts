@@ -5,6 +5,7 @@ import { currentTime } from "../tools/ai"
 import { createAISDKTools } from "@agentic/ai-sdk"
 import { createAIFunction } from "@agentic/core"
 import { GoogleCustomSearchClient } from "@agentic/google-custom-search"
+import { env } from "~/env"
 class AIService {
   async generateText(prompt: string) {
     try {
@@ -20,7 +21,10 @@ class AIService {
   }
   // biome-ignore lint/suspicious/noExplicitAny: <explanation>
   async generateCollection(messages: any) {
-    const googleClient = new GoogleCustomSearchClient()
+    const googleClient = new GoogleCustomSearchClient({
+      apiKey: env.GOOGLE_SEARCH_API_KEY,
+      cseId: env.GOOGLE_SEARCH_CSI
+    })
     try {
       const result = streamText({
         model: openai("gpt-4o"),

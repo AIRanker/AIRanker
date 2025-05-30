@@ -16,6 +16,8 @@ export const env = createEnv({
     NODE_ENV: z.enum(["development", "test", "production"]).default("development"),
     GOOGLE_STORAGE_BUCKET: z.string().optional(),
     GOOGLE_APPLICATION_CREDENTIALS: z.string(),
+    GOOGLE_SEARCH_API_KEY: z.string().optional(),
+    GOOGLE_SEARCH_CSI: z.string().optional(),
     CHAIN_RPC_URL: z
       .preprocess(
         (val) => {
@@ -68,7 +70,9 @@ export const env = createEnv({
     NEXT_PUBLIC_GIT_SHA: process.env.NEXT_PUBLIC_GIT_SHA,
     NEXT_PUBLIC_MANAGER_CONTRACT_ADDRESS: process.env.NEXT_PUBLIC_MANAGER_CONTRACT_ADDRESS,
     NEXT_PUBLIC_TOKEN_CONTRACT_ADDRESS: process.env.NEXT_PUBLIC_TOKEN_CONTRACT_ADDRESS,
-    GOOGLE_STORAGE_BUCKET: process.env.GOOGLE_STORAGE_BUCKET
+    GOOGLE_STORAGE_BUCKET: process.env.GOOGLE_STORAGE_BUCKET,
+    GOOGLE_SEARCH_API_KEY: process.env.GOOGLE_SEARCH_API_KEY,
+    GOOGLE_SEARCH_CSI: process.env.GOOGLE_SEARCH_CSI
     // NEXT_PUBLIC_CLIENTVAR: process.env.NEXT_PUBLIC_CLIENTVAR,
   },
   /**
