@@ -20,16 +20,19 @@ class AIService {
     }
   }
   async generateCollection(messages: Array<CoreMessage>) {
-    for (const message of messages) {
-      console.log("Message content:", message)
+    const relevantMessages = messages[messages.length - 1]
+    const firstContent = relevantMessages?.content?.[0]
+    if (!firstContent || typeof firstContent === "string" || !("text" in firstContent)) {
+      throw new Error("No valid message content found")
     }
+
     const googleClient = new GoogleCustomSearchClient({
       apiKey: env.GOOGLE_SEARCH_API_KEY,
       cseId: env.GOOGLE_SEARCH_CSI
     })
     try {
       const result = streamText({
-        model: openai("gpt-4o-mini"),
+        model: openai("gpt-4o"),
         tools: createAISDKTools(
           googleClient,
           createAIFunction({
@@ -40,7 +43,16 @@ class AIService {
           })
         ),
         maxSteps: 10,
-        toolChoice: "required",
+        prompt: `
+You are an expert in search engine information retrieval, specializing in the field of AI (including AI agents, MCP tools, AI websites, etc.). Please follow the process below to address the user's query:
+
+1. **Decompose**: Extract the key terms of the query, determine the current time, and clarify the user's intent and the subdomain it belongs to.
+2. **Search**: Use GoogleCustomSearch to search for high-quality information, prioritizing authoritative and up-to-date resources.
+3. **Retrieve**: Extract the most relevant content from the results, filtering out unrelated or low-quality information.
+4. **Reply**: Synthesize the answer and respond concisely, providing references when necessary.
+
+user query: ${typeof relevantMessages?.content?.[0] === "object" && "text" in relevantMessages.content[0] ? relevantMessages.content[0].text : "No query provided"}
+        `,
         experimental_output: Output.object({
           schema: z.object({
             name: z
@@ -68,31 +80,7 @@ class AIService {
               )
               .describe("A curated and ranked list of AI tools, arranged from most recommended to least recommended based on overall value proposition")
           })
-        }),
-        messages: [
-          {
-            role: "system",
-            content: `
-You are an expert in search engine information retrieval, specializing in the field of AI (including AI agents, MCP tools, AI websites, etc.). Please follow the process below to address the user's query:
-
-1. **Decompose**: Extract the key terms of the query, determine the current time, and clarify the user's intent and the subdomain it belongs to.
-2. **Search**: Use GoogleCustomSearch to search for high-quality information, prioritizing authoritative and up-to-date resources.
-3. **Retrieve**: Extract the most relevant content from the results, filtering out unrelated or low-quality information.
-4. **Reply**: Synthesize the answer and respond concisely, providing references when necessary.
-`
-          },
-          ...(messages.length > 0 && messages[messages.length - 1] ? [messages[messages.length - 1] as CoreMessage] : [])
-        ],
-        onStepFinish({ text, toolCalls, toolResults, finishReason, usage }) {
-          console.log("Step finished:", {
-            text,
-            toolCalls,
-            toolResults,
-            finishReason,
-            usage
-          })
-          // your own logic, e.g. for saving the chat history or recording usage
-        }
+        })
       })
       return result.toDataStreamResponse()
     } catch (error) {
