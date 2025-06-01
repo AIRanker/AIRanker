@@ -46,7 +46,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
         <body className={"flex h-screen w-full gap-12 flex-col"}>
           <QueryClientProvider client={queryClient}>
             <TRPCReactProvider>
-              <ReactQueryDevtools initialIsOpen={false} />
+              <ReactQueryDevtools buttonPosition={"top-left"} client={queryClient} initialIsOpen={false} />
               <Toaster />
               <header className="bg-background fixed top-0 z-30 mx-auto flex h-20 w-full items-center justify-between shadow-lg px-4 xl:px-0">
                 <div className="mx-auto flex w-full max-w-7xl items-center justify-between pr-0">

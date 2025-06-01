@@ -1,23 +1,18 @@
 "use client"
 
-import { AssistantRuntimeProvider, useAssistantToolUI } from "@assistant-ui/react"
-import type { ToolCallContentPartComponent } from "@assistant-ui/react"
-import { useChatRuntime } from "@assistant-ui/react-ai-sdk"
-import { Spinner } from "@radix-ui/themes"
-import { useState } from "react"
-import { Thread } from "~/components/thread"
-import { type CollectionArgs, CollectionToolUI } from "./collection-tool-ui"
+import { useThreadRuntime } from "@assistant-ui/react"
+import { useEffect } from "react"
+import RankDetail from "~/app/(home)/assistant/_components/rank-detail"
 
 const AssistantContent = () => {
-  const runtime = useChatRuntime({
-    api: "/api/chat"
-  })
+  // const thread = useThreadRuntime()
+  // useEffect(() => {
+  //   thread.append("Hello!")
+  // }, [])
   return (
-    <AssistantRuntimeProvider runtime={runtime}>
-      <div className="flex flex-row">
-        <Thread />
-      </div>
-    </AssistantRuntimeProvider>
+    <div className={"w-full h-full"}>
+      <RankDetail />
+    </div>
   )
 }
 

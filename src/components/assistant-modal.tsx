@@ -1,16 +1,16 @@
-"use client";
+"use client"
 
-import { BotIcon, ChevronDownIcon } from "lucide-react";
+import { BotIcon, ChevronDownIcon } from "lucide-react"
 
-import { type FC, forwardRef } from "react";
-import { AssistantModalPrimitive } from "@assistant-ui/react";
+import { AssistantModalPrimitive } from "@assistant-ui/react"
+import { type FC, forwardRef } from "react"
 
-import { Thread } from "~/components/thread";
-import { TooltipIconButton } from "~/components/tooltip-icon-button";
+import { Thread } from "~/components/thread"
+import { TooltipIconButton } from "~/components/tooltip-icon-button"
 
 export const AssistantModal: FC = () => {
   return (
-    <AssistantModalPrimitive.Root>
+    <AssistantModalPrimitive.Root defaultOpen={true}>
       <AssistantModalPrimitive.Anchor className="fixed bottom-4 right-4 size-11">
         <AssistantModalPrimitive.Trigger asChild>
           <AssistantModalButton />
@@ -23,16 +23,13 @@ export const AssistantModal: FC = () => {
         <Thread />
       </AssistantModalPrimitive.Content>
     </AssistantModalPrimitive.Root>
-  );
-};
+  )
+}
 
-type AssistantModalButtonProps = { "data-state"?: "open" | "closed" };
+type AssistantModalButtonProps = { "data-state"?: "open" | "closed" }
 
-const AssistantModalButton = forwardRef<
-  HTMLButtonElement,
-  AssistantModalButtonProps
->(({ "data-state": state, ...rest }, ref) => {
-  const tooltip = state === "open" ? "Close Assistant" : "Open Assistant";
+const AssistantModalButton = forwardRef<HTMLButtonElement, AssistantModalButtonProps>(({ "data-state": state, ...rest }, ref) => {
+  const tooltip = state === "open" ? "Close Assistant" : "Open Assistant"
 
   return (
     <TooltipIconButton
@@ -43,7 +40,10 @@ const AssistantModalButton = forwardRef<
       className="size-full rounded-full shadow transition-transform hover:scale-110 active:scale-90"
       ref={ref}
     >
-      <BotIcon data-state={state} className="absolute size-6 transition-all data-[state=closed]:rotate-0 data-[state=open]:rotate-90 data-[state=closed]:scale-100 data-[state=open]:scale-0" />
+      <BotIcon
+        data-state={state}
+        className="absolute size-6 transition-all data-[state=closed]:rotate-0 data-[state=open]:rotate-90 data-[state=closed]:scale-100 data-[state=open]:scale-0"
+      />
 
       <ChevronDownIcon
         data-state={state}
@@ -51,7 +51,7 @@ const AssistantModalButton = forwardRef<
       />
       <span className="sr-only">{tooltip}</span>
     </TooltipIconButton>
-  );
-});
+  )
+})
 
-AssistantModalButton.displayName = "AssistantModalButton";
+AssistantModalButton.displayName = "AssistantModalButton"

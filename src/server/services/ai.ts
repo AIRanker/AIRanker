@@ -1,11 +1,12 @@
-import { generateObject, generateText, Output, streamObject, streamText, type CoreMessage } from "ai"
-import { openai } from "@ai-sdk/openai"
-import { z } from "zod"
-import { currentTime } from "../tools/ai"
 import { createAISDKTools } from "@agentic/ai-sdk"
 import { createAIFunction } from "@agentic/core"
 import { GoogleCustomSearchClient } from "@agentic/google-custom-search"
+import { openai } from "@ai-sdk/openai"
+import { type CoreMessage, Output, generateObject, generateText, streamObject, streamText } from "ai"
+import { z } from "zod"
 import { env } from "~/env"
+import { suggestionSchema } from "~/server/schema"
+import { currentTime } from "../tools/ai"
 class AIService {
   async generateText(prompt: string) {
     try {
@@ -54,32 +55,7 @@ You are an expert in search engine information retrieval, specializing in the fi
 user query: ${typeof relevantMessages?.content?.[0] === "object" && "text" in relevantMessages.content[0] ? relevantMessages.content[0].text : "No query provided"}
         `,
         experimental_output: Output.object({
-          schema: z.object({
-            name: z
-              .string()
-              .describe("A captivating and trending title for the collection that grabs attention (e.g., '10 Game-Changing AI Tools That Are Revolutionizing Design in 2025')"),
-            description: z
-              .string()
-              .describe("An engaging introduction that hooks readers and highlights the value proposition of this collection - explain why these tools matter and who they're for"),
-            softwares: z
-              .array(
-                z.object({
-                  name: z.string().describe("The name of the AI software"),
-                  url: z.string().url().describe("The homepage URL of the AI software"),
-                  description: z
-                    .string()
-                    .describe(
-                      "A comprehensive description covering: key features, main use cases, target audience, pricing model, unique selling points, and any standout technical capabilities"
-                    ),
-                  collectionReason: z
-                    .string()
-                    .describe(
-                      "A persuasive, experience-based reason why this tool deserves to be in the collection - include personal insights, specific advantages, and real-world benefits"
-                    )
-                })
-              )
-              .describe("A curated and ranked list of AI tools, arranged from most recommended to least recommended based on overall value proposition")
-          })
+          schema: suggestionSchema
         })
       })
       return result.toDataStreamResponse()
