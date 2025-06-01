@@ -5,6 +5,8 @@ import { Edit, Heart, MessageCircle, Share2, Star } from "lucide-react"
 import type React from "react"
 import { useState } from "react"
 
+import { useRouter } from "next/navigation"
+import { toast } from "sonner"
 import { aiLoadingAtom, suggestionAtom } from "~/app/(home)/assistant/store"
 import { TooltipIconButton } from "~/components/tooltip-icon-button"
 import { Button } from "~/components/ui/button"
@@ -13,6 +15,7 @@ import { Input } from "~/components/ui/input"
 import { Skeleton } from "~/components/ui/skeleton"
 import { Textarea } from "~/components/ui/textarea"
 import { cn } from "~/lib/utils"
+import { api } from "~/trpc/react"
 
 const RankDetail = () => {
   const [suggestion, setSuggestion] = useAtom(suggestionAtom)
@@ -39,6 +42,22 @@ const RankDetail = () => {
     })
     setDialogOpen(false)
   }
+
+  const router = useRouter()
+  const { mutate, isPending } = api.rank.create.useMutation({
+    onSuccess: (data) => {
+      if (data) {
+        toast.success("Save success!")
+        router.push(`/rank/${data.id}`)
+      } else {
+        toast.error("Save failed!")
+      }
+    },
+    onError: (error) => {
+      console.error(error)
+      toast.error(`Save error: ${error.message}`)
+    }
+  })
 
   return (
     <div className="relative flex flex-col h-[40rem] py-20 w-full items-center  bg-white dark:bg-black">
@@ -98,6 +117,36 @@ const RankDetail = () => {
               <Share2 className={"cursor-pointer text-primary hover:scale-125 hover:fill-blue-400 hover:text-blue-400 transition"} />
             </div>
           </div>
+
+          <Button
+            className="z-20 mt-12 px-8 py-6 text-lg font-bold bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary shadow-lg hover:shadow-xl transition-all transform hover:scale-105"
+            onClick={() => {
+              mutate({
+                forms: {
+                  name: suggestion.name,
+                  description: suggestion.description,
+                  tags: [],
+                  softwareList: suggestion.softwares.map((item, index) => ({
+                    name: item.name,
+                    description: item.description || "",
+                    url: item.url || "",
+                    rankDescription: item.collectionReason || "",
+                    rankIndex: index
+                  }))
+                }
+              })
+            }}
+            disabled={isPending}
+          >
+            {isPending ? (
+              <div className="flex items-center gap-2">
+                <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                <span>Saving...</span>
+              </div>
+            ) : (
+              "Save This Amazing Ranking 🚀"
+            )}
+          </Button>
         </>
       )}
 

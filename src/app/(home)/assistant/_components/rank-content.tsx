@@ -1,7 +1,8 @@
 "use client"
+import { PopoverClose } from "@radix-ui/react-popover"
 import { motion } from "framer-motion"
 import { useAtom } from "jotai/index"
-import { Edit } from "lucide-react"
+import { Edit, Trash2 } from "lucide-react"
 import Link from "next/link"
 import { useState } from "react"
 import { suggestionAtom } from "~/app/(home)/assistant/store"
@@ -10,12 +11,21 @@ import { Button } from "~/components/ui/button"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "~/components/ui/dialog"
 import { Input } from "~/components/ui/input"
 import { Label } from "~/components/ui/label"
+import { Popover, PopoverContent, PopoverTrigger } from "~/components/ui/popover"
 import { Separator } from "~/components/ui/separator"
 import { Textarea } from "~/components/ui/textarea"
 import { cn } from "~/lib/utils"
 import type { SuggestionSoftwareResult } from "~/server/schema"
 
-const RankTopList = ({ data, onEdit }: { data: SuggestionSoftwareResult[]; onEdit: (item: SuggestionSoftwareResult) => void }) => {
+const RankTopList = ({
+  data,
+  onEdit,
+  onDelete
+}: {
+  data: SuggestionSoftwareResult[]
+  onEdit: (item: SuggestionSoftwareResult) => void
+  onDelete: (itemName: string) => void
+}) => {
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
       {data.slice(0, 3).map((item, index) => (
@@ -46,9 +56,36 @@ const RankTopList = ({ data, onEdit }: { data: SuggestionSoftwareResult[]; onEdi
           )}
         >
           <div className="size-7 absolute -top-4 -left-2 text-primary bg-background text-2xl">#{index + 1}</div>
-          <TooltipIconButton tooltip="Edit" className="absolute top-2 right-2" onClick={() => onEdit(item)}>
-            <Edit className="size-4" />
-          </TooltipIconButton>
+          <div className="absolute top-2 right-2 flex gap-2">
+            <TooltipIconButton tooltip="Edit" onClick={() => onEdit(item)}>
+              <Edit className="size-4" />
+            </TooltipIconButton>
+            <Popover>
+              <PopoverTrigger asChild>
+                <TooltipIconButton tooltip="Delete">
+                  <Trash2 className="size-4 text-destructive" />
+                </TooltipIconButton>
+              </PopoverTrigger>
+              <PopoverContent className="w-72">
+                <div className="space-y-4">
+                  <div className="space-y-2">
+                    <h4 className="font-medium">Delete Item</h4>
+                    <p className="text-sm text-muted-foreground">Are you sure you want to delete this item? This action cannot be undone.</p>
+                  </div>
+                  <div className="flex justify-end gap-2">
+                    <PopoverClose asChild>
+                      <Button variant="outline" size="sm">
+                        Cancel
+                      </Button>
+                    </PopoverClose>
+                    <Button variant="destructive" size="sm" onClick={() => onDelete(item.name)}>
+                      Delete
+                    </Button>
+                  </div>
+                </div>
+              </PopoverContent>
+            </Popover>
+          </div>
           {/*<Avatar className={"size-20"}>*/}
           {/*  <AvatarImage src={item.image ?? ""} />*/}
           {/*  <AvatarFallback>{item.name}</AvatarFallback>*/}
@@ -109,8 +146,17 @@ const RankContent = () => {
     setEditItem(null)
   }
 
+  const handleDelete = (itemName: string) => {
+    const updatedSoftwares = suggestion.softwares.filter((item) => item.name !== itemName)
+
+    setSuggestion({
+      ...suggestion,
+      softwares: updatedSoftwares
+    })
+  }
+
   return (
-    <div className={"flex flex-col justify-center -mt-40"}>
+    <div className={"flex flex-col justify-center -mt-20"}>
       {isLoading ? (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {[0, 1, 2].map((index) => (
@@ -134,7 +180,7 @@ const RankContent = () => {
           ))}
         </div>
       ) : (
-        <RankTopList data={suggestion.softwares} onEdit={handleEditItem} />
+        <RankTopList data={suggestion.softwares} onEdit={handleEditItem} onDelete={handleDelete} />
       )}
       <div className="mt-20 gap-8">
         <div className="col-span-2 flex flex-col gap-6">
@@ -158,9 +204,36 @@ const RankContent = () => {
                 <div key={`item-${item.name}`} className="rounded-2xl border-[1px] p-6 bg-background relative flex flex-col gap-4 mx-auto max-w-5xl">
                   <div className="flex flex-row gap-4">
                     <div className="size-7 absolute -top-4 -left-2 text-primary bg-background text-2xl">#{index + 4}</div>
-                    <TooltipIconButton tooltip="Edit" className="absolute top-2 right-2" onClick={() => handleEditItem(item)}>
-                      <Edit className="size-4" />
-                    </TooltipIconButton>
+                    <div className="absolute top-2 right-2 flex gap-2">
+                      <TooltipIconButton tooltip="Edit" onClick={() => handleEditItem(item)}>
+                        <Edit className="size-4" />
+                      </TooltipIconButton>
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <TooltipIconButton tooltip="Delete">
+                            <Trash2 className="size-4 text-destructive" />
+                          </TooltipIconButton>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-72">
+                          <div className="space-y-4">
+                            <div className="space-y-2">
+                              <h4 className="font-medium">Delete Item</h4>
+                              <p className="text-sm text-muted-foreground">Are you sure you want to delete this item? This action cannot be undone.</p>
+                            </div>
+                            <div className="flex justify-end gap-2">
+                              <PopoverClose asChild>
+                                <Button variant="outline" size="sm">
+                                  Cancel
+                                </Button>
+                              </PopoverClose>
+                              <Button variant="destructive" size="sm" onClick={() => handleDelete(item.name)}>
+                                Delete
+                              </Button>
+                            </div>
+                          </div>
+                        </PopoverContent>
+                      </Popover>
+                    </div>
                     {/*<Avatar className={"size-20"}>*/}
                     {/*  <AvatarImage src={item.image ?? ""} />*/}
                     {/*  <AvatarFallback>{item.name}</AvatarFallback>*/}
