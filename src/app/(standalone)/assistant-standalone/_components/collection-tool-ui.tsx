@@ -13,7 +13,7 @@ export type CollectionArgs = {
 }
 
 export const CollectionToolUI = makeAssistantToolUI<CollectionArgs, string>({
-  toolName: "replyFn",
+  toolName: "result",
   render: ({ args, status }) => {
     if (status.type === "running") {
       return (

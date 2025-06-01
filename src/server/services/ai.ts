@@ -46,8 +46,17 @@ class AIService {
             description: "Use this tool to get the current time.",
             inputSchema: z.object({}),
             execute: currentTime
+          }),
+          createAIFunction({
+            name: "result",
+            description: "Use this tool to return the result to the user.",
+            inputSchema: suggestionSchema,
+            execute: async ({ name, description, softwares }) => {
+              return "Your result has been received by the user and there is no need to call it again."
+            }
           })
         ),
+        toolChoice: "auto",
         maxSteps: 10,
         prompt: `
 You are an expert in search engine information retrieval, specializing in the field of AI (including AI agents, MCP tools, AI websites, etc.). Please follow the process below to address the user's query:
@@ -55,15 +64,18 @@ You are an expert in search engine information retrieval, specializing in the fi
 1. **Decompose**: Extract the key terms of the query, determine the current time, and clarify the user's intent and the subdomain it belongs to.
 2. **Search**: Use GoogleCustomSearch to search for high-quality information, prioritizing authoritative and up-to-date resources.
 3. **Retrieve**: Extract the most relevant content from the results, filtering out unrelated or low-quality information.
-4. **Reply**: Synthesize the answer and respond concisely, providing references when necessary.
+4. **Result**: Synthesize the answer and respond concisely, providing references when necessary.
 
 user query: ${typeof relevantMessages?.content?.[0] === "object" && "text" in relevantMessages.content[0] ? relevantMessages.content[0].text : "No query provided"}
         `,
-        experimental_output: Output.object({
-          schema: suggestionSchema
-        }),
-        onStepFinish: (step) => {
-          console.log("Step finished:", step)
+        onStepFinish({ text, toolCalls, toolResults, finishReason, usage }) {
+          console.log("Step finished:", {
+            text,
+            toolCalls,
+            toolResults,
+            finishReason,
+            usage
+          })
         }
       })
       return result.toDataStreamResponse()

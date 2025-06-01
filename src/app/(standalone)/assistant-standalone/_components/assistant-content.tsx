@@ -16,6 +16,7 @@ const AssistantContent = () => {
     <AssistantRuntimeProvider runtime={runtime}>
       <div className="flex flex-row">
         <Thread />
+        <CollectionToolUI />
       </div>
     </AssistantRuntimeProvider>
   )
