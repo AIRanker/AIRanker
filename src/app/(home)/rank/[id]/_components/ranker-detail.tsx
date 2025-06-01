@@ -1,6 +1,4 @@
-import { SiDiscord, SiGithub, SiTelegram, SiX } from "@icons-pack/react-simple-icons"
 import { Heart } from "lucide-react"
-import Link from "next/link"
 import type React from "react"
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar"
 import { Badge } from "~/components/ui/badge"

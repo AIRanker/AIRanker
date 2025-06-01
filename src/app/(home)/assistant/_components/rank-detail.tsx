@@ -1,15 +1,45 @@
 "use client"
 
 import { useAtom, useAtomValue } from "jotai"
-import { Heart, MessageCircle, Share2, Star } from "lucide-react"
+import { Edit, Heart, MessageCircle, Share2, Star } from "lucide-react"
+import type React from "react"
+import { useState } from "react"
 
 import { aiLoadingAtom, suggestionAtom } from "~/app/(home)/assistant/store"
+import { TooltipIconButton } from "~/components/tooltip-icon-button"
+import { Button } from "~/components/ui/button"
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "~/components/ui/dialog"
+import { Input } from "~/components/ui/input"
 import { Skeleton } from "~/components/ui/skeleton"
+import { Textarea } from "~/components/ui/textarea"
 import { cn } from "~/lib/utils"
 
 const RankDetail = () => {
   const [suggestion, setSuggestion] = useAtom(suggestionAtom)
   const aiLoading = useAtomValue(aiLoadingAtom)
+  const [dialogOpen, setDialogOpen] = useState(false)
+  const [editData, setEditData] = useState({
+    name: suggestion.name,
+    description: suggestion.description
+  })
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { id, value } = e.target
+    setEditData((prev) => ({
+      ...prev,
+      [id]: value
+    }))
+  }
+
+  const handleSave = () => {
+    setSuggestion({
+      ...suggestion,
+      name: editData.name,
+      description: editData.description
+    })
+    setDialogOpen(false)
+  }
+
   return (
     <div className="relative flex flex-col h-[40rem] py-20 w-full items-center  bg-white dark:bg-black">
       <div
@@ -34,6 +64,21 @@ const RankDetail = () => {
         </>
       ) : (
         <>
+          <div className="absolute top-4 right-4 z-30">
+            <TooltipIconButton
+              tooltip="Edit"
+              onClick={() => {
+                setEditData({
+                  name: suggestion.name,
+                  description: suggestion.description
+                })
+                setDialogOpen(true)
+              }}
+              className="bg-primary/10 hover:bg-primary/20"
+            >
+              <Edit className="size-4" />
+            </TooltipIconButton>
+          </div>
           <p className="relative z-20 bg-gradient-to-b from-primary to-primary/40 bg-clip-text py-8 text-4xl font-bold text-transparent sm:text-7xl">{suggestion.name}</p>
           <p className="relative z-20 bg-gradient-to-b from-primary to-primary/40 bg-clip-text py-4 text-2xl font-bold text-transparent sm:text-4xl">{suggestion.description}</p>
           <div className="flex items-center gap-4 z-20 mt-10">
@@ -55,6 +100,34 @@ const RankDetail = () => {
           </div>
         </>
       )}
+
+      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+        <DialogContent className="sm:max-w-[625px]">
+          <DialogHeader>
+            <DialogTitle>Edit</DialogTitle>
+            <DialogDescription>Collection base information</DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="grid grid-cols-4 items-center gap-4">
+              <label htmlFor="name" className="text-right">
+                Name
+              </label>
+              <Input id="name" value={editData.name} onChange={handleChange} className="col-span-3" />
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <label htmlFor="description" className="text-right">
+                Description
+              </label>
+              <Textarea id="description" value={editData.description} onChange={handleChange} className="col-span-3" />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button type="button" onClick={handleSave}>
+              Save
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }

@@ -123,28 +123,24 @@ export const updateUserParamsSchema = z.object({
   avatar: z.string().optional()
 })
 
+export const suggestionSoftwareSchema = z.object({
+  name: z.string().describe("The name of the AI software"),
+  url: z.string().url().describe("The homepage URL of the AI software"),
+  description: z
+    .string()
+    .describe("A comprehensive description covering: key features, main use cases, target audience, pricing model, unique selling points, and any standout technical capabilities"),
+  collectionReason: z
+    .string()
+    .describe("A persuasive, experience-based reason why this tool deserves to be in the collection - include personal insights, specific advantages, and real-world benefits")
+})
+
 export const suggestionSchema = z.object({
   name: z.string().describe("A captivating and trending title for the collection that grabs attention (e.g., '10 Game-Changing AI Tools That Are Revolutionizing Design in 2025')"),
   description: z
     .string()
     .describe("An engaging introduction that hooks readers and highlights the value proposition of this collection - explain why these tools matter and who they're for"),
   softwares: z
-    .array(
-      z.object({
-        name: z.string().describe("The name of the AI software"),
-        url: z.string().url().describe("The homepage URL of the AI software"),
-        description: z
-          .string()
-          .describe(
-            "A comprehensive description covering: key features, main use cases, target audience, pricing model, unique selling points, and any standout technical capabilities"
-          ),
-        collectionReason: z
-          .string()
-          .describe(
-            "A persuasive, experience-based reason why this tool deserves to be in the collection - include personal insights, specific advantages, and real-world benefits"
-          )
-      })
-    )
+    .array(suggestionSoftwareSchema)
     .describe("A curated and ranked list of AI tools, arranged from most recommended to least recommended based on overall value proposition")
 })
 
@@ -158,6 +154,7 @@ export type UpdateUserParams = z.infer<typeof updateUserParamsSchema>
 export type SoftwareParams = z.infer<typeof softwareParamsSchema>
 export type SoftwareSearchParams = z.infer<typeof softwareSearchParamsSchema>
 export type SuggestionResult = z.infer<typeof suggestionSchema>
+export type SuggestionSoftwareResult = z.infer<typeof suggestionSoftwareSchema>
 
 export interface PageableData<T> {
   list: T[]

@@ -131,7 +131,7 @@ const RankContent = ({ id }: RankerContentProps) => {
                     </div>
                   </div>
                   <div className="relative text-left text-primary border-l-4 border-primary pl-4 w-full">
-                    <span className="italic underline">{item.description}</span>
+                    <span className="italic underline">{item.rankDescription}</span>
                   </div>
                 </div>
               ))}
