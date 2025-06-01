@@ -7,11 +7,16 @@ import { z } from "zod"
 import { env } from "~/env"
 import { suggestionSchema } from "~/server/schema"
 import { currentTime } from "../tools/ai"
+import { createOpenAI } from "@ai-sdk/openai"
+const llm = createOpenAI({
+  baseURL: env.OPENAI_BASE_URL,
+  apiKey: env.OPENAI_API_KEY
+})
 class AIService {
   async generateText(prompt: string) {
     try {
       const { text } = await generateText({
-        model: openai("o3-mini"),
+        model: llm("o3-mini"),
         prompt: "What is love?"
       })
       return text
@@ -33,7 +38,7 @@ class AIService {
     })
     try {
       const result = streamText({
-        model: openai("gpt-4o"),
+        model: llm("gpt-4o"),
         tools: createAISDKTools(
           googleClient,
           createAIFunction({
@@ -56,7 +61,10 @@ user query: ${typeof relevantMessages?.content?.[0] === "object" && "text" in re
         `,
         experimental_output: Output.object({
           schema: suggestionSchema
-        })
+        }),
+        onStepFinish: (step) => {
+          console.log("Step finished:", step)
+        }
       })
       return result.toDataStreamResponse()
     } catch (error) {

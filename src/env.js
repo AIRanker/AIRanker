@@ -18,6 +18,8 @@ export const env = createEnv({
     GOOGLE_APPLICATION_CREDENTIALS: z.string(),
     GOOGLE_SEARCH_API_KEY: z.string().optional(),
     GOOGLE_SEARCH_CSI: z.string().optional(),
+    OPENAI_API_KEY: z.string().optional(),
+    OPENAI_BASE_URL: z.string().url().optional(),
     CHAIN_RPC_URL: z
       .preprocess(
         (val) => {
@@ -72,7 +74,9 @@ export const env = createEnv({
     NEXT_PUBLIC_TOKEN_CONTRACT_ADDRESS: process.env.NEXT_PUBLIC_TOKEN_CONTRACT_ADDRESS,
     GOOGLE_STORAGE_BUCKET: process.env.GOOGLE_STORAGE_BUCKET,
     GOOGLE_SEARCH_API_KEY: process.env.GOOGLE_SEARCH_API_KEY,
-    GOOGLE_SEARCH_CSI: process.env.GOOGLE_SEARCH_CSI
+    GOOGLE_SEARCH_CSI: process.env.GOOGLE_SEARCH_CSI,
+    OPENAI_API_KEY: process.env.OPENAI_API_KEY,
+    OPENAI_BASE_URL: process.env.OPENAI_BASE_URL
     // NEXT_PUBLIC_CLIENTVAR: process.env.NEXT_PUBLIC_CLIENTVAR,
   },
   /**
