@@ -156,17 +156,16 @@ const RankDetail = () => {
               "Save This Amazing Ranking 🚀"
             )}
           </Button>
-
-          <div className=" mt-8 w-full relative">
-            {aiImageLoading ? (
-              <Skeleton className="w-full aspect-video rounded-lg" />
-            ) : suggestionImage ? (
-              <AsyncImage src={suggestionImage} style={{ width: "100%", height: "auto", aspectRatio: 16 / 9 }} className={" shadow-lg rounded-lg"} />
-            ) : null}
-          </div>
         </>
       )}
 
+      <div className=" mt-8 w-full relative">
+        {aiImageLoading ? (
+          <Skeleton className="w-full aspect-video rounded-lg shadow-lg " />
+        ) : suggestionImage ? (
+          <AsyncImage src={suggestionImage} style={{ width: "100%", height: "auto", aspectRatio: 16 / 9 }} className={" shadow-lg rounded-lg"} />
+        ) : null}
+      </div>
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogContent className="sm:max-w-[625px]">
           <DialogHeader>

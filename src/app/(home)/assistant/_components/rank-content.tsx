@@ -202,7 +202,7 @@ const RankContent = () => {
                 ))
             : (suggestion.softwares?.length ?? 0) > 3 &&
               suggestion.softwares?.slice(3).map((item, index) => (
-                <div key={`item-${item.name}`} className="rounded-2xl border-[1px] p-6 bg-background relative flex flex-col gap-4 mx-auto max-w-5xl">
+                <div key={`item-${item.name}`} className="w-full rounded-2xl border-[1px] p-6 bg-background relative flex flex-col gap-4 mx-auto max-w-5xl">
                   <div className="flex flex-row gap-4">
                     <div className="size-7 absolute -top-4 -left-2 text-primary bg-background text-2xl">#{index + 4}</div>
                     <div className="absolute top-2 right-2 flex gap-2">
