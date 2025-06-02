@@ -20,6 +20,7 @@ export const generateLogoImage = async ({ name, description }: { name: string; d
       `Generate an AI with a sense of technology and recommend it to you,beautify the pictures through the contents in the collection. collection name: ${name}. description: ${description}`
     )
     formData.append("output_format", "webp")
+    formData.append("aspect_ratio", "16:9")
 
     // Get the auto-generated boundary from FormData
     const formDataHeaders = formData.getHeaders()
