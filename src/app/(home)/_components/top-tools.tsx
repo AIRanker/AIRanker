@@ -10,6 +10,7 @@ import { toast } from "sonner"
 import { ToolDialog } from "~/app/(home)/_components/tool-dialog"
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar"
 import { Button } from "~/components/ui/button"
+import { Pagination, PaginationContent, PaginationEllipsis, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "~/components/ui/pagination"
 import { Skeleton } from "~/components/ui/skeleton"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs"
 import { cn } from "~/lib/utils"
@@ -40,78 +41,6 @@ interface ContributorItem {
   username: string
   points: number
 }
-
-const communityPosts: CommunityPost[] = [
-  {
-    id: "post1",
-    author: "@AliceDev",
-    content: "Curated list of the best AI SDKs, APIs...",
-    likes: 128,
-    comments: 7,
-    date: "3 days ago",
-    avatar: "/avatar.png"
-  },
-  {
-    id: "post2",
-    author: "@AliceDev",
-    content: "Curated list of the best AI SDKs, APIs...",
-    likes: 128,
-    comments: 7,
-    date: "3 days ago",
-    avatar: "/avatar.png"
-  },
-  {
-    id: "post3",
-    author: "@AliceDev",
-    content: "Curated list of the best AI SDKs, APIs...",
-    likes: 128,
-    comments: 7,
-    date: "3 days ago",
-    avatar: "/avatar.png"
-  }
-]
-
-const recentTools: ToolItem[] = [
-  {
-    id: "recent1",
-    name: "GPT-4",
-    description: "",
-    likes: 0,
-    image: "/gpt4.png"
-  },
-  {
-    id: "recent2",
-    name: "GPT-4",
-    description: "",
-    likes: 0,
-    image: "/gpt4.png"
-  },
-  {
-    id: "recent3",
-    name: "GPT-4",
-    description: "",
-    likes: 0,
-    image: "/gpt4.png"
-  }
-]
-
-const contributors: ContributorItem[] = [
-  {
-    id: "contrib1",
-    username: "@kai",
-    points: 148
-  },
-  {
-    id: "contrib2",
-    username: "@kai",
-    points: 148
-  },
-  {
-    id: "contrib3",
-    username: "@kai",
-    points: 148
-  }
-]
 
 const ToolCard: FC<{ tool: PageSoftwareResult["list"][number] }> = ({ tool }) => {
   const { isSignedIn } = useAuth()
@@ -149,7 +78,7 @@ const ToolCard: FC<{ tool: PageSoftwareResult["list"][number] }> = ({ tool }) =>
           </Avatar>
         </div>
         <div className="flex-1">
-          <Link className="font-bold cursor-pointer w-fit" href={`/src/app/(home)/tool/${tool.id}`}>
+          <Link className="font-bold cursor-pointer w-fit" href={`/tool/${tool.id}`}>
             {tool.name}
           </Link>
           <p className="text-sm text-gray-600 line-clamp-3">{tool.description}</p>
@@ -254,6 +183,20 @@ const TopTools = () => {
       enabled: condition.currentCategory.trim().length > 0
     }
   )
+  useEffect(() => {
+    if (category) {
+      const firstElement = category[0]
+      if (firstElement) {
+        setCondition({
+          currentCategory: firstElement.id,
+          pageable: {
+            page: 0,
+            size: 10
+          }
+        })
+      }
+    }
+  }, [category])
   const { data: recentlySoftware, isPending: recentlyPending } = api.software.recentlySoftwares.useQuery()
   const { data: userData, isPending: userPending } = api.user.topContributors.useQuery()
   return (
@@ -270,7 +213,11 @@ const TopTools = () => {
                 ))}
             </div>
           )}
-          <Tabs value={condition.currentCategory} onValueChange={(c) => setCondition({ ...condition, currentCategory: c })} className={"flex flex-col"}>
+          <Tabs
+            value={condition.currentCategory}
+            onValueChange={(c) => setCondition({ ...condition, currentCategory: c, pageable: { page: 0, size: condition.pageable.size } })}
+            className={"flex flex-col"}
+          >
             <TabsList className="flex shrink-0 border-b border-mauve6">
               {category?.map((item) => (
                 <TabsTrigger
@@ -288,6 +235,22 @@ const TopTools = () => {
 
             <div className="space-y-2">
               {!isPending && data?.list?.map((tool) => <ToolCard key={tool.id} tool={tool} />)}
+              {!isPending && (!data?.list || data.list.length === 0) && (
+                <div className="flex flex-col items-center justify-center py-12">
+                  <div className="text-gray-400 mb-2">
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <title>No Data</title>
+                      <path
+                        d="M3 6C3 4.34315 4.34315 3 6 3H18C19.6569 3 21 4.34315 21 6V18C21 19.6569 19.6569 21 18 21H6C4.34315 21 3 19.6569 3 18V6Z"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                      />
+                      <path d="M9 12H15" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+                    </svg>
+                  </div>
+                  <span className="text-gray-500">No tools found in this category</span>
+                </div>
+              )}
               {isPending &&
                 Array(10)
                   .fill(0)
@@ -308,6 +271,90 @@ const TopTools = () => {
                     </div>
                   ))}
             </div>
+            {!isPending && data && (
+              <Pagination className="mt-4">
+                <PaginationContent>
+                  <PaginationItem>
+                    <PaginationPrevious
+                      onClick={() =>
+                        setCondition({
+                          ...condition,
+                          pageable: {
+                            ...condition.pageable,
+                            page: Math.max(0, (condition.pageable.page ?? 0) - 1)
+                          }
+                        })
+                      }
+                      className={cn((condition.pageable.page ?? 0) <= 0 && "pointer-events-none opacity-50")}
+                    />
+                  </PaginationItem>
+
+                  {Array.from({ length: data.pages }, (_, i) => i).map((page) => {
+                    // 显示当前页码前后各1页，以及首尾页
+                    const currentPage = condition.pageable.page ?? 0
+                    const shouldShowPage = page === 0 || page === data.pages - 1 || Math.abs(page - currentPage) <= 1
+
+                    // 显示省略号的条件
+                    const showEllipsisBefore = page === 1 && currentPage > 2
+                    const showEllipsisAfter = page === data.pages - 2 && currentPage < data.pages - 3
+
+                    if (showEllipsisBefore) {
+                      return (
+                        <PaginationItem key={"ellipsis-before"}>
+                          <PaginationEllipsis />
+                        </PaginationItem>
+                      )
+                    }
+
+                    if (showEllipsisAfter) {
+                      return (
+                        <PaginationItem key={"ellipsis-after"}>
+                          <PaginationEllipsis />
+                        </PaginationItem>
+                      )
+                    }
+
+                    if (shouldShowPage) {
+                      return (
+                        <PaginationItem key={page}>
+                          <PaginationLink
+                            isActive={page === (condition.pageable.page ?? 0)}
+                            onClick={() =>
+                              setCondition({
+                                ...condition,
+                                pageable: {
+                                  ...condition.pageable,
+                                  page
+                                }
+                              })
+                            }
+                          >
+                            {page + 1}
+                          </PaginationLink>
+                        </PaginationItem>
+                      )
+                    }
+
+                    return null
+                  })}
+
+                  <PaginationItem>
+                    <PaginationNext
+                      onClick={() =>
+                        setCondition({
+                          ...condition,
+                          pageable: {
+                            ...condition.pageable,
+                            page: Math.min(data.pages - 1, (condition.pageable.page ?? 0) + 1)
+                          }
+                        })
+                      }
+                      className={cn((condition.pageable.page ?? 0) >= data.pages - 1 && "pointer-events-none opacity-50")}
+                    />
+                  </PaginationItem>
+                </PaginationContent>
+              </Pagination>
+            )}
           </Tabs>
         </div>
         <div className="space-y-4 min-w-[330px] flex flex-col">
@@ -322,7 +369,7 @@ const TopTools = () => {
                   </Avatar>
                 </div>
                 <div className={"flex flex-col flex-1"}>
-                  <Link href={`/src/app/(home)/tool/${tool.id}`} className={"line-clamp-1 cursor-pointer"}>
+                  <Link href={`/tool/${tool.id}`} className={"line-clamp-1 cursor-pointer"}>
                     {tool.name}
                   </Link>
                   <span className={"line-clamp-1 font-normal text-foreground/50 text-sm"}>{tool.description}</span>
@@ -377,12 +424,6 @@ const TopTools = () => {
                     </div>
                   ))}
             </div>
-          </div>
-
-          <div className="py-6">
-            <h2 className="mb-2 text-2xl font-bold text-primary">Got an AI tool to share?</h2>
-            <p className="mb-4">You can submit and promote your own toolhere.</p>
-            <Button className="w-full">Submit your tool</Button>
           </div>
         </div>
       </div>

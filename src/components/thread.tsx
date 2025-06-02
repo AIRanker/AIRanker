@@ -169,16 +169,14 @@ const AssistantMessage: FC = () => {
     <MessagePrimitive.Root className="grid grid-cols-[auto_auto_1fr] grid-rows-[auto_1fr] relative w-full max-w-[var(--thread-max-width)] py-4">
       <div className="space-y-1 text-foreground max-w-[calc(var(--thread-max-width)*0.8)] break-words leading-7 col-span-2 col-start-2 row-start-1 my-1.5 ">
         <MessagePrimitive.Content components={{ Text: MarkdownText }} />
-        <div className="flex gap-2 items-center">
-          <ThreadPrimitive.If running>
-            <MessagePrimitive.If last>
-              <div className="flex items-center gap-2">
-                <Loader2 className="h-4 w-4 animate-spin text-primary flex-shrink-0" />
-                <TextWave className={"text-sm"} text={"Generating message..."} />
-              </div>
-            </MessagePrimitive.If>
-          </ThreadPrimitive.If>
-        </div>
+        <ThreadPrimitive.If running>
+          <MessagePrimitive.If last>
+            <div className="flex items-center gap-2">
+              <Loader2 className="h-4 w-4 animate-spin text-primary flex-shrink-0" />
+              <TextWave className={"text-sm"} text={"Generating message..."} />
+            </div>
+          </MessagePrimitive.If>
+        </ThreadPrimitive.If>
         <MessageError />
       </div>
 

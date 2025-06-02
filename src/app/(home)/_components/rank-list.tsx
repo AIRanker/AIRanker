@@ -52,7 +52,7 @@ export const RankList: FC<TopRankedProps> = ({ title = "Top Ranked", className }
               {/*  <Image src={item.} alt={item.title} width={48} height={48} className="rounded-full" />*/}
               {/*</div>*/}
               <div className="flex-grow">
-                <Link className="text-lg font-bold" href={`/src/app/(home)/rank/${item.id}`}>
+                <Link className="text-lg font-bold" href={`/rank/${item.id}`}>
                   {item.name ?? "Unnames Rank"}
                 </Link>
                 <p className="text-sm text-muted-foreground">{item.description}</p>

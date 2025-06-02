@@ -5,6 +5,7 @@ import { AssistantModal } from "~/components/assistant-modal"
 const AssistantPage = () => {
   return (
     <AssistantProvider>
+      <AssistantModal />
       <AssistantContent />
     </AssistantProvider>
   )

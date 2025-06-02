@@ -46,7 +46,7 @@ const MyRank = () => {
           <div className="py-10 text-center">
             <p className="text-muted-foreground">You haven't created any collections yet.</p>
             <Button className="mt-4" asChild>
-              <Link href="/src/app/(home)/rank/create">Create Your First Collection</Link>
+              <Link href="/rank/create">Create Your First Collection</Link>
             </Button>
           </div>
         ) : (
@@ -55,7 +55,7 @@ const MyRank = () => {
               <div key={rank.id} className="py-6 first:pt-0 last:pb-0">
                 <div className="flex items-start gap-4">
                   <div className="flex-1 space-y-1">
-                    <Link href={`/src/app/(home)/rank/${rank.id}`} className="font-semibold text-primary hover:underline">
+                    <Link href={`/rank/${rank.id}`} className="font-semibold text-primary hover:underline">
                       {rank.name}
                     </Link>
                     <div className="flex items-center gap-4 text-sm text-muted-foreground">
@@ -72,7 +72,7 @@ const MyRank = () => {
                   </div>
                   <div className="flex items-center gap-2">
                     <Button variant="outline" size="icon" asChild>
-                      <Link href={`/src/app/(home)/rank/${rank.id}/update`}>
+                      <Link href={`/rank/${rank.id}/update`}>
                         <PencilIcon className="h-4 w-4" />
                       </Link>
                     </Button>

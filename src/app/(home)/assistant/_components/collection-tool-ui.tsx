@@ -1,7 +1,7 @@
 import { makeAssistantToolUI } from "@assistant-ui/react"
 import { useAtom, useSetAtom } from "jotai"
 import { CheckCircle, Loader2 } from "lucide-react"
-import { aiLoadingAtom, suggestionAtom } from "~/app/(home)/assistant/store"
+import { aiImageLoadingAtom, aiLoadingAtom, suggestionAtom } from "~/app/(home)/assistant/store"
 import TextWave from "~/components/ui/text-wave"
 
 export type CollectionArgs = {

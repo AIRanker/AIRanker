@@ -6,7 +6,7 @@ await import("./src/env.js")
 
 /** @type {import("next").NextConfig} */
 const config = {
-  reactStrictMode: true,
+  reactStrictMode: false,
   output: "standalone",
   images: {
     domains: ["storage.googleapis.com", "avatars.githubusercontent.com", "picsum.photos", "api.microlink.io", "aceternity.com"]

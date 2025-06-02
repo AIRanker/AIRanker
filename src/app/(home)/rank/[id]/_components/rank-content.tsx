@@ -49,7 +49,7 @@ const RankTopList = ({ data }: { data: SoftwareByRankIdResult }) => {
             <AvatarImage src={item.image ?? ""} />
             <AvatarFallback>{item.name}</AvatarFallback>
           </Avatar>
-          <Link target="_blank" href={`/src/app/(home)/tool/${item.id}`} className="text-xl font-semibold text-muted-foreground">
+          <Link target="_blank" href={`/tool/${item.id}`} className="text-xl font-semibold text-muted-foreground">
             {item.name}
           </Link>
           <SoftwareAction item={item} comment={false} />
@@ -122,7 +122,7 @@ const RankContent = ({ id }: RankerContentProps) => {
                     </Avatar>
                     <div className="flex flex-col">
                       <div className="flex flex-row gap-4">
-                        <Link target="_blank" href={`/src/app/(home)/tool/${item.id}`} className="text-xl font-semibold text-muted-foreground">
+                        <Link target="_blank" href={`/tool/${item.id}`} className="text-xl font-semibold text-muted-foreground">
                           {item.name}
                         </Link>
                         <SoftwareAction item={item} className="size 4" comment={false} />
@@ -150,7 +150,7 @@ const RankContent = ({ id }: RankerContentProps) => {
             : rank?.map((item) => (
                 <div key={item.id} className="flex flex-row gap-4 items-center mb-4 justify-between">
                   <div className={"flex flex-row gap-1 items-center"}>
-                    <Link target="_blank" href={`/src/app/(home)/rank/${item.id}`} className="line-clamp-1 font-semibold text-muted-foreground hover:underline">
+                    <Link target="_blank" href={`/rank/${item.id}`} className="line-clamp-1 font-semibold text-muted-foreground hover:underline">
                       {item.name}
                     </Link>
                     <Heart className={"text-primary"} size={16} />

@@ -2,6 +2,7 @@
 
 import { useAuth, useClerk } from "@clerk/nextjs"
 import { formatDistanceToNow } from "date-fns"
+import { AsyncImage } from "loadable-image"
 import { Heart, PackageOpen, Search } from "lucide-react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
@@ -142,8 +143,12 @@ const CuratedCollection = () => {
             ))}
         {data?.list?.map((item) => (
           <div key={`cc-${item.id}`} className={"flex flex-col border border-primary rounded-lg p-5 gap-4"}>
-            <LogoBeam data={item} />
-            <Link href={`/src/app/(home)/rank/${item.id}`} className={"text-primary text-2xl font-bold hover:underline"}>
+            {item.image && item.image.trim().length > 0 ? (
+              <AsyncImage src={item.image} className={"aspect-square h-60 w-full rounded-t-lg object-cover"} />
+            ) : (
+              <LogoBeam data={item} />
+            )}
+            <Link href={`/rank/${item.id}`} className={"text-primary text-2xl font-bold hover:underline"}>
               {item.name}
             </Link>
             <div className={"text-md flex-1"}>{item.description}</div>

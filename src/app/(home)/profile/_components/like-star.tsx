@@ -34,10 +34,10 @@ const RankList = ({ ranks, icon }: { ranks: PageRankResult["list"]; icon: string
   <div className="divide-y">
     {ranks.map((rank) => (
       <div key={rank.id} className="py-6 first:pt-0 last:pb-0">
-        <Link href={`/src/app/(home)/rank/${rank.id}`} className="flex items-start gap-4 hover:opacity-90 transition-opacity">
+        <Link href={`/rank/${rank.id}`} className="flex items-start gap-4 hover:opacity-90 transition-opacity">
           <div className="flex-1 space-y-1">
             <div className="flex items-center gap-2">
-              <Link href={`/src/app/(home)/rank/${rank.id}`} className="font-semibold text-primary">
+              <Link href={`/rank/${rank.id}`} className="font-semibold text-primary">
                 {rank.name}
               </Link>
             </div>

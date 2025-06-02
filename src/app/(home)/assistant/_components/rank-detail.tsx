@@ -105,9 +105,7 @@ const RankDetail = () => {
           <p className="relative z-20 bg-gradient-to-b from-primary text-center to-primary/40 bg-clip-text py-8 text-4xl font-bold text-transparent sm:text-7xl">
             {suggestion.name}
           </p>
-          <p className="relative z-20 bg-gradient-to-b from-primary text-center to-primary/40 bg-clip-text py-4 text-2xl font-bold text-transparent sm:text-xl">
-            {suggestion.description}
-          </p>
+          <p className="relative z-20 py-4 text-2xl font-bold text-foreground/30 sm:text-xl">{suggestion.description}</p>
           <div className="flex items-center gap-4 z-20 mt-10">
             <div className="flex items-center gap-1">
               <Star className={cn("cursor-pointer text-primary hover:scale-125 hover:fill-yellow-400 hover:text-yellow-400 transition")} />
@@ -153,7 +151,7 @@ const RankDetail = () => {
                 <span>Saving...</span>
               </div>
             ) : (
-              "Save This Amazing Ranking 🚀"
+              "Save This Amazing Collection 🚀"
             )}
           </Button>
         </>

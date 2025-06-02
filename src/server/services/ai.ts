@@ -34,7 +34,7 @@ class AIService {
     })
     try {
       const result = streamText({
-        model: openai("gpt-4o-mini"),
+        model: openai("gpt-4o"),
         onStepFinish({ text, toolCalls, toolResults, finishReason, usage }) {
           console.log("Step finished:", { text, toolCalls, toolResults, finishReason, usage })
           // your own logic, e.g. for saving the chat history or recording usage

@@ -22,19 +22,19 @@ const UserAction = () => {
           </UserButton.MenuItems>
         </UserButton>
       </SignedIn>
-      <Button
-        variant={"outline"}
-        className={"border-primary text-primary font-bold"}
-        onClick={() => {
-          if (isSignedIn) {
-            router.push("/create/tool")
-          } else {
-            openSignIn()
-          }
-        }}
-      >
-        Create Tool
-      </Button>
+      {/*<Button*/}
+      {/*  variant={"outline"}*/}
+      {/*  className={"border-primary text-primary font-bold"}*/}
+      {/*  onClick={() => {*/}
+      {/*    if (isSignedIn) {*/}
+      {/*      router.push("/create/tool")*/}
+      {/*    } else {*/}
+      {/*      openSignIn()*/}
+      {/*    }*/}
+      {/*  }}*/}
+      {/*>*/}
+      {/*  Create Tool*/}
+      {/*</Button>*/}
       <Button
         variant={"outline"}
         className={"border-primary text-primary font-bold"}

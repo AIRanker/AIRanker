@@ -73,8 +73,8 @@ const AskHero = () => {
           }}
           className="relative z-10 mt-8 flex flex-wrap items-center justify-center gap-4"
         >
-          <div className="relative w-full max-w-2xl">
-            <Textarea value={prompt} onChange={(e) => setPrompt(e.target.value)} className={"bg-background shadow-xl p-4 h-32"} placeholder="Type your prompt here." />
+          <div className="relative w-full max-w-3xl">
+            <Textarea value={prompt} onChange={(e) => setPrompt(e.target.value)} className={"bg-background shadow-xl p-4 h-48"} placeholder="Type your prompt here." />
             <Button
               size="icon"
               className="absolute bottom-3 right-3 bg-primary text-primary-foreground rounded-full"
