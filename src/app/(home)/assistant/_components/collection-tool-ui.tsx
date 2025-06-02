@@ -1,5 +1,8 @@
 import { makeAssistantToolUI } from "@assistant-ui/react"
-import { Spinner } from "@radix-ui/themes"
+import { useAtom, useSetAtom } from "jotai"
+import { CheckCircle, Loader2 } from "lucide-react"
+import { aiLoadingAtom, suggestionAtom } from "~/app/(home)/assistant/store"
+import TextWave from "~/components/ui/text-wave"
 
 export type CollectionArgs = {
   name: string
@@ -13,42 +16,35 @@ export type CollectionArgs = {
 }
 
 export const CollectionToolUI = makeAssistantToolUI<CollectionArgs, string>({
-  toolName: "replyFn",
+  toolName: "result",
   render: ({ args, status }) => {
+    const setAiLoading = useSetAtom(aiLoadingAtom)
+    const setSuggestion = useSetAtom(suggestionAtom)
+    setAiLoading(true)
     if (status.type === "running") {
       return (
         <div className="flex items-center gap-2">
-          <Spinner />
-          <span>Generating AI tools collection...</span>
+          <Loader2 className="h-4 w-4 animate-spin text-primary flex-shrink-0" />
+          <TextWave className={"text-sm"} text={"Generating AI tools collection..."} />
         </div>
       )
     }
 
     if (status.type === "incomplete" && status.reason === "error") {
-      return <div className="text-red-500">Failed to generate collection</div>
+      setAiLoading(false)
+      return (
+        <div className="flex items-center gap-2">
+          <Loader2 className="h-4 w-4 animate-spin text-primary flex-shrink-0" />
+          <TextWave className={"text-sm text-destructive"} text={"Error: Failed to generate collection!"} />
+        </div>
+      )
     }
-
+    setSuggestion(args)
+    setAiLoading(false)
     return (
-      <div className="space-y-6 rounded-lg bg-gray-50 p-6">
-        <div>
-          <h2 className="text-2xl font-bold">{args.name}</h2>
-          <p className="mt-2 text-gray-600">{args.description}</p>
-        </div>
-
-        <div className="space-y-4">
-          {args.softwares.map((software, index) => (
-            <div key={software.name} className="rounded-lg border bg-white p-4">
-              <div className="flex items-center justify-between">
-                <h3 className="text-xl font-semibold">{software.name}</h3>
-                <a href={software.url} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
-                  Visit Website
-                </a>
-              </div>
-              <p className="mt-2 text-gray-700">{software.description}</p>
-              <p className="mt-2 text-gray-600 italic">Why we recommend it: {software.collectionReason}</p>
-            </div>
-          ))}
-        </div>
+      <div className="flex items-center gap-2">
+        <CheckCircle className="h-4 w-4 text-primary flex-shrink-0" />
+        <TextWave className={"text-sm"} text={"Generate completed!"} />
       </div>
     )
   }

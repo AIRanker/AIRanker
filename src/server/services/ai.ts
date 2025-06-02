@@ -2,12 +2,12 @@ import { createAISDKTools } from "@agentic/ai-sdk"
 import { createAIFunction } from "@agentic/core"
 import { GoogleCustomSearchClient } from "@agentic/google-custom-search"
 import { openai } from "@ai-sdk/openai"
+import { createOpenAI } from "@ai-sdk/openai"
 import { type CoreMessage, Output, generateObject, generateText, streamObject, streamText } from "ai"
 import { z } from "zod"
 import { env } from "~/env"
 import { suggestionSchema } from "~/server/schema"
 import { currentTime, generateLogoImage } from "../tools/ai"
-import { createOpenAI } from "@ai-sdk/openai"
 class AIService {
   async generateText(prompt: string) {
     try {
@@ -34,7 +34,7 @@ class AIService {
     })
     try {
       const result = streamText({
-        model: openai("gpt-4o"),
+        model: openai("gpt-4o-mini"),
         onStepFinish({ text, toolCalls, toolResults, finishReason, usage }) {
           console.log("Step finished:", { text, toolCalls, toolResults, finishReason, usage })
           // your own logic, e.g. for saving the chat history or recording usage

@@ -5,9 +5,10 @@ import { Edit, Heart, MessageCircle, Share2, Star } from "lucide-react"
 import type React from "react"
 import { useState } from "react"
 
+import { AsyncImage } from "loadable-image"
 import { useRouter } from "next/navigation"
 import { toast } from "sonner"
-import { aiLoadingAtom, suggestionAtom } from "~/app/(home)/assistant/store"
+import { aiImageLoadingAtom, aiLoadingAtom, suggestionAtom, suggestionImageAtom } from "~/app/(home)/assistant/store"
 import { TooltipIconButton } from "~/components/tooltip-icon-button"
 import { Button } from "~/components/ui/button"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "~/components/ui/dialog"
@@ -20,6 +21,8 @@ import { api } from "~/trpc/react"
 const RankDetail = () => {
   const [suggestion, setSuggestion] = useAtom(suggestionAtom)
   const aiLoading = useAtomValue(aiLoadingAtom)
+  const aiImageLoading = useAtomValue(aiImageLoadingAtom)
+  const suggestionImage = useAtomValue(suggestionImageAtom)
   const [dialogOpen, setDialogOpen] = useState(false)
   const [editData, setEditData] = useState({
     name: suggestion.name,
@@ -60,7 +63,7 @@ const RankDetail = () => {
   })
 
   return (
-    <div className="relative flex flex-col h-[40rem] py-20 w-full items-center  bg-white dark:bg-black">
+    <div className="relative flex flex-col mb-12 py-20 w-full items-center  bg-white dark:bg-black">
       <div
         className={cn(
           "absolute inset-0",
@@ -80,6 +83,7 @@ const RankDetail = () => {
             <Skeleton className="h-8 w-16 rounded-full" />
             <Skeleton className="h-8 w-8 rounded-full" />
           </div>
+          <Skeleton className="z-20 mt-12 h-14 w-64 rounded-lg" />
         </>
       ) : (
         <>
@@ -98,8 +102,12 @@ const RankDetail = () => {
               <Edit className="size-4" />
             </TooltipIconButton>
           </div>
-          <p className="relative z-20 bg-gradient-to-b from-primary to-primary/40 bg-clip-text py-8 text-4xl font-bold text-transparent sm:text-7xl">{suggestion.name}</p>
-          <p className="relative z-20 bg-gradient-to-b from-primary to-primary/40 bg-clip-text py-4 text-2xl font-bold text-transparent sm:text-4xl">{suggestion.description}</p>
+          <p className="relative z-20 bg-gradient-to-b from-primary text-center to-primary/40 bg-clip-text py-8 text-4xl font-bold text-transparent sm:text-7xl">
+            {suggestion.name}
+          </p>
+          <p className="relative z-20 bg-gradient-to-b from-primary text-center to-primary/40 bg-clip-text py-4 text-2xl font-bold text-transparent sm:text-xl">
+            {suggestion.description}
+          </p>
           <div className="flex items-center gap-4 z-20 mt-10">
             <div className="flex items-center gap-1">
               <Star className={cn("cursor-pointer text-primary hover:scale-125 hover:fill-yellow-400 hover:text-yellow-400 transition")} />
@@ -124,6 +132,7 @@ const RankDetail = () => {
               mutate({
                 forms: {
                   name: suggestion.name,
+                  image: suggestionImage,
                   description: suggestion.description,
                   tags: [],
                   softwareList: suggestion.softwares.map((item, index) => ({
@@ -147,6 +156,14 @@ const RankDetail = () => {
               "Save This Amazing Ranking 🚀"
             )}
           </Button>
+
+          <div className=" mt-8 w-full relative">
+            {aiImageLoading ? (
+              <Skeleton className="w-full aspect-video rounded-lg" />
+            ) : suggestionImage ? (
+              <AsyncImage src={suggestionImage} style={{ width: "100%", height: "auto", aspectRatio: 16 / 9 }} className={" shadow-lg rounded-lg"} />
+            ) : null}
+          </div>
         </>
       )}
 

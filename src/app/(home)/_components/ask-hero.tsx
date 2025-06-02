@@ -1,12 +1,20 @@
 "use client"
 
+import { useAuth, useClerk } from "@clerk/nextjs"
 import { SendIcon } from "lucide-react"
 import { motion } from "motion/react"
+import { useRouter } from "next/navigation"
+import { useState } from "react"
+import { toast } from "sonner"
 import { Button } from "~/components/ui/button"
 import { Textarea } from "~/components/ui/textarea"
 import { cn } from "~/lib/utils"
 
 const AskHero = () => {
+  const router = useRouter()
+  const { isSignedIn } = useAuth()
+  const { openSignIn } = useClerk()
+  const [prompt, setPrompt] = useState("")
   return (
     <div className="relative  flex w-full flex-col items-center justify-center">
       <div
@@ -66,8 +74,23 @@ const AskHero = () => {
           className="relative z-10 mt-8 flex flex-wrap items-center justify-center gap-4"
         >
           <div className="relative w-full max-w-2xl">
-            <Textarea className={"bg-background shadow-xl p-4 h-32"} placeholder="Type your prompt here." />
-            <Button size="icon" className="absolute bottom-3 right-3 bg-primary text-primary-foreground rounded-full" aria-label="Send message">
+            <Textarea value={prompt} onChange={(e) => setPrompt(e.target.value)} className={"bg-background shadow-xl p-4 h-32"} placeholder="Type your prompt here." />
+            <Button
+              size="icon"
+              className="absolute bottom-3 right-3 bg-primary text-primary-foreground rounded-full"
+              aria-label="Send message"
+              onClick={() => {
+                if (!isSignedIn) {
+                  openSignIn()
+                  return
+                }
+                if (prompt.trim().length === 0) {
+                  toast.warning("Please enter a prompt before submitting.")
+                  return
+                }
+                router.push(`/assistant?prompt=${encodeURIComponent(prompt)}`)
+              }}
+            >
               <SendIcon className="h-4 w-4" />
             </Button>
           </div>
@@ -90,30 +113,28 @@ const AskHero = () => {
           {[
             {
               title: "Best AI Drawing Tools",
-              description: "Generate a ranking of the best AI drawing tools, including Midjourney, DALL-E, and Stable Diffusion"
+              prompt: "Generate a ranking of the best AI drawing tools, including Midjourney, DALL-E, and Stable Diffusion"
             },
             {
               title: "AI Writing Assistants Comparison",
-              description: "Create a comparison list of AI writing assistants, analyzing the pros and cons of ChatGPT, Claude, and Bard"
+              prompt: "Create a comparison list of AI writing assistants, analyzing the pros and cons of ChatGPT, Claude, and Bard"
             },
             {
               title: "Free AI Tools Collection",
-              description: "Compile a collection of the best free AI tools, including image generation, text processing, and audio conversion tools"
+              prompt: "Compile a collection of the best free AI tools, including image generation, text processing, and audio conversion tools"
             },
             {
               title: "AI Video Editing Software Ranking",
-              description: "Compare the best AI video editing software on the market, ranked by ease of use and feature richness"
+              prompt: "Compare the best AI video editing software on the market, ranked by ease of use and feature richness"
             }
-          ].map((prompt, index) => (
+          ].map((item) => (
             <div
-              key={index}
+              key={`prompt-${item.title}`}
               className="bg-background/80 backdrop-blur-sm p-4 text-left rounded-lg shadow-sm border border-border hover:border-primary/50 cursor-pointer transition-all"
-              onClick={() => {
-                /* Handle click event */
-              }}
+              onClick={() => setPrompt(item.prompt)}
             >
-              <h3 className="text-sm font-medium mb-2">{prompt.title}</h3>
-              <p className="text-xs text-muted-foreground">{prompt.description}</p>
+              <h3 className="text-sm font-medium mb-2">{item.title}</h3>
+              <p className="text-xs text-muted-foreground">{item.prompt}</p>
             </div>
           ))}
         </motion.div>

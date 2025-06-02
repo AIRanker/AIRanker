@@ -10,7 +10,7 @@ import { TooltipIconButton } from "~/components/tooltip-icon-button"
 
 export const AssistantModal: FC = () => {
   return (
-    <AssistantModalPrimitive.Root defaultOpen={true}>
+    <AssistantModalPrimitive.Root>
       <AssistantModalPrimitive.Anchor className="fixed bottom-4 right-4 size-11">
         <AssistantModalPrimitive.Trigger asChild>
           <AssistantModalButton />

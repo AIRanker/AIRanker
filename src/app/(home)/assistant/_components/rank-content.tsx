@@ -1,11 +1,12 @@
 "use client"
 import { PopoverClose } from "@radix-ui/react-popover"
 import { motion } from "framer-motion"
+import { useAtomValue } from "jotai"
 import { useAtom } from "jotai/index"
 import { Edit, Trash2 } from "lucide-react"
 import Link from "next/link"
 import { useState } from "react"
-import { suggestionAtom } from "~/app/(home)/assistant/store"
+import { aiLoadingAtom, suggestionAtom } from "~/app/(home)/assistant/store"
 import { TooltipIconButton } from "~/components/tooltip-icon-button"
 import { Button } from "~/components/ui/button"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "~/components/ui/dialog"
@@ -106,7 +107,7 @@ const RankTopList = ({
 
 const RankContent = () => {
   const [suggestion, setSuggestion] = useAtom(suggestionAtom)
-  const isLoading = false
+  const isLoading = useAtomValue(aiLoadingAtom)
   const [editItem, setEditItem] = useState<SuggestionSoftwareResult | null>(null)
   const [editData, setEditData] = useState({
     name: "",
@@ -156,7 +157,7 @@ const RankContent = () => {
   }
 
   return (
-    <div className={"flex flex-col justify-center -mt-20"}>
+    <div className={"flex flex-col justify-center"}>
       {isLoading ? (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {[0, 1, 2].map((index) => (

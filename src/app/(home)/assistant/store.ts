@@ -83,4 +83,6 @@ export const suggestionAtom = atomWithStorage<SuggestionResult>("aiSuggestion", 
   ]
 })
 
-export const aiLoadingAtom = atom<boolean>(false)
+export const suggestionImageAtom = atomWithStorage<string>("aiSuggestionImage", "")
+export const aiLoadingAtom = atom<boolean>(true)
+export const aiImageLoadingAtom = atom<boolean>(true)
