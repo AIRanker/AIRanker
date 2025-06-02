@@ -1,7 +1,6 @@
 "use client"
 
 import { makeAssistantToolUI, useThreadRuntime } from "@assistant-ui/react"
-import { useSetAtom } from "jotai/index"
 import { CheckCircle, Loader2 } from "lucide-react"
 import { useSearchParams } from "next/navigation"
 import { useEffect, useState } from "react"
