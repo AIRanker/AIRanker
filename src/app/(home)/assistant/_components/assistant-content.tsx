@@ -4,8 +4,7 @@ import { useThreadRuntime } from "@assistant-ui/react"
 import { useSetAtom } from "jotai/index"
 import { useSearchParams } from "next/navigation"
 import { useEffect } from "react"
-import { CollectionToolUI } from "~/app/(home)/assistant/_components/collection-tool-ui"
-import { useEffect } from "react"
+
 import { CollectionToolUI } from "~/app/(home)/assistant/_components/collection-tool-ui"
 import { GenerateLogoImageUi } from "~/app/(home)/assistant/_components/generate-logo-image-tools"
 import { GoogleToolUi } from "~/app/(home)/assistant/_components/google-tool-ui"
@@ -14,6 +13,7 @@ import RankDetail from "~/app/(home)/assistant/_components/rank-detail"
 import { TimeToolUi } from "~/app/(home)/assistant/_components/time-tool-ui"
 import { aiImageLoadingAtom, aiLoadingAtom } from "~/app/(home)/assistant/store"
 import { AssistantModal } from "~/components/assistant-modal"
+import { GenerateLogoPrompt } from "./generate-logo-prompt"
 
 const AssistantContent = () => {
   const searchParams = useSearchParams()
