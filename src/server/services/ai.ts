@@ -7,7 +7,7 @@ import { type CoreMessage, Output, generateObject, generateText, streamObject, s
 import { z } from "zod"
 import { env } from "~/env"
 import { suggestionSchema } from "~/server/schema"
-import { currentTime, generateLogoImage } from "../tools/ai"
+import { currentTime, generateLogoImage, generateLogoPrompt } from "../tools/ai"
 class AIService {
   async generateText(prompt: string) {
     try {
@@ -56,11 +56,19 @@ class AIService {
             }
           }),
           createAIFunction({
-            name: "generateLogoImage",
-            description: "Use this tool to generate a logo image for the collection.",
+            name: "generateLogoPrompt",
+            description: "Use this tool to generate a logo prompt for the collection.",
             inputSchema: z.object({
               name: z.string().describe("The name of the collection"),
               description: z.string().describe("A brief description of the collection")
+            }),
+            execute: generateLogoPrompt
+          }),
+          createAIFunction({
+            name: "generateLogoImage",
+            description: "Use this tool to generate a logo image for the collection.",
+            inputSchema: z.object({
+              prompt: z.string().describe("The prompt for generating the logo image.")
             }),
             execute: generateLogoImage
           })
@@ -76,7 +84,7 @@ Thinking stage:
 3. **Retrieve**: Extract the most relevant content from the results, filtering out unrelated or low-quality information.
 
 Answer stage:
-1. **Generate Logo**: Generate a logo image for the collection using the 'generateLogoImage' tool.
+1. **Generate Logo**: Generate a logo image for the collection using the 'generateLogoPrompt' and 'generateLogoImage' tools.
 2. **Result**: Synthesize the answer and use the 'result' tool to return it to the user.
 3. **Reply**: Reply to the user with no more than two sentences.
 
@@ -95,7 +103,7 @@ Thinking stage:
     Extract the most relevant content from the search results, filtering out unrelated or low-quality information.
 Answer stage:
 1. Generate Logo:
-    Generate a logo image for the collection using the 'generateLogoImage' tool.
+    Generate a logo image for the collection using the 'generateLogoPrompt' and 'generateLogoImage' tools.
 2. Result:
     Synthesize the answer and use the 'result' tool to return it to the user.
 3. Reply:

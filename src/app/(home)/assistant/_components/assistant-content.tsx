@@ -5,6 +5,8 @@ import { useSetAtom } from "jotai/index"
 import { useSearchParams } from "next/navigation"
 import { useEffect } from "react"
 import { CollectionToolUI } from "~/app/(home)/assistant/_components/collection-tool-ui"
+import { useEffect } from "react"
+import { CollectionToolUI } from "~/app/(home)/assistant/_components/collection-tool-ui"
 import { GenerateLogoImageUi } from "~/app/(home)/assistant/_components/generate-logo-image-tools"
 import { GoogleToolUi } from "~/app/(home)/assistant/_components/google-tool-ui"
 import RankContent from "~/app/(home)/assistant/_components/rank-content"
@@ -36,6 +38,7 @@ const AssistantContent = () => {
       <TimeToolUi />
       <GoogleToolUi />
       <GenerateLogoImageUi />
+      <GenerateLogoPrompt />
     </div>
   )
 }

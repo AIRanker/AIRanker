@@ -1,6 +1,8 @@
 import { env } from "~/env"
 import NodeFormData from "form-data"
 import { Storage } from "@google-cloud/storage"
+import { generateText } from "ai"
+import { openai } from "@ai-sdk/openai"
 const GoogleStorageBucket = env.GOOGLE_STORAGE_BUCKET ?? "repofi"
 const storage = new Storage()
 
@@ -12,12 +14,29 @@ export const currentTime = async () => {
 const generateUniqueId = () => {
   return `${Date.now()}-${Math.random().toString(36).substring(2, 15)}`
 }
-export const generateLogoImage = async ({ name, description }: { name: string; description: string }) => {
+
+export const generateLogoPrompt = async ({ name, description }: { name: string; description: string }) => {
+  const { text } = await generateText({
+    model: openai("gpt-4o-mini"),
+    prompt: `
+    You are an AI that generates studio diffusion prompts for creating logos.
+    Please generate a prompt based on the name and description of the set, which should not exceed 200 words.
+    Your response should be a single line of text without any additional formatting or explanations.
+
+    Name: ${name}
+    Description: ${description}
+    `
+  })
+
+  return text
+}
+
+export const generateLogoImage = async ({ prompt }: { prompt: string }) => {
   try {
     const formData = new NodeFormData()
     formData.append(
       "prompt",
-      `Generate an AI with a sense of technology and recommend it to you,beautify the pictures through the contents in the collection. collection name: ${name}. description: ${description}`
+      prompt,
     )
     formData.append("output_format", "webp")
     formData.append("aspect_ratio", "16:9")
