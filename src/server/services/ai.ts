@@ -103,7 +103,8 @@ Thinking stage:
     Extract the most relevant content from the search results, filtering out unrelated or low-quality information.
 Answer stage:
 1. Generate Logo:
-    Generate a logo image for the collection using the 'generateLogoPrompt' and 'generateLogoImage' tools.
+    First generate a logo prompt for the collection using the 'generateLogoPrompt' tool,
+    then, generate a logo image for the collection using the 'generateLogoImage' tool.
 2. Result:
     Synthesize the answer and use the 'result' tool to return it to the user.
 3. Reply:

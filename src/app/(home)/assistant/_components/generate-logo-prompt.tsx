@@ -7,8 +7,6 @@ import TextWave from "~/components/ui/text-wave"
 export const GenerateLogoPrompt = makeAssistantToolUI<string, string>({
   toolName: "generateLogoPrompt",
   render: ({ args, status }) => {
-    const setAiLoading = useSetAtom(aiLoadingAtom)
-    setAiLoading(true)
     return (
       <div className="flex items-center gap-2">
         {status.type === "running" && (

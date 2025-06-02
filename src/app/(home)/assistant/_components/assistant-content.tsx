@@ -12,7 +12,6 @@ import RankContent from "~/app/(home)/assistant/_components/rank-content"
 import RankDetail from "~/app/(home)/assistant/_components/rank-detail"
 import { TimeToolUi } from "~/app/(home)/assistant/_components/time-tool-ui"
 import { aiImageLoadingAtom, aiLoadingAtom } from "~/app/(home)/assistant/store"
-import { AssistantModal } from "~/components/assistant-modal"
 import { GenerateLogoPrompt } from "./generate-logo-prompt"
 
 const AssistantContent = () => {

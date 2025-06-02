@@ -229,7 +229,7 @@ class RankService {
                   image: softwareItem.image || "",
                   url: softwareItem.url || "",
                   tags: softwareItem.tags,
-                  categoryId: softwareItem.categoryId
+                  categoryId: softwareItem.categoryId || "b5377c58-fe0b-4858-8e3c-6b8cb49997c4"
                 },
                 userId
               )
