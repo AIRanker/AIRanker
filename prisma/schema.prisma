@@ -90,6 +90,7 @@ model Tag {
 model Rank {
   id          String           @id @default(dbgenerated("gen_random_uuid()")) @map("id")
   userId      String           @map("user_id") @db.VarChar(255)
+  image       String           @map("image") @db.VarChar(255) @default("")
   name        String           @map("name") @db.VarChar(255)
   description String?          @map("description") @db.VarChar(255)
   createdAt   DateTime         @default(now()) @map("created_at")

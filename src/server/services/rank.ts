@@ -146,13 +146,13 @@ class RankService {
         data: {
           name: params.name,
           description: params.description,
+          image: params.image,
           userId: userId
         },
         select: {
           id: true
         }
       })
-
 
       // 2. 处理标签 - 检查已存在的并创建新的
       if (params.tags && params.tags.length > 0) {
@@ -288,7 +288,8 @@ class RankService {
             where: { id },
             data: {
               name: params.name,
-              description: params.description
+              description: params.description,
+              image: params.image
             }
           })
         }
@@ -458,7 +459,6 @@ class RankService {
       pages,
       total
     } as PageableData<(typeof list)[number]>
-
   }
 }
 

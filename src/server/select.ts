@@ -5,6 +5,7 @@ export function generateRankSelect(userId?: string) {
     id: true,
     userId: true,
     name: true,
+    image: true,
     description: true,
     createdAt: true,
     updatedAt: true,

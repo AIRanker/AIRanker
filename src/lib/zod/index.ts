@@ -20,7 +20,7 @@ export const UserScalarFieldEnumSchema = z.enum(['id','referralCode','createdAt'
 
 export const TagScalarFieldEnumSchema = z.enum(['id','name','createdAt','updatedAt']);
 
-export const RankScalarFieldEnumSchema = z.enum(['id','userId','name','description','createdAt','updatedAt']);
+export const RankScalarFieldEnumSchema = z.enum(['id','userId','image','name','description','createdAt','updatedAt']);
 
 export const RankMetadataScalarFieldEnumSchema = z.enum(['id','rankId','createdAt','updatedAt']);
 
@@ -129,6 +129,7 @@ export type Tag = z.infer<typeof TagSchema>
 export const RankSchema = z.object({
   id: z.string(),
   userId: z.string(),
+  image: z.string(),
   name: z.string(),
   description: z.string().nullable(),
   createdAt: z.coerce.date(),
@@ -500,6 +501,7 @@ export const RankCountOutputTypeSelectSchema: z.ZodType<Prisma.RankCountOutputTy
 export const RankSelectSchema: z.ZodType<Prisma.RankSelect> = z.object({
   id: z.boolean().optional(),
   userId: z.boolean().optional(),
+  image: z.boolean().optional(),
   name: z.boolean().optional(),
   description: z.boolean().optional(),
   createdAt: z.boolean().optional(),
@@ -1190,6 +1192,7 @@ export const RankWhereInputSchema: z.ZodType<Prisma.RankWhereInput> = z.object({
   NOT: z.union([ z.lazy(() => RankWhereInputSchema),z.lazy(() => RankWhereInputSchema).array() ]).optional(),
   id: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   userId: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
+  image: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   name: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   description: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
   createdAt: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
@@ -1207,6 +1210,7 @@ export const RankWhereInputSchema: z.ZodType<Prisma.RankWhereInput> = z.object({
 export const RankOrderByWithRelationInputSchema: z.ZodType<Prisma.RankOrderByWithRelationInput> = z.object({
   id: z.lazy(() => SortOrderSchema).optional(),
   userId: z.lazy(() => SortOrderSchema).optional(),
+  image: z.lazy(() => SortOrderSchema).optional(),
   name: z.lazy(() => SortOrderSchema).optional(),
   description: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
   createdAt: z.lazy(() => SortOrderSchema).optional(),
@@ -1230,6 +1234,7 @@ export const RankWhereUniqueInputSchema: z.ZodType<Prisma.RankWhereUniqueInput> 
   OR: z.lazy(() => RankWhereInputSchema).array().optional(),
   NOT: z.union([ z.lazy(() => RankWhereInputSchema),z.lazy(() => RankWhereInputSchema).array() ]).optional(),
   userId: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
+  image: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   name: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   description: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
   createdAt: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
@@ -1247,6 +1252,7 @@ export const RankWhereUniqueInputSchema: z.ZodType<Prisma.RankWhereUniqueInput> 
 export const RankOrderByWithAggregationInputSchema: z.ZodType<Prisma.RankOrderByWithAggregationInput> = z.object({
   id: z.lazy(() => SortOrderSchema).optional(),
   userId: z.lazy(() => SortOrderSchema).optional(),
+  image: z.lazy(() => SortOrderSchema).optional(),
   name: z.lazy(() => SortOrderSchema).optional(),
   description: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
   createdAt: z.lazy(() => SortOrderSchema).optional(),
@@ -1262,6 +1268,7 @@ export const RankScalarWhereWithAggregatesInputSchema: z.ZodType<Prisma.RankScal
   NOT: z.union([ z.lazy(() => RankScalarWhereWithAggregatesInputSchema),z.lazy(() => RankScalarWhereWithAggregatesInputSchema).array() ]).optional(),
   id: z.union([ z.lazy(() => StringWithAggregatesFilterSchema),z.string() ]).optional(),
   userId: z.union([ z.lazy(() => StringWithAggregatesFilterSchema),z.string() ]).optional(),
+  image: z.union([ z.lazy(() => StringWithAggregatesFilterSchema),z.string() ]).optional(),
   name: z.union([ z.lazy(() => StringWithAggregatesFilterSchema),z.string() ]).optional(),
   description: z.union([ z.lazy(() => StringNullableWithAggregatesFilterSchema),z.string() ]).optional().nullable(),
   createdAt: z.union([ z.lazy(() => DateTimeWithAggregatesFilterSchema),z.coerce.date() ]).optional(),
@@ -2456,6 +2463,7 @@ export const TagUncheckedUpdateManyInputSchema: z.ZodType<Prisma.TagUncheckedUpd
 
 export const RankCreateInputSchema: z.ZodType<Prisma.RankCreateInput> = z.object({
   id: z.string().optional(),
+  image: z.string().optional(),
   name: z.string(),
   description: z.string().optional().nullable(),
   createdAt: z.coerce.date().optional(),
@@ -2473,6 +2481,7 @@ export const RankCreateInputSchema: z.ZodType<Prisma.RankCreateInput> = z.object
 export const RankUncheckedCreateInputSchema: z.ZodType<Prisma.RankUncheckedCreateInput> = z.object({
   id: z.string().optional(),
   userId: z.string(),
+  image: z.string().optional(),
   name: z.string(),
   description: z.string().optional().nullable(),
   createdAt: z.coerce.date().optional(),
@@ -2488,6 +2497,7 @@ export const RankUncheckedCreateInputSchema: z.ZodType<Prisma.RankUncheckedCreat
 
 export const RankUpdateInputSchema: z.ZodType<Prisma.RankUpdateInput> = z.object({
   id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  image: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   description: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
@@ -2505,6 +2515,7 @@ export const RankUpdateInputSchema: z.ZodType<Prisma.RankUpdateInput> = z.object
 export const RankUncheckedUpdateInputSchema: z.ZodType<Prisma.RankUncheckedUpdateInput> = z.object({
   id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   userId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  image: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   description: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
@@ -2521,6 +2532,7 @@ export const RankUncheckedUpdateInputSchema: z.ZodType<Prisma.RankUncheckedUpdat
 export const RankCreateManyInputSchema: z.ZodType<Prisma.RankCreateManyInput> = z.object({
   id: z.string().optional(),
   userId: z.string(),
+  image: z.string().optional(),
   name: z.string(),
   description: z.string().optional().nullable(),
   createdAt: z.coerce.date().optional(),
@@ -2529,6 +2541,7 @@ export const RankCreateManyInputSchema: z.ZodType<Prisma.RankCreateManyInput> = 
 
 export const RankUpdateManyMutationInputSchema: z.ZodType<Prisma.RankUpdateManyMutationInput> = z.object({
   id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  image: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   description: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
@@ -2538,6 +2551,7 @@ export const RankUpdateManyMutationInputSchema: z.ZodType<Prisma.RankUpdateManyM
 export const RankUncheckedUpdateManyInputSchema: z.ZodType<Prisma.RankUncheckedUpdateManyInput> = z.object({
   id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   userId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  image: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   description: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
@@ -3753,6 +3767,7 @@ export const SoftwareOnRankOrderByRelationAggregateInputSchema: z.ZodType<Prisma
 export const RankCountOrderByAggregateInputSchema: z.ZodType<Prisma.RankCountOrderByAggregateInput> = z.object({
   id: z.lazy(() => SortOrderSchema).optional(),
   userId: z.lazy(() => SortOrderSchema).optional(),
+  image: z.lazy(() => SortOrderSchema).optional(),
   name: z.lazy(() => SortOrderSchema).optional(),
   description: z.lazy(() => SortOrderSchema).optional(),
   createdAt: z.lazy(() => SortOrderSchema).optional(),
@@ -3762,6 +3777,7 @@ export const RankCountOrderByAggregateInputSchema: z.ZodType<Prisma.RankCountOrd
 export const RankMaxOrderByAggregateInputSchema: z.ZodType<Prisma.RankMaxOrderByAggregateInput> = z.object({
   id: z.lazy(() => SortOrderSchema).optional(),
   userId: z.lazy(() => SortOrderSchema).optional(),
+  image: z.lazy(() => SortOrderSchema).optional(),
   name: z.lazy(() => SortOrderSchema).optional(),
   description: z.lazy(() => SortOrderSchema).optional(),
   createdAt: z.lazy(() => SortOrderSchema).optional(),
@@ -3771,6 +3787,7 @@ export const RankMaxOrderByAggregateInputSchema: z.ZodType<Prisma.RankMaxOrderBy
 export const RankMinOrderByAggregateInputSchema: z.ZodType<Prisma.RankMinOrderByAggregateInput> = z.object({
   id: z.lazy(() => SortOrderSchema).optional(),
   userId: z.lazy(() => SortOrderSchema).optional(),
+  image: z.lazy(() => SortOrderSchema).optional(),
   name: z.lazy(() => SortOrderSchema).optional(),
   description: z.lazy(() => SortOrderSchema).optional(),
   createdAt: z.lazy(() => SortOrderSchema).optional(),
@@ -5996,6 +6013,7 @@ export const UserUncheckedUpdateWithoutPlatformsInputSchema: z.ZodType<Prisma.Us
 
 export const RankCreateWithoutUserInputSchema: z.ZodType<Prisma.RankCreateWithoutUserInput> = z.object({
   id: z.string().optional(),
+  image: z.string().optional(),
   name: z.string(),
   description: z.string().optional().nullable(),
   createdAt: z.coerce.date().optional(),
@@ -6011,6 +6029,7 @@ export const RankCreateWithoutUserInputSchema: z.ZodType<Prisma.RankCreateWithou
 
 export const RankUncheckedCreateWithoutUserInputSchema: z.ZodType<Prisma.RankUncheckedCreateWithoutUserInput> = z.object({
   id: z.string().optional(),
+  image: z.string().optional(),
   name: z.string(),
   description: z.string().optional().nullable(),
   createdAt: z.coerce.date().optional(),
@@ -6260,6 +6279,7 @@ export const RankScalarWhereInputSchema: z.ZodType<Prisma.RankScalarWhereInput> 
   NOT: z.union([ z.lazy(() => RankScalarWhereInputSchema),z.lazy(() => RankScalarWhereInputSchema).array() ]).optional(),
   id: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   userId: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
+  image: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   name: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   description: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
   createdAt: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
@@ -6975,6 +6995,7 @@ export const RankMetadataUncheckedUpdateWithoutRankInputSchema: z.ZodType<Prisma
 
 export const RankCreateWithoutMetadataInputSchema: z.ZodType<Prisma.RankCreateWithoutMetadataInput> = z.object({
   id: z.string().optional(),
+  image: z.string().optional(),
   name: z.string(),
   description: z.string().optional().nullable(),
   createdAt: z.coerce.date().optional(),
@@ -6991,6 +7012,7 @@ export const RankCreateWithoutMetadataInputSchema: z.ZodType<Prisma.RankCreateWi
 export const RankUncheckedCreateWithoutMetadataInputSchema: z.ZodType<Prisma.RankUncheckedCreateWithoutMetadataInput> = z.object({
   id: z.string().optional(),
   userId: z.string(),
+  image: z.string().optional(),
   name: z.string(),
   description: z.string().optional().nullable(),
   createdAt: z.coerce.date().optional(),
@@ -7021,6 +7043,7 @@ export const RankUpdateToOneWithWhereWithoutMetadataInputSchema: z.ZodType<Prism
 
 export const RankUpdateWithoutMetadataInputSchema: z.ZodType<Prisma.RankUpdateWithoutMetadataInput> = z.object({
   id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  image: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   description: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
@@ -7037,6 +7060,7 @@ export const RankUpdateWithoutMetadataInputSchema: z.ZodType<Prisma.RankUpdateWi
 export const RankUncheckedUpdateWithoutMetadataInputSchema: z.ZodType<Prisma.RankUncheckedUpdateWithoutMetadataInput> = z.object({
   id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   userId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  image: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   description: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
@@ -7072,6 +7096,7 @@ export const TagCreateOrConnectWithoutRanksInputSchema: z.ZodType<Prisma.TagCrea
 
 export const RankCreateWithoutTagsInputSchema: z.ZodType<Prisma.RankCreateWithoutTagsInput> = z.object({
   id: z.string().optional(),
+  image: z.string().optional(),
   name: z.string(),
   description: z.string().optional().nullable(),
   createdAt: z.coerce.date().optional(),
@@ -7088,6 +7113,7 @@ export const RankCreateWithoutTagsInputSchema: z.ZodType<Prisma.RankCreateWithou
 export const RankUncheckedCreateWithoutTagsInputSchema: z.ZodType<Prisma.RankUncheckedCreateWithoutTagsInput> = z.object({
   id: z.string().optional(),
   userId: z.string(),
+  image: z.string().optional(),
   name: z.string(),
   description: z.string().optional().nullable(),
   createdAt: z.coerce.date().optional(),
@@ -7145,6 +7171,7 @@ export const RankUpdateToOneWithWhereWithoutTagsInputSchema: z.ZodType<Prisma.Ra
 
 export const RankUpdateWithoutTagsInputSchema: z.ZodType<Prisma.RankUpdateWithoutTagsInput> = z.object({
   id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  image: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   description: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
@@ -7161,6 +7188,7 @@ export const RankUpdateWithoutTagsInputSchema: z.ZodType<Prisma.RankUpdateWithou
 export const RankUncheckedUpdateWithoutTagsInputSchema: z.ZodType<Prisma.RankUncheckedUpdateWithoutTagsInput> = z.object({
   id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   userId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  image: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   description: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
@@ -7713,6 +7741,7 @@ export const SoftwareCreateOrConnectWithoutRanksInputSchema: z.ZodType<Prisma.So
 
 export const RankCreateWithoutSoftwaresInputSchema: z.ZodType<Prisma.RankCreateWithoutSoftwaresInput> = z.object({
   id: z.string().optional(),
+  image: z.string().optional(),
   name: z.string(),
   description: z.string().optional().nullable(),
   createdAt: z.coerce.date().optional(),
@@ -7729,6 +7758,7 @@ export const RankCreateWithoutSoftwaresInputSchema: z.ZodType<Prisma.RankCreateW
 export const RankUncheckedCreateWithoutSoftwaresInputSchema: z.ZodType<Prisma.RankUncheckedCreateWithoutSoftwaresInput> = z.object({
   id: z.string().optional(),
   userId: z.string(),
+  image: z.string().optional(),
   name: z.string(),
   description: z.string().optional().nullable(),
   createdAt: z.coerce.date().optional(),
@@ -7804,6 +7834,7 @@ export const RankUpdateToOneWithWhereWithoutSoftwaresInputSchema: z.ZodType<Pris
 
 export const RankUpdateWithoutSoftwaresInputSchema: z.ZodType<Prisma.RankUpdateWithoutSoftwaresInput> = z.object({
   id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  image: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   description: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
@@ -7820,6 +7851,7 @@ export const RankUpdateWithoutSoftwaresInputSchema: z.ZodType<Prisma.RankUpdateW
 export const RankUncheckedUpdateWithoutSoftwaresInputSchema: z.ZodType<Prisma.RankUncheckedUpdateWithoutSoftwaresInput> = z.object({
   id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   userId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  image: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   description: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
@@ -7982,6 +8014,7 @@ export const ArticleUncheckedUpdateWithoutSoftwaresInputSchema: z.ZodType<Prisma
 
 export const RankCreateWithoutArticlesInputSchema: z.ZodType<Prisma.RankCreateWithoutArticlesInput> = z.object({
   id: z.string().optional(),
+  image: z.string().optional(),
   name: z.string(),
   description: z.string().optional().nullable(),
   createdAt: z.coerce.date().optional(),
@@ -7998,6 +8031,7 @@ export const RankCreateWithoutArticlesInputSchema: z.ZodType<Prisma.RankCreateWi
 export const RankUncheckedCreateWithoutArticlesInputSchema: z.ZodType<Prisma.RankUncheckedCreateWithoutArticlesInput> = z.object({
   id: z.string().optional(),
   userId: z.string(),
+  image: z.string().optional(),
   name: z.string(),
   description: z.string().optional().nullable(),
   createdAt: z.coerce.date().optional(),
@@ -8091,6 +8125,7 @@ export const RankUpdateToOneWithWhereWithoutArticlesInputSchema: z.ZodType<Prism
 
 export const RankUpdateWithoutArticlesInputSchema: z.ZodType<Prisma.RankUpdateWithoutArticlesInput> = z.object({
   id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  image: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   description: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
@@ -8107,6 +8142,7 @@ export const RankUpdateWithoutArticlesInputSchema: z.ZodType<Prisma.RankUpdateWi
 export const RankUncheckedUpdateWithoutArticlesInputSchema: z.ZodType<Prisma.RankUncheckedUpdateWithoutArticlesInput> = z.object({
   id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   userId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  image: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   description: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
@@ -8184,6 +8220,7 @@ export const SoftwareOnArticleUpdateManyWithWhereWithoutArticleInputSchema: z.Zo
 
 export const RankCreateWithoutLikesInputSchema: z.ZodType<Prisma.RankCreateWithoutLikesInput> = z.object({
   id: z.string().optional(),
+  image: z.string().optional(),
   name: z.string(),
   description: z.string().optional().nullable(),
   createdAt: z.coerce.date().optional(),
@@ -8200,6 +8237,7 @@ export const RankCreateWithoutLikesInputSchema: z.ZodType<Prisma.RankCreateWitho
 export const RankUncheckedCreateWithoutLikesInputSchema: z.ZodType<Prisma.RankUncheckedCreateWithoutLikesInput> = z.object({
   id: z.string().optional(),
   userId: z.string(),
+  image: z.string().optional(),
   name: z.string(),
   description: z.string().optional().nullable(),
   createdAt: z.coerce.date().optional(),
@@ -8271,6 +8309,7 @@ export const RankUpdateToOneWithWhereWithoutLikesInputSchema: z.ZodType<Prisma.R
 
 export const RankUpdateWithoutLikesInputSchema: z.ZodType<Prisma.RankUpdateWithoutLikesInput> = z.object({
   id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  image: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   description: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
@@ -8287,6 +8326,7 @@ export const RankUpdateWithoutLikesInputSchema: z.ZodType<Prisma.RankUpdateWitho
 export const RankUncheckedUpdateWithoutLikesInputSchema: z.ZodType<Prisma.RankUncheckedUpdateWithoutLikesInput> = z.object({
   id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   userId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  image: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   description: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
@@ -8348,6 +8388,7 @@ export const UserUncheckedUpdateWithoutRankLikesInputSchema: z.ZodType<Prisma.Us
 
 export const RankCreateWithoutStarsInputSchema: z.ZodType<Prisma.RankCreateWithoutStarsInput> = z.object({
   id: z.string().optional(),
+  image: z.string().optional(),
   name: z.string(),
   description: z.string().optional().nullable(),
   createdAt: z.coerce.date().optional(),
@@ -8364,6 +8405,7 @@ export const RankCreateWithoutStarsInputSchema: z.ZodType<Prisma.RankCreateWitho
 export const RankUncheckedCreateWithoutStarsInputSchema: z.ZodType<Prisma.RankUncheckedCreateWithoutStarsInput> = z.object({
   id: z.string().optional(),
   userId: z.string(),
+  image: z.string().optional(),
   name: z.string(),
   description: z.string().optional().nullable(),
   createdAt: z.coerce.date().optional(),
@@ -8435,6 +8477,7 @@ export const RankUpdateToOneWithWhereWithoutStarsInputSchema: z.ZodType<Prisma.R
 
 export const RankUpdateWithoutStarsInputSchema: z.ZodType<Prisma.RankUpdateWithoutStarsInput> = z.object({
   id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  image: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   description: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
@@ -8451,6 +8494,7 @@ export const RankUpdateWithoutStarsInputSchema: z.ZodType<Prisma.RankUpdateWitho
 export const RankUncheckedUpdateWithoutStarsInputSchema: z.ZodType<Prisma.RankUncheckedUpdateWithoutStarsInput> = z.object({
   id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   userId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  image: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   description: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
@@ -8856,6 +8900,7 @@ export const UserUncheckedUpdateWithoutSoftwareStarsInputSchema: z.ZodType<Prism
 
 export const RankCreateWithoutCommentsInputSchema: z.ZodType<Prisma.RankCreateWithoutCommentsInput> = z.object({
   id: z.string().optional(),
+  image: z.string().optional(),
   name: z.string(),
   description: z.string().optional().nullable(),
   createdAt: z.coerce.date().optional(),
@@ -8872,6 +8917,7 @@ export const RankCreateWithoutCommentsInputSchema: z.ZodType<Prisma.RankCreateWi
 export const RankUncheckedCreateWithoutCommentsInputSchema: z.ZodType<Prisma.RankUncheckedCreateWithoutCommentsInput> = z.object({
   id: z.string().optional(),
   userId: z.string(),
+  image: z.string().optional(),
   name: z.string(),
   description: z.string().optional().nullable(),
   createdAt: z.coerce.date().optional(),
@@ -8943,6 +8989,7 @@ export const RankUpdateToOneWithWhereWithoutCommentsInputSchema: z.ZodType<Prism
 
 export const RankUpdateWithoutCommentsInputSchema: z.ZodType<Prisma.RankUpdateWithoutCommentsInput> = z.object({
   id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  image: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   description: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
@@ -8959,6 +9006,7 @@ export const RankUpdateWithoutCommentsInputSchema: z.ZodType<Prisma.RankUpdateWi
 export const RankUncheckedUpdateWithoutCommentsInputSchema: z.ZodType<Prisma.RankUncheckedUpdateWithoutCommentsInput> = z.object({
   id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   userId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  image: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   description: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
@@ -9192,6 +9240,7 @@ export const UserUncheckedUpdateWithoutSoftwareCommentsInputSchema: z.ZodType<Pr
 
 export const RankCreateManyUserInputSchema: z.ZodType<Prisma.RankCreateManyUserInput> = z.object({
   id: z.string().optional(),
+  image: z.string().optional(),
   name: z.string(),
   description: z.string().optional().nullable(),
   createdAt: z.coerce.date().optional(),
@@ -9261,6 +9310,7 @@ export const SoftwareCommentCreateManyUserInputSchema: z.ZodType<Prisma.Software
 
 export const RankUpdateWithoutUserInputSchema: z.ZodType<Prisma.RankUpdateWithoutUserInput> = z.object({
   id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  image: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   description: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
@@ -9276,6 +9326,7 @@ export const RankUpdateWithoutUserInputSchema: z.ZodType<Prisma.RankUpdateWithou
 
 export const RankUncheckedUpdateWithoutUserInputSchema: z.ZodType<Prisma.RankUncheckedUpdateWithoutUserInput> = z.object({
   id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  image: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   description: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
@@ -9291,6 +9342,7 @@ export const RankUncheckedUpdateWithoutUserInputSchema: z.ZodType<Prisma.RankUnc
 
 export const RankUncheckedUpdateManyWithoutUserInputSchema: z.ZodType<Prisma.RankUncheckedUpdateManyWithoutUserInput> = z.object({
   id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  image: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   description: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
