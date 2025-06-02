@@ -20,6 +20,7 @@ export const env = createEnv({
     GOOGLE_SEARCH_CSI: z.string().optional(),
     OPENAI_API_KEY: z.string().optional(),
     OPENAI_BASE_URL: z.string().url().optional(),
+    STABILITY_API_KEY: z.string().optional(),
     CHAIN_RPC_URL: z
       .preprocess(
         (val) => {
@@ -76,7 +77,8 @@ export const env = createEnv({
     GOOGLE_SEARCH_API_KEY: process.env.GOOGLE_SEARCH_API_KEY,
     GOOGLE_SEARCH_CSI: process.env.GOOGLE_SEARCH_CSI,
     OPENAI_API_KEY: process.env.OPENAI_API_KEY,
-    OPENAI_BASE_URL: process.env.OPENAI_BASE_URL
+    OPENAI_BASE_URL: process.env.OPENAI_BASE_URL,
+    STABILITY_API_KEY: process.env.STABILITY_API_KEY
     // NEXT_PUBLIC_CLIENTVAR: process.env.NEXT_PUBLIC_CLIENTVAR,
   },
   /**
