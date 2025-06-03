@@ -90,9 +90,9 @@ model Tag {
 model Rank {
   id          String           @id @default(dbgenerated("gen_random_uuid()")) @map("id")
   userId      String           @map("user_id") @db.VarChar(255)
-  image       String           @map("image") @db.VarChar(255) @default("")
-  name        String           @map("name") @db.VarChar(255)
-  description String?          @map("description") @db.VarChar(255)
+  image       String           @map("image") @db.VarChar(1024) @default("")
+  name        String           @map("name") @db.VarChar(1024)
+  description String?          @map("description") @db.Text
   createdAt   DateTime         @default(now()) @map("created_at")
   updatedAt   DateTime         @default(now()) @updatedAt @map("updated_at")
   user        User             @relation(fields: [userId], references: [id])
