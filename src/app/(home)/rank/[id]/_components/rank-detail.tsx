@@ -1,14 +1,8 @@
 "use client"
 
 import { useAuth, useClerk, useSignIn } from "@clerk/nextjs"
-import { AsyncImage } from "loadable-image"
 import { Heart, MessageCircle, Share2, Star } from "lucide-react"
 import { usePathname, useRouter } from "next/navigation"
-<<<<<<< HEAD
-import { AsyncImage } from "loadable-image"
-=======
-import type React from "react"
->>>>>>> 201eb6d74d37984b60d24e70144a7727558efef5
 import { toast } from "sonner"
 import { cn } from "~/lib/utils"
 import type { RankDetailsResult } from "~/server/services/rank"
@@ -42,11 +36,7 @@ const RankDetail = ({ detail, id }: RankDetailProps) => {
   })
   console.log('detail', detail)
   return (
-<<<<<<< HEAD
-    <div className="relative flex flex-col py-20 w-full items-center  bg-white dark:bg-black">
-=======
-    <div className="relative flex flex-col min-h-[40rem] py-20 w-full items-center  bg-white dark:bg-black">
->>>>>>> 201eb6d74d37984b60d24e70144a7727558efef5
+    <div className="relative flex flex-col h-[40rem] py-20 w-full items-center  bg-white dark:bg-black">
       <div
         className={cn(
           "absolute inset-0",
@@ -56,8 +46,10 @@ const RankDetail = ({ detail, id }: RankDetailProps) => {
         )}
       />
       <div className="pointer-events-none absolute inset-0 flex items-center justify-center bg-white [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)] dark:bg-black" />
-      <p className="relative z-20 bg-gradient-to-b from-primary text-center to-primary/40 bg-clip-text py-8 text-4xl font-bold text-transparent sm:text-7xl">{detail.name}</p>
-      <p className="relative z-20 py-4 text-2xl font-bold text-foreground/30 sm:text-xl">{detail.description}</p>
+      <p className="relative z-20 bg-gradient-to-b from-primary to-primary/40 bg-clip-text py-8 text-4xl font-bold text-transparent sm:text-7xl">{detail?.name}</p>
+      {detail?.description && (
+        <p className="relative z-20 bg-gradient-to-b from-primary to-primary/40 bg-clip-text py-4 text-2xl font-bold text-transparent sm:text-4xl">{detail.description}</p>
+      )}
       <div className="flex items-center gap-4 z-20 mt-10">
         <div className="flex items-center gap-1">
           <Star
@@ -116,17 +108,7 @@ const RankDetail = ({ detail, id }: RankDetailProps) => {
           />
         </div>
       </div>
-<<<<<<< HEAD
-      {detail.image && (
-        <div className="mt-10 w-full">
-          <AsyncImage style={{ width: "100%", height: "auto", aspectRatio: 16 / 9 }} src={detail.image} className="w-full object-cover" />
-        </div>
-      )}
-=======
-      <div className=" mt-8 w-full relative">
-        {detail.image.trim().length > 0 && <AsyncImage src={detail.image} style={{ width: "100%", height: "auto", aspectRatio: 16 / 9 }} className={" shadow-lg rounded-lg"} />}
-      </div>
->>>>>>> 201eb6d74d37984b60d24e70144a7727558efef5
+      
     </div>
   )
 }
