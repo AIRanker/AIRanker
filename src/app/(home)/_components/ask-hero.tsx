@@ -4,7 +4,7 @@ import { useAuth, useClerk } from "@clerk/nextjs"
 import { SendIcon } from "lucide-react"
 import { motion } from "motion/react"
 import { useRouter } from "next/navigation"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { toast } from "sonner"
 import { Button } from "~/components/ui/button"
 import { Textarea } from "~/components/ui/textarea"
@@ -12,7 +12,7 @@ import { cn } from "~/lib/utils"
 import ideas from "~/components/json/idea.json"
 interface Idea {
   keyword: string
-  questions: string[]
+  questions: string
 }
 
 const AskHero = () => {
@@ -20,14 +20,18 @@ const AskHero = () => {
   const { isSignedIn } = useAuth()
   const { openSignIn } = useClerk()
   const [prompt, setPrompt] = useState("")
-  const [selectedIdea, setSelectedIdea] = useState<Idea[]>(() => {
-    const shuffled = [...ideas].sort(() => Math.random() - 0.5)
-    return shuffled.slice(0, 4)
-  })
+  const [selectedIdea, setSelectedIdea] = useState<Idea[]>([])
+
+  useEffect(() => {
+    refreshIdeas()
+  }, [])
+
 
   const refreshIdeas = () => {
     const shuffled = [...ideas].sort(() => Math.random() - 0.5)
-    setSelectedIdea(shuffled.slice(0, 4))
+    setSelectedIdea(shuffled.slice(0, 4).map((idea)=>{
+      return {keyword: idea.keyword, questions: idea.questions[0] || ''}
+    }))
   }
   return (
     <div className="relative  flex w-full flex-col items-center justify-center">
@@ -157,14 +161,13 @@ const AskHero = () => {
           className="relative z-10 mx-auto max-w-5xl gap-6 grid grid-cols-2 py-4 text-center text-lg font-normal text-foreground dark:text-neutral-400"
         >
           {selectedIdea.map((question:Idea) => {
-            const index = Math.floor(Math.random() * 2)
             return <div
               key={`prompt-${question}`}
               className="bg-background/80 backdrop-blur-sm p-4 text-left rounded-lg border border-border hover:border-primary/50 cursor-pointer transition-all"
-              onClick={() => setPrompt(question.questions[index] || '')}
+              onClick={() => setPrompt(question.questions || '')}
             >
               <h3 className="text-base font-medium mb-3">{question.keyword}</h3>
-              <p className="text-sm text-muted-foreground">{question.questions[index]}</p>
+              <p className="text-sm text-muted-foreground">{question.questions}</p>
             </div>
           })}
         </motion.div>
