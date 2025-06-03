@@ -61,14 +61,18 @@ class RankService {
     const total = await db.rank.count({ where: whereOptions })
     const pages = Math.ceil(total / params.pageable.size) || 1
     const actualPage = Math.max(0, Math.min(params.pageable.page, pages - 1))
+    const orderBy: Prisma.RankOrderByWithRelationInput = {}
+    if (params.sort) {
+      orderBy[params.sort] = {
+        _count: params.order
+      }
+    } else {
+      orderBy.createdAt = params.order
+    }
     const ranks = await db.rank.findMany({
       where: whereOptions,
       select: generateRankSelect(userId),
-      orderBy: {
-        [params.sort]: {
-          _count: params.order
-        }
-      },
+      orderBy,
       take: params.pageable.size,
       skip: actualPage * params.pageable.size
     })
