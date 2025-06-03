@@ -48,7 +48,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
             <TRPCReactProvider>
               <ReactQueryDevtools buttonPosition={"top-left"} client={queryClient} initialIsOpen={false} />
               <Toaster />
-              <header className="bg-background fixed top-0 z-50 mx-auto flex h-20 w-full items-center justify-between shadow-lg px-4 xl:px-0">
+              <header className="bg-background fixed top-0 z-50 mx-auto flex h-20 w-full items-center justify-between px-4 xl:px-0 border-b border-gray-200">
                 <div className="mx-auto flex w-full max-w-7xl items-center justify-between pr-0">
                   <Link className={"flex flex-row items-center gap-2"} href="/">
                     <LogoAiRankerFull className="size-12 text-primary" />

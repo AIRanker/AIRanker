@@ -11,7 +11,7 @@ export default async function Home() {
         <AskHero />
       </div>
       <CuratedCollection />
-      <TopTools />
+      {/* <TopTools /> */}
     </HydrateClient>
   )
 }

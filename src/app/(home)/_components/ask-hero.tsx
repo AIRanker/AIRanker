@@ -9,12 +9,26 @@ import { toast } from "sonner"
 import { Button } from "~/components/ui/button"
 import { Textarea } from "~/components/ui/textarea"
 import { cn } from "~/lib/utils"
+import ideas from "~/components/json/idea.json"
+interface Idea {
+  keyword: string
+  questions: string[]
+}
 
 const AskHero = () => {
   const router = useRouter()
   const { isSignedIn } = useAuth()
   const { openSignIn } = useClerk()
   const [prompt, setPrompt] = useState("")
+  const [selectedIdea, setSelectedIdea] = useState<Idea[]>(() => {
+    const shuffled = [...ideas].sort(() => Math.random() - 0.5)
+    return shuffled.slice(0, 4)
+  })
+
+  const refreshIdeas = () => {
+    const shuffled = [...ideas].sort(() => Math.random() - 0.5)
+    setSelectedIdea(shuffled.slice(0, 4))
+  }
   return (
     <div className="relative  flex w-full flex-col items-center justify-center">
       <div
@@ -74,7 +88,12 @@ const AskHero = () => {
           className="relative z-10 mt-8 flex flex-wrap items-center justify-center gap-4"
         >
           <div className="relative w-full max-w-3xl">
-            <Textarea value={prompt} onChange={(e) => setPrompt(e.target.value)} className={"bg-background shadow-xl p-4 h-48"} placeholder="Type your prompt here." />
+            <Textarea 
+            value={prompt} 
+            onChange={(e) => setPrompt(e.target.value)} 
+            className={"bg-background p-6 h-48 resize-none placeholder:text-gray-400 placeholder:italic placeholder:opacity-60 shadow-[0px_4px_40px_0px_#C1C1C140] border border-gray-300"} 
+            placeholder="✨ Enter the AI tools collection you want to create, or choose from the ideas below! 🎯" 
+            />
             <Button
               size="icon"
               className="absolute bottom-3 right-3 bg-primary text-primary-foreground rounded-full"
@@ -108,35 +127,46 @@ const AskHero = () => {
             duration: 0.3,
             delay: 1.2
           }}
-          className="relative mt-10 z-10 mx-auto max-w-5xl gap-4 grid grid-cols-2 py-4 text-center text-lg font-normal text-foreground dark:text-neutral-400"
+          className="relative z-10 mt-10 mx-auto max-w-5xl py-4 text-left text-xl font-normal text-foreground dark:text-neutral-400"
         >
-          {[
-            {
-              title: "Best AI Drawing Tools",
-              prompt: "Generate a ranking of the best AI drawing tools, including Midjourney, DALL-E, and Stable Diffusion"
-            },
-            {
-              title: "AI Writing Assistants Comparison",
-              prompt: "Create a comparison list of AI writing assistants, analyzing the pros and cons of ChatGPT, Claude, and Bard"
-            },
-            {
-              title: "Free AI Tools Collection",
-              prompt: "Compile a collection of the best free AI tools, including image generation, text processing, and audio conversion tools"
-            },
-            {
-              title: "AI Video Editing Software Ranking",
-              prompt: "Compare the best AI video editing software on the market, ranked by ease of use and feature richness"
-            }
-          ].map((item) => (
-            <div
-              key={`prompt-${item.title}`}
-              className="bg-background/80 backdrop-blur-sm p-4 text-left rounded-lg shadow-sm border border-border hover:border-primary/50 cursor-pointer transition-all"
-              onClick={() => setPrompt(item.prompt)}
+          <div className="flex items-center gap-2">
+            <span>💡 Idea</span>
+            <Button 
+              variant="ghost" 
+              size="sm"
+              onClick={refreshIdeas}
+              className="p-1 px-3 h-auto"
             >
-              <h3 className="text-sm font-medium mb-2">{item.title}</h3>
-              <p className="text-xs text-muted-foreground">{item.prompt}</p>
+              Refresh
+            </Button>
+          </div>
+        </motion.div>
+        <motion.div
+          initial={{
+            opacity: 0,
+            y: 10
+          }}
+          animate={{
+            opacity: 1,
+            y: 0
+          }}
+          transition={{
+            duration: 0.3,
+            delay: 1.2
+          }}
+          className="relative z-10 mx-auto max-w-5xl gap-6 grid grid-cols-2 py-4 text-center text-lg font-normal text-foreground dark:text-neutral-400"
+        >
+          {selectedIdea.map((question:Idea) => {
+            const index = Math.floor(Math.random() * 2)
+            return <div
+              key={`prompt-${question}`}
+              className="bg-background/80 backdrop-blur-sm p-4 text-left rounded-lg border border-border hover:border-primary/50 cursor-pointer transition-all"
+              onClick={() => setPrompt(question.questions[index] || '')}
+            >
+              <h3 className="text-sm font-medium mb-3">{question.keyword}</h3>
+              <p className="text-xs text-muted-foreground">{question.questions[index]}</p>
             </div>
-          ))}
+          })}
         </motion.div>
       </div>
     </div>
