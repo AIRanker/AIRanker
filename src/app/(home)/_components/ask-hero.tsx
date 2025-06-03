@@ -6,10 +6,10 @@ import { motion } from "motion/react"
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 import { toast } from "sonner"
+import ideas from "~/components/json/idea.json"
 import { Button } from "~/components/ui/button"
 import { Textarea } from "~/components/ui/textarea"
 import { cn } from "~/lib/utils"
-import ideas from "~/components/json/idea.json"
 interface Idea {
   keyword: string
   questions: string
@@ -26,12 +26,13 @@ const AskHero = () => {
     refreshIdeas()
   }, [])
 
-
   const refreshIdeas = () => {
     const shuffled = [...ideas].sort(() => Math.random() - 0.5)
-    setSelectedIdea(shuffled.slice(0, 4).map((idea)=>{
-      return {keyword: idea.keyword, questions: idea.questions[0] || ''}
-    }))
+    setSelectedIdea(
+      shuffled.slice(0, 4).map((idea) => {
+        return { keyword: idea.keyword, questions: idea.questions[0] || "" }
+      })
+    )
   }
   return (
     <div className="relative  flex w-full flex-col items-center justify-center">
@@ -92,11 +93,13 @@ const AskHero = () => {
           className="relative z-10 mt-8 flex flex-wrap items-center justify-center gap-4"
         >
           <div className="relative w-full max-w-3xl">
-            <Textarea 
-            value={prompt} 
-            onChange={(e) => setPrompt(e.target.value)} 
-            className={"bg-background p-6 h-48 resize-none placeholder:text-gray-400 placeholder:italic placeholder:opacity-60 shadow-[0px_4px_40px_0px_#C1C1C140] border border-gray-300"} 
-            placeholder="✨ Enter the AI tools collection you want to create, or choose from the ideas below! 🎯" 
+            <Textarea
+              value={prompt}
+              onChange={(e) => setPrompt(e.target.value)}
+              className={
+                "bg-background p-6 h-48 resize-none placeholder:text-gray-400 placeholder:italic placeholder:opacity-60 shadow-[0px_4px_40px_0px_#C1C1C140] border border-gray-300"
+              }
+              placeholder="✨ Enter the AI tools collection you want to create, or choose from the ideas below! 🎯"
             />
             <Button
               size="icon"
@@ -135,12 +138,7 @@ const AskHero = () => {
         >
           <div className="flex items-center gap-2">
             <span>💡 Idea</span>
-            <Button 
-              variant="ghost" 
-              size="sm"
-              onClick={refreshIdeas}
-              className="p-1 px-3 h-auto bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 hover:dark:bg-gray-700"
-            >
+            <Button variant="ghost" size="sm" onClick={refreshIdeas} className="p-1 px-3 h-auto bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 hover:dark:bg-gray-700">
               Refresh
             </Button>
           </div>
@@ -160,15 +158,17 @@ const AskHero = () => {
           }}
           className="relative z-10 mx-auto max-w-5xl gap-6 grid grid-cols-2 py-4 text-center text-lg font-normal text-foreground dark:text-neutral-400"
         >
-          {selectedIdea.map((question:Idea) => {
-            return <div
-              key={`prompt-${question}`}
-              className="bg-background/80 backdrop-blur-sm p-4 text-left rounded-lg border border-border hover:border-primary/50 cursor-pointer transition-all"
-              onClick={() => setPrompt(question.questions || '')}
-            >
-              <h3 className="text-base font-medium mb-3">{question.keyword}</h3>
-              <p className="text-sm text-muted-foreground">{question.questions}</p>
-            </div>
+          {selectedIdea.map((question: Idea, index) => {
+            return (
+              <div
+                key={`prompt-${question.keyword}-${index}`}
+                className="bg-background/80 backdrop-blur-sm p-4 text-left rounded-lg border border-border hover:border-primary/50 cursor-pointer transition-all"
+                onClick={() => setPrompt(question.questions || "")}
+              >
+                <h3 className="text-base font-medium mb-3">{question.keyword}</h3>
+                <p className="text-sm text-muted-foreground">{question.questions}</p>
+              </div>
+            )
           })}
         </motion.div>
       </div>
