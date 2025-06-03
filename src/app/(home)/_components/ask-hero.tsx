@@ -135,7 +135,7 @@ const AskHero = () => {
               variant="ghost" 
               size="sm"
               onClick={refreshIdeas}
-              className="p-1 px-3 h-auto"
+              className="p-1 px-3 h-auto bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 hover:dark:bg-gray-700"
             >
               Refresh
             </Button>
@@ -163,8 +163,8 @@ const AskHero = () => {
               className="bg-background/80 backdrop-blur-sm p-4 text-left rounded-lg border border-border hover:border-primary/50 cursor-pointer transition-all"
               onClick={() => setPrompt(question.questions[index] || '')}
             >
-              <h3 className="text-sm font-medium mb-3">{question.keyword}</h3>
-              <p className="text-xs text-muted-foreground">{question.questions[index]}</p>
+              <h3 className="text-base font-medium mb-3">{question.keyword}</h3>
+              <p className="text-sm text-muted-foreground">{question.questions[index]}</p>
             </div>
           })}
         </motion.div>
