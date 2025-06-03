@@ -3,6 +3,7 @@
 import { useAuth, useClerk, useSignIn } from "@clerk/nextjs"
 import { Heart, MessageCircle, Share2, Star } from "lucide-react"
 import { usePathname, useRouter } from "next/navigation"
+import { AsyncImage } from "loadable-image"
 import { toast } from "sonner"
 import { cn } from "~/lib/utils"
 import type { RankDetailsResult } from "~/server/services/rank"
@@ -34,8 +35,9 @@ const RankDetail = ({ detail, id }: RankDetailProps) => {
       toast.error("Failed to like the rank", { duration: 3000 })
     }
   })
+  console.log('detail', detail)
   return (
-    <div className="relative flex flex-col h-[40rem] py-20 w-full items-center  bg-white dark:bg-black">
+    <div className="relative flex flex-col py-20 w-full items-center  bg-white dark:bg-black">
       <div
         className={cn(
           "absolute inset-0",
@@ -107,6 +109,11 @@ const RankDetail = ({ detail, id }: RankDetailProps) => {
           />
         </div>
       </div>
+      {detail.image && (
+        <div className="mt-10 w-full">
+          <AsyncImage style={{ width: "100%", height: "auto", aspectRatio: 16 / 9 }} src={detail.image} className="w-full object-cover" />
+        </div>
+      )}
     </div>
   )
 }

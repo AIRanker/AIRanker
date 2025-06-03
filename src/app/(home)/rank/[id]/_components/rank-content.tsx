@@ -68,8 +68,8 @@ const RankContent = ({ id }: RankerContentProps) => {
   const { data, isLoading } = api.software.getSoftwaresByRankId.useQuery({ rankId: id })
   const { data: rank, isPending: rankPending } = api.rank.topRanks.useQuery()
   return (
-    <div className={"flex flex-col justify-center -mt-40"}>
-      {isLoading ? (
+    <div className={"flex flex-col justify-center"}>
+      {/* {isLoading ? (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {[0, 1, 2].map((index) => (
             <div
@@ -93,9 +93,9 @@ const RankContent = ({ id }: RankerContentProps) => {
         </div>
       ) : (
         data && <RankTopList data={data} />
-      )}
-      <div className="mt-20 grid grid-cols-3 gap-8">
-        <div className="col-span-2 flex flex-col gap-6">
+      )} */}
+      <div className="mt-20 flex flex-col items-center justify-start">
+        <div className="flex flex-col gap-6">
           {isLoading
             ? Array(5)
                 .fill(0)
@@ -112,10 +112,10 @@ const RankContent = ({ id }: RankerContentProps) => {
                   </div>
                 ))
             : (data?.length ?? 0) > 3 &&
-              data?.slice(3).map((item, index) => (
+              data?.map((item, index) => (
                 <div key={`item-${item.id}`} className="rounded-2xl border-[1px] p-6 bg-background relative flex flex-col gap-4">
                   <div className=" flex flex-row gap-4">
-                    <div className="size-7 absolute -top-4 -left-2 text-primary bg-background text-2xl">#{index + 4}</div>
+                    <div className="size-7 absolute -top-4 -left-2 text-primary bg-background text-2xl">#{index + 1}</div>
                     <Avatar className={"size-20"}>
                       <AvatarImage src={item.image ?? ""} />
                       <AvatarFallback>{item.name}</AvatarFallback>
@@ -136,7 +136,7 @@ const RankContent = ({ id }: RankerContentProps) => {
                 </div>
               ))}
         </div>
-        <div className="col-span-1 h-fit flex flex-col rounded-2xl border-[1px] p-6 bg-background">
+        {/* <div className="col-span-1 h-fit flex flex-col rounded-2xl border-[1px] p-6 bg-background">
           <div className="mb-4 text-2xl font-bold text-primary"># Popular Collections</div>
           {rankPending
             ? Array(5)
@@ -159,7 +159,7 @@ const RankContent = ({ id }: RankerContentProps) => {
                   <div className="text-xs text-muted-foreground">{formatDistanceToNow(item.createdAt)}</div>
                 </div>
               ))}
-        </div>
+        </div> */}
       </div>
     </div>
   )
