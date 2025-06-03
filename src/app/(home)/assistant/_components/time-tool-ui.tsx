@@ -4,9 +4,19 @@ import { AlertCircle, Check, CheckCircle, Loader2 } from "lucide-react"
 import { aiLoadingAtom } from "~/app/(home)/assistant/store"
 import TextWave from "~/components/ui/text-wave"
 
+const formatDate = (dateString?: string) => {
+  if (!dateString) return ""
+  const date = new Date(dateString)
+  return date.toLocaleDateString("en-US", {
+    month: "long",
+    day: "numeric",
+    year: "numeric"
+  })
+}
+
 export const TimeToolUi = makeAssistantToolUI<string, string>({
   toolName: "getCurrentTime",
-  render: ({ args, status }) => {
+  render: ({ args, status, result }) => {
     const setAiLoading = useSetAtom(aiLoadingAtom)
     setAiLoading(true)
 
@@ -27,7 +37,7 @@ export const TimeToolUi = makeAssistantToolUI<string, string>({
         {status.type === "complete" && (
           <>
             <CheckCircle className="h-4 w-4 text-primary flex-shrink-0" />
-            <TextWave className={"text-sm"} text={"We will try to get the latest data before"} />
+            <TextWave className={"text-sm"} text={`Current time retrieved ${formatDate(result)}`} />
           </>
         )}
       </div>
