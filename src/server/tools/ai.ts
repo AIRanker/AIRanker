@@ -19,7 +19,7 @@ export const generateLogoPrompt = async ({ name, description }: { name: string; 
   const { text } = await generateText({
     model: openai("gpt-4o-mini"),
     prompt: `
-    You are an AI that generates studio diffusion prompts for creating logos.
+    You are an AI that generates studio diffusion prompts for creating illustrations.
     Please generate a prompt based on the name and description of the set, which should not exceed 200 words.
     Your response should be a single line of text without any additional formatting or explanations.
 
@@ -34,10 +34,7 @@ export const generateLogoPrompt = async ({ name, description }: { name: string; 
 export const generateLogoImage = async ({ prompt }: { prompt: string }) => {
   try {
     const formData = new NodeFormData()
-    formData.append(
-      "prompt",
-      prompt,
-    )
+    formData.append("prompt", prompt)
     formData.append("output_format", "webp")
     formData.append("aspect_ratio", "16:9")
 
