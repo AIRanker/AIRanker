@@ -85,7 +85,7 @@ Thinking stage:
 
 Answer stage:
 1. **Generate Logo**: Generate a logo image for the collection using the 'generateLogoPrompt' and 'generateLogoImage' tools, it must be called.
-2. **Result**: Synthesize the answer and use the 'result' tool to return it to the user.
+2. **Result**: Summarize the result and use the "result" tool to return them to the user. At least 5 software should be returned
 3. **Reply**: Reply to the user with no more than two sentences.
 
 Examples:
