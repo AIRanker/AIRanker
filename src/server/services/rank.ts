@@ -197,7 +197,7 @@ class RankService {
           )
         )
       }
-
+      console.log("Rank created:", params.softwareList)
       // 3. 处理软件
       if (params.softwareList && params.softwareList.length > 0) {
         await Promise.all(
@@ -218,8 +218,8 @@ class RankService {
                 throw new Error(`Software with ID ${softwareId} not found.`)
               }
             } else {
-              if (!softwareItem.name || !softwareItem.categoryId) {
-                throw new Error("Software name and category ID are required when creating a new software.")
+              if (!softwareItem.name) {
+                throw new Error("Software name is required when creating a new software.")
               }
               const newSoftware = await createSoftware(
                 tx,
