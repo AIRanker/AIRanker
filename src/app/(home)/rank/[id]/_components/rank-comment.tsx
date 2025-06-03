@@ -1,11 +1,11 @@
 "use client"
-import { Button } from "@radix-ui/themes"
 import { formatDistanceToNow } from "date-fns"
-import { MessageSquare, ThumbsUp } from "lucide-react"
+import { MessageSquare } from "lucide-react"
 import { useState } from "react"
 import * as React from "react"
 import { RankCommentReply } from "~/app/(home)/rank/[id]/_components/rank-comment-reply"
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar"
+import { Button } from "~/components/ui/button"
 import type { CommentListResult } from "~/server/services/rank-comment"
 import { api } from "~/trpc/react"
 

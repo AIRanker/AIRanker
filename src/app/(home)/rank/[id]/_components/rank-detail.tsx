@@ -48,7 +48,7 @@ const RankDetail = ({ detail, id }: RankDetailProps) => {
       />
       <div className="pointer-events-none absolute inset-0 flex items-center justify-center bg-white [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)] dark:bg-black" />
       <p className="relative z-20 bg-gradient-to-b from-primary text-center to-primary/40 bg-clip-text py-8 text-4xl font-bold text-transparent sm:text-7xl">{detail.name}</p>
-      <p className="relative z-20 py-4 text-2xl font-bold text-foreground/30 sm:text-xl">{detail.description}</p>
+      <p className="relative z-20 py-4 text-2xl max-w-4xl font-bold text-foreground/30 sm:text-xl">{detail.description}</p>
       <div className="flex items-center gap-4 z-20 mt-10">
         <div className="flex items-center gap-1">
           <Star
@@ -107,7 +107,7 @@ const RankDetail = ({ detail, id }: RankDetailProps) => {
           />
         </div>
       </div>
-      <div className=" mt-8 w-full relative">
+      <div className=" mt-30 w-full relative">
         {detail.image.trim().length > 0 && <AsyncImage src={detail.image} style={{ width: "100%", height: "auto", aspectRatio: 16 / 9 }} className={" shadow-lg rounded-lg"} />}
       </div>
     </div>

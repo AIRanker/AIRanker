@@ -3,6 +3,7 @@ import { formatDistanceToNow } from "date-fns"
 import { motion } from "framer-motion"
 import { Heart } from "lucide-react"
 import Link from "next/link"
+import CuratedCollectionGrid from "~/app/(home)/_components/curated-collection-grid"
 import SoftwareAction from "~/app/(home)/_components/software-action"
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar"
 import { Separator } from "~/components/ui/separator"
@@ -67,35 +68,11 @@ const RankTopList = ({ data }: { data: SoftwareByRankIdResult }) => {
 
 const RankContent = ({ id }: RankerContentProps) => {
   const { data, isLoading } = api.software.getSoftwaresByRankId.useQuery({ rankId: id })
+  console.log("data", data)
   const { data: rank, isPending: rankPending } = api.rank.topRanks.useQuery()
   return (
-    <div className={"flex flex-col justify-center"}>
-      {isLoading ? (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {[0, 1, 2].map((index) => (
-            <div
-              key={`skeleton-${index}`}
-              className={cn(
-                "rounded-2xl border-[1px] p-6 bg-background text-center flex flex-col justify-center gap-2 items-center relative h-80 animate-pulse",
-                index === 0 ? "border-primary/30 border-2 z-10" : "border-border z-0",
-                index === 1 && "order-1 mt-6",
-                index === 0 && "order-2",
-                index === 2 && "order-3 mt-6"
-              )}
-            >
-              <div className="size-20 rounded-full bg-muted" />
-              <div className="h-6 w-32 bg-muted rounded-md" />
-              <div className="h-4 w-24 bg-muted rounded-md" />
-              <div className="h-16 w-full bg-muted rounded-md" />
-              <div className="h-0.5 w-full bg-muted" />
-              <div className="h-10 w-full bg-muted rounded-md" />
-            </div>
-          ))}
-        </div>
-      ) : (
-        data && <RankTopList data={data} />
-      )}
-      <div className="mt-20 grid grid-cols-3 gap-8">
+    <>
+      <div className={"flex flex-col justify-center max-w-4xl mx-auto"}>
         <div className="col-span-2 flex flex-col gap-6">
           {isLoading
             ? Array(5)
@@ -112,8 +89,7 @@ const RankContent = ({ id }: RankerContentProps) => {
                     <div className="h-10 w-full bg-muted rounded-md" />
                   </div>
                 ))
-            : (data?.length ?? 0) > 3 &&
-              data?.slice(3).map((item, index) => (
+            : data?.map((item, index) => (
                 <div key={`item-${item.id}`} className="rounded-2xl border-[1px] p-6 bg-background relative flex flex-col gap-4">
                   <div className=" flex flex-row gap-4">
                     {item.image && item.image.trim().length > 0 && (
@@ -124,7 +100,7 @@ const RankContent = ({ id }: RankerContentProps) => {
                     )}
                     <div className="flex flex-col">
                       <div className="flex flex-row gap-4">
-                        <Link target="_blank" href={`/tool/${item.id}`} className="text-xl font-semibold text-muted-foreground">
+                        <Link target="_blank" href={item.url} className="text-xl font-semibold text-muted-foreground">
                           {item.name}
                         </Link>
                         <SoftwareAction item={item} className="size 4" comment={false} />
@@ -138,34 +114,13 @@ const RankContent = ({ id }: RankerContentProps) => {
                 </div>
               ))}
         </div>
-        {(data?.length ?? 0) > 3 && (
-          <div className="col-span-1 h-fit flex flex-col rounded-2xl border-[1px] p-6 bg-background">
-            <div className="mb-4 text-2xl font-bold text-primary"># Popular Collections</div>
-            {rankPending
-              ? Array(5)
-                  .fill(0)
-                  .map((_, index) => (
-                    <div key={`skeleton-rank-${index}`} className="flex flex-row gap-4 items-center mb-4 justify-between animate-pulse">
-                      <div className="h-5 w-32 bg-muted rounded-md" />
-                      <div className="h-4 w-16 bg-muted rounded-md" />
-                    </div>
-                  ))
-              : rank?.map((item) => (
-                  <div key={item.id} className="flex flex-row gap-4 items-center mb-4 justify-between">
-                    <div className={"flex flex-row gap-1 items-center"}>
-                      <Link target="_blank" href={`/rank/${item.id}`} className="line-clamp-1 font-semibold text-muted-foreground hover:underline">
-                        {item.name}
-                      </Link>
-                      <Heart className={"text-primary"} size={16} />
-                      <div className={"text-primary/60"}>{item._count.stars}</div>
-                    </div>
-                    <div className="text-xs text-muted-foreground">{formatDistanceToNow(item.createdAt)}</div>
-                  </div>
-                ))}
-          </div>
-        )}
       </div>
-    </div>
+
+      <div className={"text-3xl text-primary font-bold mt-10"}>Suggestion</div>
+      <div className="mt-10 grid grid-cols-3 gap-4">
+        <CuratedCollectionGrid isPending={rankPending} data={{ list: (rank ?? []).slice(0, 3) }} />
+      </div>
+    </>
   )
 }
 
