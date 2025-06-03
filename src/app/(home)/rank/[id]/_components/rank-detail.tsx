@@ -66,7 +66,7 @@ const RankDetail = ({ detail, id }: RankDetailProps) => {
               event.stopPropagation()
             }}
           />
-          <span className="text-sm font-medium">{detail._count.likes ?? 0}</span>
+          <span className="text-sm font-medium">{detail._count.stars ?? 0}</span>
         </div>
         <div className="flex items-center gap-1">
           <Heart
@@ -81,7 +81,7 @@ const RankDetail = ({ detail, id }: RankDetailProps) => {
               event.stopPropagation()
             }}
           />
-          <span className="text-sm font-medium">{detail._count.stars ?? 0}</span>
+          <span className="text-sm font-medium">{detail._count.likes ?? 0}</span>
         </div>
         <div className="flex items-center gap-1">
           <MessageCircle
@@ -92,7 +92,7 @@ const RankDetail = ({ detail, id }: RankDetailProps) => {
               event.stopPropagation()
             }}
           />
-          <span className="text-sm font-medium">{detail._count.stars ?? 0}</span>
+          <span className="text-sm font-medium">{detail._count.comments ?? 0}</span>
         </div>
         <div>
           <Share2
