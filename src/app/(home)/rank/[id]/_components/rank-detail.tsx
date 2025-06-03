@@ -108,7 +108,6 @@ const RankDetail = ({ detail, id }: RankDetailProps) => {
           />
         </div>
       </div>
-      
     </div>
   )
 }
