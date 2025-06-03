@@ -157,32 +157,32 @@ const RankContent = () => {
 
   return (
     <div className={"flex flex-col justify-center"}>
-      {isLoading ? (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {[0, 1, 2].map((index) => (
-            <div
-              key={`skeleton-${index}`}
-              className={cn(
-                "rounded-2xl border-[1px] p-6 bg-background text-center flex flex-col justify-center gap-2 items-center relative h-80 animate-pulse",
-                index === 0 ? "border-primary/30 border-2 z-10" : "border-border z-0",
-                index === 1 && "order-1 mt-6",
-                index === 0 && "order-2",
-                index === 2 && "order-3 mt-6"
-              )}
-            >
-              <div className="size-20 rounded-full bg-muted" />
-              <div className="h-6 w-32 bg-muted rounded-md" />
-              <div className="h-4 w-24 bg-muted rounded-md" />
-              <div className="h-16 w-full bg-muted rounded-md" />
-              <div className="h-0.5 w-full bg-muted" />
-              <div className="h-10 w-full bg-muted rounded-md" />
-            </div>
-          ))}
-        </div>
-      ) : (
-        <RankTopList data={suggestion.softwares} onEdit={handleEditItem} onDelete={handleDelete} />
-      )}
-      <div className="mt-20 gap-8">
+      {/*{isLoading ? (*/}
+      {/*  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">*/}
+      {/*    {[0, 1, 2].map((index) => (*/}
+      {/*      <div*/}
+      {/*        key={`skeleton-${index}`}*/}
+      {/*        className={cn(*/}
+      {/*          "rounded-2xl border-[1px] p-6 bg-background text-center flex flex-col justify-center gap-2 items-center relative h-80 animate-pulse",*/}
+      {/*          index === 0 ? "border-primary/30 border-2 z-10" : "border-border z-0",*/}
+      {/*          index === 1 && "order-1 mt-6",*/}
+      {/*          index === 0 && "order-2",*/}
+      {/*          index === 2 && "order-3 mt-6"*/}
+      {/*        )}*/}
+      {/*      >*/}
+      {/*        <div className="size-20 rounded-full bg-muted" />*/}
+      {/*        <div className="h-6 w-32 bg-muted rounded-md" />*/}
+      {/*        <div className="h-4 w-24 bg-muted rounded-md" />*/}
+      {/*        <div className="h-16 w-full bg-muted rounded-md" />*/}
+      {/*        <div className="h-0.5 w-full bg-muted" />*/}
+      {/*        <div className="h-10 w-full bg-muted rounded-md" />*/}
+      {/*      </div>*/}
+      {/*    ))}*/}
+      {/*  </div>*/}
+      {/*) : (*/}
+      {/*  <RankTopList data={suggestion.softwares} onEdit={handleEditItem} onDelete={handleDelete} />*/}
+      {/*)}*/}
+      <div className=" gap-8">
         <div className="col-span-2 flex flex-col gap-6">
           {isLoading
             ? Array(5)
@@ -200,7 +200,7 @@ const RankContent = () => {
                   </div>
                 ))
             : (suggestion.softwares?.length ?? 0) > 3 &&
-              suggestion.softwares?.slice(3).map((item, index) => (
+              suggestion.softwares?.map((item, index) => (
                 <div key={`item-${item.name}`} className="w-full rounded-2xl border-[1px] p-6 bg-background relative flex flex-col gap-4 mx-auto max-w-5xl">
                   <div className="flex flex-row gap-4">
                     <div className="absolute top-2 right-2 flex gap-2">
